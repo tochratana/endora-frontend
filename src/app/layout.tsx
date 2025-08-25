@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 import SessionProviderClient from "@/components/auth/SessionProviderClient";
 import { InstallPWA } from "@/components/InstallPWA";
 import Header from "@/layouts/Header";
+import Footer from "@/layouts/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 
 // TODO metadata
@@ -65,6 +66,7 @@ export default function RootLayout({
             <SessionProviderClient>
               <Header />
               <main className="min-h-screen bg-gray-50 dark:bg-gray-900">{children}</main>
+              <Footer />
               <InstallPWA />
             </SessionProviderClient>
           </ProviderStore>
