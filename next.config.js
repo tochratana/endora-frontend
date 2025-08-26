@@ -23,6 +23,9 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [];
+  },
 };
 
 module.exports = withPWA(nextConfig);
