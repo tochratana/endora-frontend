@@ -16,8 +16,10 @@ import {
 // import Button from "@/components/ui/Button";
 // import Input from "@/components/ui/Input";
 import { useRegisterMutation } from "@/app/store/api/authApi";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import Button from "../button/Button";
+import Input from "../button/Input";
+// import Button from "../ui/Button";
+// import Input from "../ui/Input";
 // import Button from "../ui/Button";
 
 interface AuthFormsProps {
