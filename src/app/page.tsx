@@ -55,17 +55,8 @@
 //   // );
 // }
 
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import HomePage from "./home/HomePage";
 
-export default async function RootPage() {
-  const session = await getServerSession();
-
-  // Only redirect if the user is authenticated and explicitly accessing the root page
-  if (session?.user) {
-    redirect("/dashboard");
-  }
-
-  return <HomePage />;
+export default function RootPage() {
+  redirect("/home");
 }

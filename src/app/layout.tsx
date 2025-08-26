@@ -64,11 +64,7 @@ export default function RootLayout({
         >
           <ProviderStore>
             <ClientProviders>
-              <Header />
-              <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-                {children}
-              </main>
-              <Footer />
+              {children}
               <InstallPWA />
             </ClientProviders>
           </ProviderStore>
