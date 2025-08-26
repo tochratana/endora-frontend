@@ -118,9 +118,9 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-1">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2 m-2">
             <Image
-              src="/EndoraTransparent.png"
+              src="/Logo-v3.png"
               alt="Logo"
               width={58}
               height={58}
