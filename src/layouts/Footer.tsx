@@ -92,12 +92,22 @@ export default function Footer() {
           <div className="text-center md:text-right">
             <h3 className="font-bold mb-4">Our Organization</h3>
             <div className="flex md:justify-end justify-center">
-              <Image
+              {/* <Image
                 src="/istadlogo-v2.png"
                 alt="iSTAD Logo"
                 width={150}
                 height={150}
-              />
+              /> */}
+              <Link href="https://www.cstad.edu.kh/" className="flex items-center space-x-2">
+            <Image
+              src="/istadlogo-v2.png"
+              alt="iSTAD Logo"
+              width={150}
+              height={150}
+              
+            />
+          </Link>
+
             </div>
           </div>
         </div>
