@@ -5,6 +5,7 @@ This project uses **Prettier** and **ESLint** to ensure consistent code formatti
 ## Required VS Code Extensions
 
 Install these extensions in VS Code:
+
 - **Prettier - Code formatter** (`esbenp.prettier-vscode`)
 - **ESLint** (`dbaeumer.vscode-eslint`)
 - **Tailwind CSS IntelliSense** (`bradlc.vscode-tailwindcss`)
@@ -12,6 +13,7 @@ Install these extensions in VS Code:
 ## Setup Instructions
 
 1. **Install dependencies** (if not already done):
+
    ```bash
    npm install
    ```
