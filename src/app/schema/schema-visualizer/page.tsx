@@ -81,9 +81,9 @@ export default function SchemaVisualizerPage() {
       targetHandle: "id",
     },
   ]);
-  
+
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges(eds => addEdge(params, eds)),
     []
   );
 

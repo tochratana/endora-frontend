@@ -82,7 +82,6 @@ export default function FeaturesSection() {
       description:
         "Secure file storage with CDN delivery, image transformations, and automatic backups.",
     },
-   
   ];
 
   return (
@@ -92,7 +91,6 @@ export default function FeaturesSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-primary dark:text-white sm:text-5xl mb-4">
             Explore The Benefits of Our Features
-           
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Endura provides all the backend services you need to build modern
@@ -110,7 +108,7 @@ export default function FeaturesSection() {
             >
               {/* Radial hover effect background - starts from icon position */}
               <div className="absolute top-8 left-8 w-16 h-16 bg-primary rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-[20] group-hover:rounded-full origin-center"></div>
-              
+
               {/* Content wrapper with higher z-index */}
               <div className="relative z-10">
                 {/* Icon */}

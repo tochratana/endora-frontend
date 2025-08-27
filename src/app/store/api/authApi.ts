@@ -24,7 +24,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL || "/api",
-    prepareHeaders: async (headers) => {
+    prepareHeaders: async headers => {
       const session = await getSession();
       if (session?.accessToken) {
         headers.set("authorization", `Bearer ${session.accessToken}`);
@@ -33,13 +33,13 @@ export const authApi = createApi({
     },
   }),
   tagTypes: ["User"],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getCurrentUser: builder.query<User, void>({
       query: () => "/auth/me",
       providesTags: ["User"],
     }),
     register: builder.mutation<User, RegisterData>({
-      query: (userData) => ({
+      query: userData => ({
         url: "/auth/register",
         method: "POST",
         body: userData,

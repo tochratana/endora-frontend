@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { SchemaSidebar } from "@/components/schema-sidebar"
-import { SchemaContent } from "@/components/schema-content"
+import { useState } from "react";
+import { SchemaSidebar } from "@/components/schema-sidebar";
+import { SchemaContent } from "@/components/schema-content";
 
 export default function SchemaManager() {
-  const [activeTable, setActiveTable] = useState("products")
+  const [activeTable, setActiveTable] = useState("products");
 
   return (
     <div className="flex h-screen bg-background">
@@ -16,9 +16,13 @@ export default function SchemaManager() {
       <div className="flex-1 flex flex-col">
         <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card/50">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-foreground">Database Schema</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              Database Schema
+            </h2>
             <span className="text-sm text-muted-foreground">•</span>
-            <span className="text-sm text-muted-foreground capitalize">{activeTable}</span>
+            <span className="text-sm text-muted-foreground capitalize">
+              {activeTable}
+            </span>
           </div>
         </div>
 
@@ -28,5 +32,5 @@ export default function SchemaManager() {
         </div>
       </div>
     </div>
-  )
+  );
 }

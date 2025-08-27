@@ -28,7 +28,6 @@ export default function APIDesign() {
         </div>
 
         {/* Additional Benefits */}
-       
       </div>
     </section>
   );

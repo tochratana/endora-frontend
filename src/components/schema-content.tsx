@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { RefreshCw, Database, Settings, Plus, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
-import Button from "./button/Button"
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { RefreshCw, Database, Settings, Plus, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Button from "./button/Button";
 
 const tableSchemas = {
   products: [
@@ -17,7 +17,8 @@ const tableSchemas = {
     {
       name: "name",
       type: "text",
-      color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+      color:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
     },
     {
       name: "price",
@@ -27,7 +28,8 @@ const tableSchemas = {
     {
       name: "created_date",
       type: "timestamp",
-      color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+      color:
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
     },
   ],
   users: [
@@ -40,54 +42,59 @@ const tableSchemas = {
     {
       name: "email",
       type: "varchar",
-      color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+      color:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
     },
     {
       name: "username",
       type: "varchar",
-      color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+      color:
+        "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
     },
     {
       name: "created_at",
       type: "timestamp",
-      color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+      color:
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
     },
   ],
-}
+};
 
 const tabs = [
   { id: "table", label: "", icon: Database, active: true },
   { id: "settings", label: "", icon: Settings, active: false },
-]
+];
 
 interface SchemaContentProps {
-  activeTable: string
+  activeTable: string;
 }
 
 export function SchemaContent({ activeTable }: SchemaContentProps) {
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [endpointsGenerated, setEndpointsGenerated] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [endpointsGenerated, setEndpointsGenerated] = useState(false);
 
-  const columns = tableSchemas[activeTable as keyof typeof tableSchemas] || tableSchemas.products
-  const tableName = activeTable.charAt(0).toUpperCase() + activeTable.slice(1)
+  const columns =
+    tableSchemas[activeTable as keyof typeof tableSchemas] ||
+    tableSchemas.products;
+  const tableName = activeTable.charAt(0).toUpperCase() + activeTable.slice(1);
 
   const handleRefresh = async () => {
-    setIsRefreshing(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsRefreshing(false)
-  }
+    setIsRefreshing(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsRefreshing(false);
+  };
 
   const handleGenerateEndpoints = () => {
-    setEndpointsGenerated(true)
-    setTimeout(() => setEndpointsGenerated(false), 2000)
-  }
+    setEndpointsGenerated(true);
+    setTimeout(() => setEndpointsGenerated(false), 2000);
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card">
         <div className="flex items-center gap-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
+          {tabs.map(tab => {
+            const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
@@ -95,13 +102,13 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
                   "flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200",
                   tab.active
                     ? "bg-background text-foreground shadow-sm border border-border"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
                 <Icon className="h-4 w-4" />
                 {tab.id === "table" && <span>{tableName}</span>}
               </button>
-            )
+            );
           })}
         </div>
 
@@ -149,20 +156,32 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
                 className="grid grid-cols-4 gap-4 items-center py-2 hover:bg-muted/30 rounded-lg px-2 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">{column.name}</span>
+                  <span className="font-medium text-foreground">
+                    {column.name}
+                  </span>
                   {column.isPrimary && (
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs px-1.5 py-0.5"
+                    >
                       PK
                     </Badge>
                   )}
                 </div>
                 <div>
-                  <Badge variant="secondary" className={cn("text-xs font-mono", column.color)}>
+                  <Badge
+                    variant="secondary"
+                    className={cn("text-xs font-mono", column.color)}
+                  >
                     {column.type}
                   </Badge>
                 </div>
-                <div className="text-sm text-muted-foreground">{column.isPrimary ? "NOT NULL" : ""}</div>
-                <div className="text-sm text-muted-foreground">{column.isPrimary ? "nextval(...)" : ""}</div>
+                <div className="text-sm text-muted-foreground">
+                  {column.isPrimary ? "NOT NULL" : ""}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {column.isPrimary ? "nextval(...)" : ""}
+                </div>
               </div>
             ))}
           </div>
@@ -176,10 +195,12 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
-          <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
+          <RefreshCw
+            className={cn("h-4 w-4", isRefreshing && "animate-spin")}
+          />
           {isRefreshing ? "Refreshing..." : "Refresh"}
         </Button>
       </div>
     </div>
-  )
+  );
 }

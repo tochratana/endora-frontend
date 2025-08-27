@@ -19,7 +19,7 @@ export default function Sidebar() {
     <div className="w-64 bg-white shadow-sm h-screen">
       <nav className="mt-5 px-2">
         <div className="space-y-1">
-          {navigation.map((item) => {
+          {navigation.map(item => {
             const isActive = pathname === item.href;
             return (
               <Link

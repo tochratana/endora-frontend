@@ -48,8 +48,9 @@ export default function EndPointServiceSection() {
               </h2>
               <p className="mt-6 text-lg text-gray-600 leading-relaxed">
                 Generate and manage your API endpoints effortlessly with our
-                advanced Endpoint Generation Service. Streamline your development
-                workflow with automated endpoint creation and management.
+                advanced Endpoint Generation Service. Streamline your
+                development workflow with automated endpoint creation and
+                management.
               </p>
               {/* <div className="mt-8">
                 <ButtonHaveBg description="See More" />
