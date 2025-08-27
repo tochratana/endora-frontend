@@ -15,11 +15,12 @@ function Switch({
   React.useEffect(() => {
     const storedTheme = localStorage.getItem("theme")
     if (storedTheme === "dark") {
+       setDarkMode(false)
+      document.documentElement.classList.remove("dark")
+    } else {
       setDarkMode(true)
       document.documentElement.classList.add("dark")
-    } else {
-      setDarkMode(false)
-      document.documentElement.classList.remove("dark")
+     
     }
   }, [])
 

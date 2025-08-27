@@ -19,7 +19,7 @@ export default function UserHeader() {
     await signOut({ callbackUrl: "/" });
   };
   return (
-    <nav className="bg-slate-900 border-b border-slate-800 px-[100px] py-3 dark:bg-white">
+    <nav className="bg-white border-b border-slate-800 px-[100px] py-3 dark:bg-slate-900">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
@@ -33,15 +33,15 @@ export default function UserHeader() {
           </div>
           <div className="w-1 h-7 bg-secondary-900 rounded-md"></div>
           <Boxes className="text-white dark:text-gray-900"/>
-          <span className="text-white text-sm font-medium dark:text-gray-900">
+          <span className="text-gray-900 text-sm font-medium dark:text-white">
             {session?.user?.name || "User"}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-white hover:bg-teal-500 hover:text-white dark:text-gray-900">
+          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
             My API
           </button>
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-white hover:bg-teal-500 hover:text-white dark:text-gray-900">
+          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
             Feedback
           </button>
 
