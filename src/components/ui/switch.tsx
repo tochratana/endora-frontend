@@ -33,6 +33,7 @@ function Switch({
       localStorage.setItem("theme", "light")
     }
   }
+
   return (
     <SwitchPrimitive.Root
       checked={darkMode}
