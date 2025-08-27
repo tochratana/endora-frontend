@@ -1,38 +1,37 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SwitchPrimitive from "@radix-ui/react-switch"
-import { Sun, Moon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { Sun, Moon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function Switch({
   className,
   ...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
-
-  const [darkMode, setDarkMode] = React.useState(false)
+  const [darkMode, setDarkMode] = React.useState(false);
 
   React.useEffect(() => {
-    const storedTheme = localStorage.getItem("theme")
+    const storedTheme = localStorage.getItem("theme");
     if (storedTheme === "dark") {
-      setDarkMode(true)
-      document.documentElement.classList.add("dark")
+      setDarkMode(true);
+      document.documentElement.classList.add("dark");
     } else {
-      setDarkMode(false)
-      document.documentElement.classList.remove("dark")
+      setDarkMode(false);
+      document.documentElement.classList.remove("dark");
     }
-  }, [])
+  }, []);
 
   const handleThemeChange = (checked: boolean) => {
-    setDarkMode(checked)
+    setDarkMode(checked);
     if (checked) {
-      document.documentElement.classList.add("dark")
-      localStorage.setItem("theme", "dark")
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark")
-      localStorage.setItem("theme", "light")
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
-  }
+  };
 
   return (
     <SwitchPrimitive.Root
@@ -56,7 +55,7 @@ function Switch({
         )}
       </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>
-  )
+  );
 }
 
-export { Switch }
+export { Switch };
