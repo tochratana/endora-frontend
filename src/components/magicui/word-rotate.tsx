@@ -36,7 +36,7 @@ export function WordRotate({
 
     const intervalId = setInterval(() => {
       console.log("WordRotate: Interval triggered");
-      setIndex((prevIndex) => {
+      setIndex(prevIndex => {
         const newIndex = (prevIndex + 1) % words.length;
         console.log(
           `WordRotate: Changing from index ${prevIndex} (${words[prevIndex]}) to index ${newIndex} (${words[newIndex]})`
@@ -61,7 +61,7 @@ export function WordRotate({
   return (
     <div className="overflow-hidden py-2 min-h-[60px] flex items-center justify-center w-full text-start">
       <AnimatePresence mode="wait">
-         Say Goodbye To 
+        Say Goodbye To
         <motion.div
           key={`${currentWord}-${index}`}
           className={cn("text-center w-full", className)}

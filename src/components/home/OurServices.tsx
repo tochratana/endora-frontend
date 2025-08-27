@@ -52,8 +52,8 @@ export default function OurServices() {
           </p>
         </div>
         <SchemaServiceSection />
-        <EndPointServiceSection/>
-        <APIDocServiceSection/>
+        <EndPointServiceSection />
+        <APIDocServiceSection />
       </div>
     </section>
   );

@@ -11,15 +11,16 @@ const flexDirections = {
 
 export const LabeledHandle = forwardRef<
   HTMLDivElement,
-  HandleProps & HTMLAttributes<HTMLDivElement> & {
-    title: string;
-    handleClassName?: string;
-    labelClassName?: string;
-  }
+  HandleProps &
+    HTMLAttributes<HTMLDivElement> & {
+      title: string;
+      handleClassName?: string;
+      labelClassName?: string;
+    }
 >(
   (
     { className, labelClassName, handleClassName, title, position, ...props },
-    ref,
+    ref
   ) => (
     <div
       ref={ref}
@@ -27,7 +28,7 @@ export const LabeledHandle = forwardRef<
       className={cn(
         "relative flex items-center",
         flexDirections[position],
-        className,
+        className
       )}
     >
       <Handle position={position} className={handleClassName} {...props} />
@@ -35,7 +36,7 @@ export const LabeledHandle = forwardRef<
         {title}
       </label>
     </div>
-  ),
+  )
 );
 
 LabeledHandle.displayName = "LabeledHandle";

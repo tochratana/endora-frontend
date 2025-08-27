@@ -9,13 +9,13 @@ import WhyUs from "@/components/about/WhyUs";
 export default function page() {
   return (
     <section>
-      <HeroSection/>
-      <OurHistory/>
-      <OurMission/>
-      <OurMentor/>
-      <OurTeam/>
-      <WhyUs/>
-      <JoinTeam/>
+      <HeroSection />
+      <OurHistory />
+      <OurMission />
+      <OurMentor />
+      <OurTeam />
+      <WhyUs />
+      <JoinTeam />
     </section>
-  )
+  );
 }
