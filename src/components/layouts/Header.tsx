@@ -37,14 +37,20 @@ export default function Header() {
 
         <div className="hidden md:flex space-x-4">
           <Link
-            href="/signup"
+            href="/auth/signin"
+            className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold text-gray-900 hover:bg-indigo-600 hover:text-white transition dark:text-white"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/auth/signup"
             className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
           >
             Sign Up
           </Link>
           <Link
             href="/download"
-            className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition"
+            className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold text-gray-900 hover:bg-indigo-600 hover:text-white transition dark:text-white"
           >
             Get App
           </Link>
@@ -73,14 +79,20 @@ export default function Header() {
           <Link href="#service" className="block hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
           <Link href="#contact" className="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
           <Link
-            href="/signup"
+            href="/auth/signin"
+            className="block border border-indigo-400 px-4 py-2 rounded-lg text-center font-semibold text-gray-900 hover:bg-indigo-600 hover:text-white transition dark:text-white"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/auth/signup"
             className="block bg-indigo-600 px-4 py-2 rounded-lg text-center font-semibold text-white hover:bg-indigo-500"
           >
             Sign Up
           </Link>
           <Link
             href="/download"
-            className="block border border-indigo-400 px-4 py-2 rounded-lg text-center font-semibold hover:bg-indigo-600 hover:text-white"
+            className="block border border-indigo-400 px-4 py-2 rounded-lg text-center font-semibold text-gray-900 hover:bg-indigo-600 hover:text-white transition dark:text-white"
           >
             Get App
           </Link>

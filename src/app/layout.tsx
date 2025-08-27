@@ -1,12 +1,12 @@
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
-import SessionProviderClient from "@/components/auth/SessionProviderClient";
+// import SessionProviderClient from "@/components/auth/AuthFormsProps";
 import { InstallPWA } from "@/components/InstallPWA";
-import Header from "@/layouts/Header";
-import Footer from "@/layouts/Footer";
+import Header from "@/components/layouts/Header";
+import Footer from "@/components/layouts/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import ClientProviders from "@/components/ClientProviders";
 
 // TODO metadata
 export const metadata = {
@@ -63,12 +63,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ProviderStore>
-            <SessionProviderClient>
-              <Header />
-              <main className="min-h-screen bg-gray-50 dark:bg-gray-900">{children}</main>
-              <Footer />
+            <ClientProviders>
+              {children}
               <InstallPWA />
-            </SessionProviderClient>
+            </ClientProviders>
           </ProviderStore>
         </ThemeProvider>
       </body>
