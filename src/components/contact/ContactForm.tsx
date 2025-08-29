@@ -5,7 +5,7 @@ export default function ContactForm() {
     <section className="w-full py-10 px-3 bg-white">
       <div className="max-w-6xl m-auto grid md:gap-4 gap-6 md:grid-cols-9 grid-cols-4">
         <div className="col-span-4 flex flex-col gap-4 justify-center">
-          <h1 className="text-[var(--color-primary)] text-3xl">Let's talk with us</h1>
+          <h1 className="text-[var(--color-primary)] text-3xl">Let`s talk with us</h1>
           <p className="text-gray-500">Questions, comments, or suggestions? Simply fill in the form and we’ll be in touch shortly.</p>
           <ul className="flex flex-col md:gap-3 gap-2 text-[var(--color-primary)] font-bold">
             <li className="flex gap-1"><MapPin /> ISTAD, Phnom Penh, Cambodia</li>

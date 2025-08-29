@@ -9,6 +9,7 @@ export type TeamMember = {
   name: string;
   position: string;
   image: string;
+  background?: string;
   socials: SocialLinks
 };
 
@@ -42,8 +43,9 @@ export const teamMembers:TeamMember[] =[
       socials: {
         github: "",
         linkedin: "",
-        portfolio: ""
+        portfolio: "",
       },
+      background:"/team-background/blob1.svg",
       image: "/images/liza.png"
     },
     {
@@ -55,6 +57,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "",
         portfolio: ""
       },
+      background:"/team-background/blob2.svg",
       image: "/images/leaphea.png"
     },
     {
@@ -66,6 +69,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "",
         portfolio: ""
       },
+      background:"/team-background/blob3.svg",
       image: "/images/sanom.png"
     },
     {
@@ -77,6 +81,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "",
         portfolio: ""
       },
+      background:"/team-background/blob4.svg",
       image: "/images/ratana.png"
     },
     {
@@ -88,6 +93,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "https://www.linkedin.com/in/oudomm",
         portfolio: "https://www.oudom.dev"
       },
+      background:"/team-background/blob.svg",
       image: "/images/oudom.png"
     },
     {
@@ -99,6 +105,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
         portfolio: ""
       },
+      background:"/team-background/blob6.svg",
       image: "/images/taingan.png"
     },
     {
@@ -110,6 +117,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "",
         portfolio: ""
       },
+      background:"/team-background/blob7.svg",
       image: "/images/daron.png"
     },
     {
@@ -121,6 +129,7 @@ export const teamMembers:TeamMember[] =[
         linkedin: "https://www.linkedin.com/in/korm-taiyi-906407327/",
         portfolio: "ssd"
       },
+      background:"/team-background/blob8.svg",
       image: "/images/taiyi.png"
     },
   ]

@@ -14,14 +14,7 @@ export default function JoinTeam() {
           starting small or scaling up, we’re here to ensure your development
           process runs faster, smoother, and smarter.
         </p>
-        <Image
-          src="/join_team.gif"
-          alt="Join our team"
-          width={1000}
-          height={400}
-          style={{ width: "500px", height: "auto" }}
-          className="h-auto object-contain"
-        />
+        {/* <Image src="" alt="" width={0} height={0} fill className=""/> */}
       </div>
     </section>
   );
