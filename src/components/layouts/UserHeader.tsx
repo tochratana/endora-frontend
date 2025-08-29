@@ -19,7 +19,7 @@ export default function UserHeader() {
     await signOut({ callbackUrl: "/" });
   };
   return (
-    <nav className="bg-slate-900 border-b border-slate-800 px-[100px] py-3 dark:bg-white">
+    <nav className="bg-white border-b border-slate-800 px-[100px] py-3 dark:bg-slate-900">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
@@ -32,16 +32,16 @@ export default function UserHeader() {
             />
           </div>
           <div className="w-1 h-7 bg-secondary-900 rounded-md"></div>
-          <Boxes className="text-white dark:text-gray-900"/>
-          <span className="text-white text-sm font-medium dark:text-gray-900">
+          <Boxes className="text-gray-900 dark:text-white"/>
+          <span className="text-sm font-medium text-gray-900 dark:text-white">
             {session?.user?.name || "User"}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-white hover:bg-teal-500 hover:text-white dark:text-gray-900">
+          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
             My API
           </button>
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-white hover:bg-teal-500 hover:text-white dark:text-gray-900">
+          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
             Feedback
           </button>
 
@@ -65,7 +65,7 @@ export default function UserHeader() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-64 bg-slate-900 border-slate-700 text-white dark:bg-white dark:text-gray-900"
+              className="w-64 bg-white border-slate-700 text-white dark:bg-slate-900 dark:text-white"
               align="end"
               forceMount
             >
@@ -73,10 +73,10 @@ export default function UserHeader() {
               {/* Theme toggle */}
               <div className="flex items-center justify-between p-3">
                 <div className="flex flex-col space-y-1 p-3">
-                  <p className="text-sm font-medium leading-none text-white dark:text-gray-900">
+                  <p className="text-sm font-medium leading-none text-gray-900 dark:text-white">
                     {session?.user?.name || "User"}
                   </p>
-                  <p className="text-xs leading-none text-slate-400 dark:text-gray-700">
+                  <p className="text-xs leading-none text-gray-700 dark:text-slate-400">
                     {session?.user?.email || "email"}
                   </p>
                 </div>
@@ -86,13 +86,13 @@ export default function UserHeader() {
               <DropdownMenuSeparator className="bg-slate-700" />
 
               {/* Account settings */}
-              <DropdownMenuItem className="cursor-pointer hover:bg-slate-800 focus:bg-slate-800 hover:text-teal-500 focus:text-teal-500 dark:text-gray-900 dark:hover:bg-gray-100">
+              <DropdownMenuItem className="cursor-pointer text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-teal-500 dark:text-white dark:hover:bg-slate-800 dark:focus:text-indigo-400">
                 <Settings className="mr-2 h-4 w-4" />
                 <Link href="/dashboard/profile">Account Setting</Link>
               </DropdownMenuItem>
 
               {/* Log out */}
-              <DropdownMenuItem className="cursor-pointer hover:bg-slate-800 focus:bg-slate-800 hover:text-teal-500 focus:text-teal-500 dark:text-gray-900 dark:hover:bg-gray-100">
+              <DropdownMenuItem className="cursor-pointer text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-teal-500 dark:text-white dark:hover:bg-slate-800 dark:focus:text-indigo-400">
                 <LogOut className="mr-2 h-4 w-4" />
                 <button onClick={handleSignOut}>Sign out</button>
               </DropdownMenuItem>

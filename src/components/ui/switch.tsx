@@ -14,23 +14,23 @@ function Switch({
 
   React.useEffect(() => {
     const storedTheme = localStorage.getItem("theme")
-    if (storedTheme === "dark") {
+    if (storedTheme === "light") {
       setDarkMode(true)
-      document.documentElement.classList.add("dark")
+      document.documentElement.classList.remove("dark")
     } else {
       setDarkMode(false)
-      document.documentElement.classList.remove("dark")
+      document.documentElement.classList.add("dark")
     }
   }, [])
 
   const handleThemeChange = (checked: boolean) => {
     setDarkMode(checked)
     if (checked) {
-      document.documentElement.classList.add("dark")
-      localStorage.setItem("theme", "dark")
-    } else {
       document.documentElement.classList.remove("dark")
       localStorage.setItem("theme", "light")
+    } else {
+      document.documentElement.classList.add("dark")
+      localStorage.setItem("theme", "dark")  
     }
   }
   return (

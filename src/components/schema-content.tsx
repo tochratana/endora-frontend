@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { RefreshCw, Database, Settings, Plus, Check } from "lucide-react"
+import { RefreshCw, Database, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Button from "./button/Button"
 
@@ -55,10 +55,6 @@ const tableSchemas = {
   ],
 }
 
-const tabs = [
-  { id: "table", label: "", icon: Database, active: true },
-  { id: "settings", label: "", icon: Settings, active: false },
-]
 
 interface SchemaContentProps {
   activeTable: string
@@ -69,7 +65,6 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
   const [endpointsGenerated, setEndpointsGenerated] = useState(false)
 
   const columns = tableSchemas[activeTable as keyof typeof tableSchemas] || tableSchemas.products
-  const tableName = activeTable.charAt(0).toUpperCase() + activeTable.slice(1)
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -84,36 +79,10 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card">
-        <div className="flex items-center gap-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            return (
-              <button
-                key={tab.id}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200",
-                  tab.active
-                    ? "bg-background text-foreground shadow-sm border border-border"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {tab.id === "table" && <span>{tableName}</span>}
-              </button>
-            )
-          })}
-        </div>
 
-        <button className="text-muted-foreground hover:text-foreground p-1 rounded">
-          <Plus className="h-4 w-4 rotate-45" />
-        </button>
-      </div>
-
-      <div className="px-6 py-4 border-b border-border bg-muted/20">
-        <Button
-          size="sm"
-          className="gap-2 bg-transparent"
+      <div className="px-6 py-4">
+        <button
+          className="flex items-center gap-2 border-2 border-indigo-900 rounded-sm px-2 py-1 hover:bg-indigo-800 hover:text-white"
           onClick={handleGenerateEndpoints}
           disabled={endpointsGenerated}
         >
@@ -128,7 +97,7 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
               Generate Endpoints
             </>
           )}
-        </Button>
+        </button>
       </div>
 
       <div className="flex-1 px-6 py-4 overflow-auto">
@@ -143,7 +112,7 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
 
           {/* Column rows */}
           <div className="space-y-3">
-            {columns.map((column, index) => (
+            {columns.map((column) => (
               <div
                 key={column.name}
                 className="grid grid-cols-4 gap-4 items-center py-2 hover:bg-muted/30 rounded-lg px-2 transition-colors"
@@ -151,13 +120,13 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-foreground">{column.name}</span>
                   {column.isPrimary && (
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    <Badge variant="secondary" className="text-white text-xs rounded-xs px-1 py-0.5">
                       PK
                     </Badge>
                   )}
                 </div>
                 <div>
-                  <Badge variant="secondary" className={cn("text-xs font-mono", column.color)}>
+                  <Badge variant="secondary" className={cn("text-xs rounded-xs font-mono", column.color)}>
                     {column.type}
                   </Badge>
                 </div>
@@ -169,16 +138,15 @@ export function SchemaContent({ activeTable }: SchemaContentProps) {
         </div>
       </div>
 
-      <div className="px-6 py-4 border-t border-border bg-muted/10 flex justify-center">
-        <Button
-          size="sm"
-          className="gap-2 text-muted-foreground hover:text-foreground"
+      <div className="px-6 py-4 border-t border-border bg-gray-100 flex justify-center">
+        <button
+          className="flex items-center gap-2 text-gray-600 bg-transparent"
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
           <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
           {isRefreshing ? "Refreshing..." : "Refresh"}
-        </Button>
+        </button>
       </div>
     </div>
   )
