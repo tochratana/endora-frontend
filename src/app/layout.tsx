@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
@@ -19,6 +19,11 @@ export const metadata = {
     apple: "/EndoraTransparent.png",
   },
 };
+
+const lexend = Lexend({
+  subsets: ["latin"],
+  variable: "--font-lexend",
+})
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,7 +64,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable } ${lexend.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
