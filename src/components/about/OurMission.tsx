@@ -3,8 +3,8 @@ import mission from "../../../public/mission.jpg"
 
 export default function OurMission() {
   return (
-    <section className="w-full py-10 max-w-6xl m-auto grid md:grid-cols-9 grid-cols-4">
-      <div className="md:col-span-4 col-span-9 md:mt-0 mt-5 px-5 md:order-1 order-2">
+    <section className="w-full py-10 max-w-6xl m-auto grid md:grid-cols-9 grid-cols-4 min-h-[400px] items-center">
+      <div className="md:col-span-4 col-span-9 md:mt-0 mt-5 px-5 md:order-1 order-2 md:justify-self-end">
           {/* <Image
             src={mission}
             alt="history image"

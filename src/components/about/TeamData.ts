@@ -16,12 +16,12 @@ export type TeamMember = {
 export const teamMembers:TeamMember[] =[
     {
       id: 1, 
-      name: "Kay Keo",
+      name: "Kay Keo Sokcheat",
       position: "Mentor",
       socials: {
-        github: "",
-        linkedin: "",
-        portfolio: ""
+        github: " saef",
+        linkedin: "dsf",
+        portfolio: "eaf"
       },
       image: "/images/cherkeo.png"
     },
@@ -30,9 +30,9 @@ export const teamMembers:TeamMember[] =[
       name: "Srong Sokcheat",
       position: "Mentor",
       socials: {
-        github: "",
-        linkedin: "",
-        portfolio: ""
+        github: "fsa",
+        linkedin: "  ds",
+        portfolio: "fea"
       },
       image: "/images/chercheat.png"
     },
@@ -115,7 +115,7 @@ export const teamMembers:TeamMember[] =[
       socials: {
         github: "https://github.com/kea-daron",
         linkedin: "",
-        portfolio: ""
+        portfolio: "https://my-folio-pearl.vercel.app/"
       },
       background:"/team-background/blob7.svg",
       image: "/images/daron.png"

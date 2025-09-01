@@ -5,7 +5,7 @@ import { DatabaseZapIcon, FolderOpenIcon, Settings } from "lucide-react"
 export default function WhyUs() {
   return (
     <section className="w-full">
-      <div className="max-w-6xl m-auto grid md:grid-cols-9 grid-cols-4 py-10 gap-2 md:gap-0">
+      <div className="max-w-6xl m-auto grid md:grid-cols-9 grid-cols-4 py-15 gap-2 md:gap-0">
         <div className="md:col-span-3 col-span-4">
           <h1 className="md:text-5xl text-4xl font-semibold text-center text-(--color-secondary)">Why Us?</h1>
           {/* <Image src={whyus} alt="i" width={0} height={0} className="w-full h-auto object-contain rounded"/> */}

@@ -13,27 +13,27 @@ export default function OurMentor() {
           Behind every great achievement is great guidance-ours comes from an
           exceptional mentor.
         </p>
-        <div className="grid md:grid-cols-8 grid-cols-4 gap-1">
+        <div className="flex md:flex-row flex-col gap-8">
           {teamMembers
             .filter((tm) => tm.position === "Mentor")
-            .map((tm) => (
-              <div
-                className="col-span-2 flex flex-col items-center h-full text-center bg-no-repeat bg-center bg-contain"
-                style={{ backgroundImage: `url(${tm.background})` }}
-                key={tm.id}
-              >
-                <div className="relative w-full h-full">
+            .map((tm, index) => (
+              <div key={tm.id}className={`flex flex-row items-center md:gap-6 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "flex-row-reverse text-right flex-" : ""}`}>
+                <div className="flex-shrink-0">
                   <Image
                     src={tm.image}
                     alt={tm.name}
                     width={200}
-                    height={0}
-                    className="object-contain h-auto"
+                    height={200}
+                    className="rounded-lg object-cover"
                   />
                 </div>
-                <div className="flex flex-col mt-4 text-black">
-                  <h1 className="font-semibold">{tm.name}</h1>
-                  <p className="">{tm.position}</p>
+                <div className="flex-1">
+                  <h2 className="text-[var(--color-primary)] md:text-2xl text-xl font-semibold mb-2">
+                    {tm.name}
+                  </h2>
+                  <p className="text-[var(--color-secondary)] text-lg font-medium mb-4">
+                    {tm.position}
+                  </p>
                   <SocialLinks
                     portfolio={tm.socials.portfolio}
                     github={tm.socials.github}
