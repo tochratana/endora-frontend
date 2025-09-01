@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Button from "./button/Button";
-import Input from "@/components/ui/input";
 import { Plus, Search, Database, Table, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Input from "./button/Input";
 
 const sidebarItems = [
   { id: "visualizer", label: "Schema Visualizer", icon: Database },
