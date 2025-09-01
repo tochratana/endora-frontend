@@ -1,8 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Sidebar from "@/components/layouts/Sidebar";
-import DashboardNav from "@/components/layouts/DashboardNav";
 import UserHeader from "@/components/layouts/UserHeader";
 
 export default async function DashboardLayout({
