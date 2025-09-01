@@ -29,10 +29,10 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
-            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
+            <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
             <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Document</Link>
             <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
-            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
+            <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
           </nav>
         </div>
 
