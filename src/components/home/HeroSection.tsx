@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import ButtonHaveBg from "../ui/ButtonHaveBg";
 import ButtonNoBg from "../ui/ButtonNoBg";
