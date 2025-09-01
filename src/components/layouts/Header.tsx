@@ -29,10 +29,30 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
-            <Link href="#about" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
-            <Link href="#document" className="hover:text-indigo-600 dark:hover:text-indigo-400">Document</Link>
-            <Link href="#service" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
-            <Link href="#contact" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
+            <Link
+              href="#about"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400"
+            >
+              About
+            </Link>
+            <Link
+              href="#document"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400"
+            >
+              Document
+            </Link>
+            <Link
+              href="#service"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400"
+            >
+              Service
+            </Link>
+            <Link
+              href="#contact"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400"
+            >
+              Contact
+            </Link>
           </nav>
         </div>
 
@@ -69,10 +89,30 @@ export default function Header() {
                      bg-gray-50 text-gray-900
                      dark:bg-[#0a0814] dark:text-white"
         >
-          <Link href="#about" className="block hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
-          <Link href="#document" className="block hover:text-indigo-600 dark:hover:text-indigo-400">Document</Link>
-          <Link href="#service" className="block hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
-          <Link href="#contact" className="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
+          <Link
+            href="#about"
+            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+          >
+            About
+          </Link>
+          <Link
+            href="#document"
+            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+          >
+            Document
+          </Link>
+          <Link
+            href="#service"
+            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+          >
+            Service
+          </Link>
+          <Link
+            href="#contact"
+            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+          >
+            Contact
+          </Link>
           <Link
             href="/signup"
             className="block bg-indigo-600 px-4 py-2 rounded-lg text-center font-semibold text-white hover:bg-indigo-500"

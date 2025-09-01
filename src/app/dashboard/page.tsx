@@ -50,7 +50,7 @@ export default async function DashboardPage() {
 
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((c) => (
+          {cards.map(c => (
             <Link
               key={c.id}
               href={c.href}
@@ -58,8 +58,12 @@ export default async function DashboardPage() {
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">{c.title}</p>
-                  <p className="text-[13px] leading-5 text-zinc-500 dark:text-zinc-400 max-w-[28ch]">{c.desc}</p>
+                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                    {c.title}
+                  </p>
+                  <p className="text-[13px] leading-5 text-zinc-500 dark:text-zinc-400 max-w-[28ch]">
+                    {c.desc}
+                  </p>
                 </div>
 
                 {c.locked && (

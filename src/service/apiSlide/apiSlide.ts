@@ -4,7 +4,7 @@ import { ProductResponse } from "@/types/product";
 export const createApiSlide = createApi({
   reducerPath: "createApiSlide",
   baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/" }),
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getProduct: builder.query<ProductResponse, void>({
       query: () => "/products",
     }),

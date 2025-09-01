@@ -96,7 +96,7 @@ export default function FrameworkSection() {
         </div>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-5 gap-px bg-gray-800/50">
-            {frameworks.map((framework) => (
+            {frameworks.map(framework => (
               <div
                 key={framework.name}
                 className="aspect-square bg-gray-800/80 hover:bg-gray-700/80 flex items-center justify-center group relative transition-all duration-300"

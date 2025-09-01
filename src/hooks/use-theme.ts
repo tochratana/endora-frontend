@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function useThemeManager() {
-  const { theme, setTheme, systemTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme, systemTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     if (resolvedTheme === "dark") {
-      setTheme("light")
+      setTheme("light");
     } else {
-      setTheme("dark")
+      setTheme("dark");
     }
-  }
+  };
 
-  const isDark = resolvedTheme === "dark"
-  const isLight = resolvedTheme === "light"
-  const isSystem = theme === "system"
+  const isDark = resolvedTheme === "dark";
+  const isLight = resolvedTheme === "light";
+  const isSystem = theme === "system";
 
   return {
     theme,
@@ -33,5 +33,5 @@ export function useThemeManager() {
     isDark,
     isLight,
     isSystem,
-  }
+  };
 }
