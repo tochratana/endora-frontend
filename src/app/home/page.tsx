@@ -1,10 +1,17 @@
+// import HeroSection from "@/components/about/HeroSection";
+import FeaturesSection from "@/components/home/FeaturesSection";
+import OurServices from "@/components/home/OurServices";
+import FrameworkSection from "@/components/home/FramworkSpp";
 import React from "react";
+import HeroSection from "@/components/home/HeroSection";
 
 export default function HomePage() {
   return (
     <main>
-      <h1>Home (test)</h1>
-      <p>This is a minimal page used to isolate build issues.</p>
+      <HeroSection />
+      <FeaturesSection />
+      <OurServices />
+      <FrameworkSection />
     </main>
   );
 }
