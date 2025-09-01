@@ -72,7 +72,6 @@ export default function RootLayout({
               <Header />
               {children}
               <Footer/>
-              <InstallPWA />
             </ClientProviders>
           </ProviderStore>
         </ThemeProvider>

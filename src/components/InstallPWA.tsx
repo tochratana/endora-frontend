@@ -95,30 +95,11 @@ export const InstallPWA = () => {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2">
-      <button
-        className="bg-black text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 hover:bg-gray-800 transition-colors"
-        onClick={onClick}
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-          />
-        </svg>
-        <span>Install App</span>
-      </button>
-      {/* <div className="text-sm text-gray-600 bg-white p-2 rounded-lg shadow">
-        💡 Install our app for a better experience!
-      </div> */}
-    </div>
+    <button
+      className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition"
+      onClick={onClick}
+    >
+      <span>Get App</span>
+    </button>
   );
 };
