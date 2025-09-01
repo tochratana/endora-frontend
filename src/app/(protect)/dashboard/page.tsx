@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen text-zinc-900 dark:text-zinc-200">
       <div className="mx-auto w-full max-w-7xl px-0 py-8 space-y-8">
-        {/* Top bar */}
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <h1 className="text-xl font-semibold tracking-tight">Projects</h1>
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex w-full sm:w-auto items-center gap-3">
-            <button className="inline-flex items-center justify-center rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-110 active:scale-[0.98] dark:bg-emerald-500">
+            <button className="inline-flex items-center justify-center rounded-[8px] bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-110 active:scale-[0.98] dark:bg-emerald-500">
               New Project
             </button>
 
@@ -42,19 +42,19 @@ export default async function DashboardPage() {
               <input
                 type="text"
                 placeholder="Search for a project"
-                className="w-full rounded-xl border border-zinc-300 bg-white pl-9 pr-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-500 outline-none focus:border-teal-400 hover:border-teal-400 dark:border-zinc-800 dark:bg-[#0F0F1A] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:hover:border-emerald-500"
+                className="w-full rounded-[8px] border border-zinc-300 bg-white pl-9 pr-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-500 outline-none focus:border-teal-400 hover:border-teal-400 dark:border-zinc-800 dark:bg-[#0F0F1A] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:hover:border-emerald-500"
               />
             </div>
           </div>
         </div>
 
-        {/* Grid of project templates */}
+
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map(c => (
             <Link
               key={c.id}
               href={c.href}
-              className="group relative block rounded-2xl border border-zinc-200 bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:border-teal-400 dark:border-zinc-800/80 dark:bg-[#0F0F1A] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02)_inset] dark:hover:border-emerald-500"
+              className="group relative block rounded-[8px] border border-zinc-200 bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:border-teal-400 dark:border-zinc-800/80 dark:bg-[#0F0F1A] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02)_inset] dark:hover:border-emerald-500"
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
@@ -67,14 +67,14 @@ export default async function DashboardPage() {
                 </div>
 
                 {c.locked && (
-                  <div className="rounded-lg border border-teal-600/30 bg-teal-500/5 p-2 dark:border-emerald-600/30 dark:bg-emerald-500/5">
+                  <div className="rounded-[8px] border border-teal-600/30 bg-teal-500/5 p-2 dark:border-emerald-600/30 dark:bg-emerald-500/5">
                     <Lock className="h-4 w-4 text-teal-600 dark:text-emerald-400" />
                   </div>
                 )}
               </div>
 
-              {/* Hover overlay effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+              <div className="absolute inset-0 rounded-[8px] bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Link>
           ))}
         </div>

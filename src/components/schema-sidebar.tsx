@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import Button from "./button/Button";
 import Input from "@/components/ui/input";
-import { Plus, Search, Database, Table, ChevronRight } from "lucide-react";
+import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CreateSchemaDialog } from "@/components/create-schema-dialog";
 
-const sidebarItems = [
+{
+  /*const sidebarItems = [
   { id: "visualizer", label: "Schema Visualizer", icon: Database },
   { id: "schema", label: "Schema", icon: Database, active: true },
-];
+];*/
+}
 
 const tables = [
   { id: "products", label: "Products", icon: Table },
@@ -26,11 +28,16 @@ export function SchemaSidebar({
   onTableSelect,
 }: SchemaSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeItem, setActiveItem] = useState("schema");
 
-  const filteredTables = tables.filter(table =>
+  const filteredTables = tables.filter((table) =>
     table.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleSaveSchema = (schema: unknown) => {
+    console.log("Schema saved:", schema);
+    // Handle the saved schema data here
+  };
 
   return (
     <div className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
@@ -42,25 +49,29 @@ export function SchemaSidebar({
       </div>
 
       {/* Navigation Items */}
-      <div className="p-2 space-y-1">
-        {sidebarItems.map(item => {
+      {/*<div className="p-2 space-y-1">
+        {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
           return (
             <button
               key={item.id}
-              onClick={() => setActiveItem(item.id)}
+              onClick={() => {
+                router.push(
+                  item.id === "schema" ? "/schema" : "/schema/visualizer"
+                );
+              }}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
+                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-sm transition-all duration-200 text-left group",
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                  ? "bg-sidebar-accent text-indigo-500 shadow-sm"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
               )}
             >
               <Icon
                 className={cn(
                   "h-4 w-4 transition-colors",
-                  isActive ? "text-sidebar-primary" : ""
+                  isActive ? "text-indigo-500" : ""
                 )}
               />
               <span className="flex-1">{item.label}</span>
@@ -70,20 +81,23 @@ export function SchemaSidebar({
             </button>
           );
         })}
-      </div>
+      </div>*/}
 
       {/* New Schema Button */}
       <div className="p-2">
-        <Button
-          className="w-full justify-start gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200"
-          onClick={() => {
-            console.log("Creating new schema...");
-          }}
+        <button
+          className="w-full flex items-center gap-2 border-2 border-indigo-900 rounded-sm px-2 py-1 hover:bg-indigo-800 hover:text-white"
+          onClick={() => setIsDialogOpen(true)}
         >
           <Plus className="h-4 w-4" />
           New Schema
-        </Button>
+        </button>
       </div>
+      <CreateSchemaDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSave={handleSaveSchema}
+      />
 
       {/* Search */}
       <div className="p-2">
@@ -92,8 +106,8 @@ export function SchemaSidebar({
           <Input
             placeholder="Search schema"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="pl-9 bg-sidebar border-sidebar-border focus:ring-sidebar-ring transition-all duration-200"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 py-2 bg-sidebar border-sidebar-border focus:ring-sidebar-ring transition-all duration-200"
           />
         </div>
       </div>
@@ -101,7 +115,7 @@ export function SchemaSidebar({
       {/* Tables List */}
       <div className="flex-1 p-2 space-y-1">
         {filteredTables.length > 0 ? (
-          filteredTables.map(table => {
+          filteredTables.map((table) => {
             const Icon = table.icon;
             const isActive = activeTable === table.id;
             return (
