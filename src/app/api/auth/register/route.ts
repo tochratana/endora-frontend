@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           message: errorMessage,
-          errors: validationResult.error.issues.map((issue) => ({
+          errors: validationResult.error.issues.map(issue => ({
             field: issue.path.join("."),
             message: issue.message,
           })),

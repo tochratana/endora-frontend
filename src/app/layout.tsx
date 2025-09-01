@@ -13,6 +13,11 @@ export const metadata = {
   title: "endura - make your backend without coding",
   description:
     " endura is a no-code backend platform that allows you to create and manage your backend services without writing any code. It provides a user-friendly interface to design APIs, manage databases, and deploy your applications effortlessly.",
+  icons: {
+    icon: "/EndoraTransparent.png",
+    shortcut: "/EndoraTransparent.png",
+    apple: "/EndoraTransparent.png",
+  },
 };
 
 const geistSans = Geist({

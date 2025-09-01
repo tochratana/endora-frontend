@@ -24,7 +24,7 @@ export default function UserHeader() {
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
             <Image
-              src="/logo.png"
+              src="/logo-v3.png"
               width={45}
               height={48}
               alt="logo"
@@ -69,7 +69,6 @@ export default function UserHeader() {
               align="end"
               forceMount
             >
-
               {/* Theme toggle */}
               <div className="flex items-center justify-between p-3">
                 <div className="flex flex-col space-y-1 p-3">
