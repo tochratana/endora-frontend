@@ -76,14 +76,21 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Registration error:", error);
 
-    if (error.name === "ZodError") {
+    if (
+      error instanceof Error &&
+      error.name === "ZodError" &&
+      "issues" in error
+    ) {
+      const zodError = error as {
+        issues: Array<{ path: (string | number)[]; message: string }>;
+      };
       return NextResponse.json(
         {
           message: "Validation failed",
-          errors: error.issues.map((issue: any) => ({
+          errors: zodError.issues.map(issue => ({
             field: issue.path.join("."),
             message: issue.message,
           })),
@@ -188,7 +195,12 @@ async function getKeycloakAdminToken() {
   }
 }
 
-async function createKeycloakUser(userData: any, adminToken: string) {
+import { KeycloakUserData, KeycloakUserResponse } from "@/types/keycloak";
+
+async function createKeycloakUser(
+  userData: KeycloakUserData,
+  adminToken: string
+): Promise<KeycloakUserResponse> {
   console.log(
     "Creating Keycloak user with URL:",
     `${process.env.KEYCLOAK_ISSUER}/admin/realms/endora_api/users`
@@ -245,6 +257,9 @@ async function createKeycloakUser(userData: any, adminToken: string) {
     }
 
     const userId = location.split("/").pop();
+    if (!userId) {
+      throw new Error("Failed to get user ID from location header");
+    }
     return { id: userId };
   } catch (error) {
     console.error("Error in createKeycloakUser:", error);
