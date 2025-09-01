@@ -1,72 +1,155 @@
+// ./src/app/dashboard/profile/page.tsx
+import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { SaveButton } from "./SaveButton";
+import { ResetButton } from "./ResetButton";
+import { updateProfile, requestPasswordReset } from "./actions";
 
+// Optional: SEO
 export const metadata = {
-  title: "Profile - Endora",
+  title: "Account settings — Endora",
 };
+
+// Helper: split name into first/last
+function splitName(fullName: string) {
+  if (!fullName?.trim()) return { firstName: "", lastName: "" };
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) return { firstName: parts[0], lastName: "" };
+  return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+}
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
+  const fullName = session?.user?.name ?? "";
+  const { firstName, lastName } = splitName(fullName);
+  const avatarInitial = firstName?.[0]?.toUpperCase() || "?";
+
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Profile Information
-          </h2>
+    <div className="min-h-screen text-gray-100">
+      <div className="mx-auto w-full max-w-6xl px-4 py-8 md:py-10">
+        <div className="mb-6 flex items-center gap-2 text-sm text-gray-400">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 hover:text-gray-200"
+          >
+            <span aria-hidden>←</span>
+            <span>Back to dashboard</span>
+          </Link>
         </div>
 
-        <div className="px-6 py-4 space-y-4">
-          <div className="flex items-center space-x-4">
-            {session?.user?.image && (
-              <img
-                src={session.user.image}
-                alt="Profile"
-                className="w-20 h-20 rounded-full"
-              />
-            )}
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">
-                {session?.user?.name}
-              </h3>
-              <p className="text-gray-600">{session?.user?.email}</p>
+        <h1 className="mb-8 text-2xl font-semibold tracking-tight">
+          Account settings
+        </h1>
+
+        <div className="grid gap-8 md:grid-cols-[320px,1fr]">
+          <section className="rounded-[8px] p-6 shadow-lg ring-1 ring-white/5">
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                {session?.user?.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={session.user.image}
+                    alt="Profile"
+                    className="h-56 w-56 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-56 w-56 items-center justify-center rounded-full bg-[#0E0E1C] text-5xl font-semibold">
+                    {avatarInitial}
+                  </div>
+                )}
+
+                <label
+                  htmlFor="avatarUpload"
+                  className="absolute bottom-2 left-2 inline-flex cursor-pointer items-center gap-2 rounded-[8px] bg-[#12192b] px-3 py-2 text-sm text-gray-200 ring-1 ring-white/10 hover:bg-[#18223a] focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <span aria-hidden>✎</span>
+                  Edit
+                </label>
+                <input
+                  id="avatarUpload"
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                />
+              </div>
+
+              <p className="mt-6 text-center text-2xl font-semibold">
+                {fullName || "Your name"}
+              </p>
             </div>
-          </div>
+          </section>
 
-          <div className="border-t pt-4">
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Full name</dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  {session?.user?.name || "Not provided"}
-                </dd>
+          <section className="space-y-8">
+            <div className="rounded-[8px] shadow-lg ring-1 ring-white/5">
+              <div className="border-b border-white/10 px-6 py-4">
+                <h2 className="text-lg font-semibold">Profile Information</h2>
               </div>
 
-              <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  Email address
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  {session?.user?.email}
-                </dd>
-              </div>
+              <form className="px-6 py-6" action={updateProfile}>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="firstName"
+                      className="mb-2 text-sm text-gray-400"
+                    >
+                      First name
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      defaultValue={firstName}
+                      placeholder="Enter first name"
+                      autoComplete="given-name"
+                      className="h-11 rounded-[8px] border border-white/10 px-3 text-gray-100 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
+                    />
+                  </div>
 
-              <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  Account created
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900">Recently</dd>
-              </div>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="lastName"
+                      className="mb-2 text-sm text-gray-400"
+                    >
+                      Last name
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      defaultValue={lastName}
+                      placeholder="Enter last name"
+                      autoComplete="family-name"
+                      className="h-11 rounded-[8px] border border-white/10 px-3 text-gray-100 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
+                    />
+                  </div>
+                </div>
 
-              <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  Last sign in
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900">Just now</dd>
+                <div className="mt-8 flex items-center justify-end gap-3">
+                  <button
+                    type="reset"
+                    className="h-10 rounded-[8px] px-4 text-sm text-gray-300 ring-1 ring-white/10 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  >
+                    Cancel
+                  </button>
+                  <SaveButton />
+                </div>
+              </form>
+            </div>
+
+            <div className="rounded-[8px] shadow-lg ring-1 ring-white/5">
+              <div className="flex items-center justify-between px-6 py-5">
+                <div>
+                  <h3 className="text-base font-medium">Reset Password</h3>
+                  <p className="mt-1 text-sm text-gray-400">
+                    Generate a link to update your password.
+                  </p>
+                </div>
+                <form action={requestPasswordReset}>
+                  <ResetButton />
+                </form>
               </div>
-            </dl>
-          </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>

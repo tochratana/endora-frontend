@@ -19,40 +19,20 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 ">
             <Image
-              src="/Logo-v3.png"
+              src="/Logo-v4.png"
               alt="Logo"
-              width={70}
-              height={70}
+              width={60}
+              height={60}
               className="rounded-full"
               priority
             />
           </Link>
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
-            <Link
-              href="#about"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400"
-            >
-              About
-            </Link>
-            <Link
-              href="#document"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400"
-            >
-              Document
-            </Link>
-            <Link
-              href="#service"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400"
-            >
-              Service
-            </Link>
-            <Link
-              href="#contact"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400"
-            >
-              Contact
-            </Link>
+            <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
+            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Document</Link>
+            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
+            <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
           </nav>
         </div>
 
