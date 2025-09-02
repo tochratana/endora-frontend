@@ -12,24 +12,24 @@ function Switch({
   const [darkMode, setDarkMode] = React.useState(false);
 
   React.useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "dark") {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
+    const storedTheme = localStorage.getItem("theme")
+    if (storedTheme === "light") {
+      setDarkMode(true)
+      document.documentElement.classList.remove("dark")
     } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
+      setDarkMode(false)
+      document.documentElement.classList.add("dark")
     }
   }, []);
 
   const handleThemeChange = (checked: boolean) => {
     setDarkMode(checked);
     if (checked) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.remove("dark")
+      localStorage.setItem("theme", "light")
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.add("dark")
+      localStorage.setItem("theme", "dark")  
     }
   };
 

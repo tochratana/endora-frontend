@@ -108,11 +108,11 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultMode = "login" }) => {
       } else {
         throw new Error("Failed to sign in after registration");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Registration error:", error);
       let errorMessage = "Registration failed";
 
-      if (error.message) {
+      if (error instanceof Error && error.message) {
         errorMessage = error.message;
       }
 

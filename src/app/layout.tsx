@@ -3,8 +3,7 @@ import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
 import { InstallPWA } from "@/components/InstallPWA";
-import Header from "@/components/layouts/Header";
-import Footer from "@/components/layouts/Footer";
+import Shell from "@/components/layouts/Shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientProviders from "@/components/ClientProviders";
 
@@ -23,7 +22,7 @@ export const metadata = {
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
-})
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,14 +56,14 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="NextPWA" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icon-192x192.png" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        {/* <link rel="apple-touch-icon" href="/icon-192x192.png" /> */}
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable } ${lexend.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -74,8 +73,7 @@ export default function RootLayout({
         >
           <ProviderStore>
             <ClientProviders>
-              {children}
-              <InstallPWA />
+              <Shell>{children}</Shell>
             </ClientProviders>
           </ProviderStore>
         </ThemeProvider>

@@ -1,24 +1,6 @@
-import { OrbitingCircles } from "@/components/magicui/orbiting-circles";
+"use client";
 
-export function OrbitingCirclesDemo() {
-  return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
-      <OrbitingCircles iconSize={40}>
-        <Icons.whatsapp />
-        <Icons.notion />
-        <Icons.openai />
-        <Icons.googleDrive />
-        <Icons.whatsapp />
-      </OrbitingCircles>
-      <OrbitingCircles iconSize={30} radius={100} reverse speed={2}>
-        <Icons.whatsapp />
-        <Icons.notion />
-        <Icons.openai />
-        <Icons.googleDrive />
-      </OrbitingCircles>
-    </div>
-  );
-}
+import { OrbitingCircles } from "@/components/magicui/orbiting-circles";
 
 const Icons = {
   gitHub: () => (
@@ -148,3 +130,23 @@ const Icons = {
     </svg>
   ),
 };
+
+export function OrbitingCirclesDemo() {
+  return (
+    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
+      <OrbitingCircles iconSize={40}>
+        <Icons.whatsapp />
+        <Icons.notion />
+        <Icons.openai />
+        <Icons.googleDrive />
+        <Icons.whatsapp />
+      </OrbitingCircles>
+      <OrbitingCircles iconSize={30} radius={100} reverse speed={2}>
+        <Icons.whatsapp />
+        <Icons.notion />
+        <Icons.openai />
+        <Icons.googleDrive />
+      </OrbitingCircles>
+    </div>
+  );
+}

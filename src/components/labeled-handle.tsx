@@ -31,7 +31,7 @@ export const LabeledHandle = forwardRef<
         className
       )}
     >
-      <Handle position={position} className={handleClassName} {...props} />
+      <Handle position={position} className={cn("!bg-gray-500", handleClassName)}  {...props} />
       <label className={cn("px-3 text-foreground", labelClassName)}>
         {title}
       </label>
