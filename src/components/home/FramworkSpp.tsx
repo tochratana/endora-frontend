@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { AnimatedGradientText } from "../AnimatedGradientText";
 import { AnimatedGridPattern } from "../magicui/animated-grid-pattern";
 
 const PixelLogo: React.FC<{ d: string; viewBox?: string }> = ({
@@ -84,8 +83,8 @@ export default function FrameworkSection() {
             </h2>
             <p className="text-xl text-gray-300 dark:text-gray-400 max-w-3xl mx-auto">
               Pixel supports a wide range of front-end frameworks, allowing you
-              to build your projects with the tools you love. Whether you're a
-              fan of
+              to build your projects with the tools you love. Whether
+              you&apos;re a fan of
               {hoveredFramework && (
                 <span className="text-secondary ml-2 transition-opacity duration-300">
                   {hoveredFramework}
