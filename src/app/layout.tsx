@@ -3,8 +3,7 @@ import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
 import { InstallPWA } from "@/components/InstallPWA";
-import Header from "@/components/layouts/Header";
-import Footer from "@/components/layouts/Footer";
+import Shell from "@/components/layouts/Shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientProviders from "@/components/ClientProviders";
 
@@ -23,7 +22,7 @@ export const metadata = {
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
-})
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,7 +63,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable } ${lexend.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -74,9 +73,7 @@ export default function RootLayout({
         >
           <ProviderStore>
             <ClientProviders>
-              <Header />
-              {children}
-              <Footer/>
+              <Shell>{children}</Shell>
             </ClientProviders>
           </ProviderStore>
         </ThemeProvider>
