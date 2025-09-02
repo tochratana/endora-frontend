@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import Button from "../button/Button";
+import { InstallPWA } from "../InstallPWA";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,8 +31,8 @@ export default function Header() {
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
             <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
-            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Document</Link>
-            <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
+            <Link href="https://docusaurus.io/" className="hover:text-indigo-600 dark:hover:text-indigo-400" target="blank">Document</Link>
+            <Link href="/service" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
             <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
           </nav>
         </div>
@@ -43,12 +44,7 @@ export default function Header() {
           >
             Sign Up
           </Link>
-          <Link
-            href="/download"
-            className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition"
-          >
-            Get App
-          </Link>
+          <InstallPWA />
         </div>
 
         <Button
@@ -70,25 +66,26 @@ export default function Header() {
                      dark:bg-[#0a0814] dark:text-white"
         >
           <Link
-            href="#about"
+            href="/about"
             className="block hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             About
           </Link>
           <Link
-            href="#document"
+            href="https://docusaurus.io/"
             className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+            target="blank"
           >
             Document
           </Link>
           <Link
-            href="#service"
+            href="/service"
             className="block hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Service
           </Link>
           <Link
-            href="#contact"
+            href="/contact"
             className="block hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Contact

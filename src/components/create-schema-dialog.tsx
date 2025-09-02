@@ -1,0 +1,471 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Input from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  GripVertical,
+  Settings,
+  X,
+  ChevronDown,
+  Link,
+  Database,
+  ArrowRight,
+} from "lucide-react";
+
+interface Column {
+  id: string;
+  name: string;
+  type: string;
+  defaultValue: string;
+  isPrimary: boolean;
+}
+
+interface CreateSchemaDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave?: (schema: {
+    name: string;
+    description: string;
+    columns: Column[];
+  }) => void;
+}
+
+export function CreateSchemaDialog({
+  open,
+  onOpenChange,
+  onSave,
+}: CreateSchemaDialogProps) {
+  const [schemaName, setSchemaName] = useState("");
+  const [description, setDescription] = useState("");
+  const [columns, setColumns] = useState<Column[]>([
+    { id: "1", name: "id", type: "int", defaultValue: "NULL", isPrimary: true },
+    {
+      id: "2",
+      name: "columns_name",
+      type: "",
+      defaultValue: "NULL",
+      isPrimary: false,
+    },
+  ]);
+
+  const addColumn = () => {
+    const newColumn: Column = {
+      id: Date.now().toString(),
+      name: "",
+      type: "",
+      defaultValue: "NULL",
+      isPrimary: false,
+    };
+    setColumns([...columns, newColumn]);
+  };
+
+  const updateColumn = (
+    id: string,
+    field: keyof Column,
+    value: string | boolean
+  ) => {
+    setColumns(
+      columns.map((col) => (col.id === id ? { ...col, [field]: value } : col))
+    );
+  };
+
+  const removeColumn = (id: string) => {
+    setColumns(columns.filter((col) => col.id !== id));
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({ name: schemaName, description, columns });
+    }
+    onOpenChange(false);
+  };
+
+  const handleCancel = () => {
+    setSchemaName("");
+    setDescription("");
+    setColumns([
+      {
+        id: "1",
+        name: "id",
+        type: "int",
+        defaultValue: "NULL",
+        isPrimary: true,
+      },
+      {
+        id: "2",
+        name: "created_date",
+        type: "timestamp",
+        defaultValue: "NULL",
+        isPrimary: false,
+      },
+    ]);
+    onOpenChange(false);
+  };
+
+  const [isFKDialogOpen, setIsFKDialogOpen] = useState(false);
+  const handleSaveFK = (fk: unknown) => {
+    console.log("Schema saved:", fk);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-medium">
+            Create new Schema
+          </DialogTitle>
+        </DialogHeader>
+        <hr className="border-gray-200 dark:border-gray-700" />
+
+        <div className="space-y-6">
+          {/* Schema Name and Description */}
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="schema-name" className="text-sm font-medium">
+                Name
+              </Label>
+              <Input
+                id="schema-name"
+                value={schemaName}
+                onChange={(e) => setSchemaName(e.target.value)}
+                className="bg-transparent border-gray-200 dark:border-gray-700"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description" className="text-sm font-medium">
+                Description
+              </Label>
+              <Input
+                id="description"
+                placeholder="Optional"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="bg-transparent border-gray-200 dark:border-gray-700"
+              />
+            </div>
+          </div>
+
+          {/* Columns Section */}
+          <div className="space-y-4">
+            <hr className="border-gray-200 dark:border-gray-700" />
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium">Columns</h3>
+              <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center bg-teal-100 text-teal-700 dark:bg-teal-800 dark:text-teal-100 border-gray-300 rounded-sm px-2 py-1 hover:bg-teal-200 dark:hover:bg-teal-700">
+                      Reuse Schema
+                      <ChevronDown className="ml-1 h-4 w-4 pt-0.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white dark:bg-gray-800 dark:text-gray-100">
+                    <DropdownMenuItem className="grid grid-cols-2 gap-6">
+                      Product{" "}
+                      <span className="text-xs text-gray-400">ecommerce</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="grid grid-cols-2 gap-6">
+                      User{" "}
+                      <span className="text-xs text-gray-400">ecommerce</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <button className="bg-indigo-400/60 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100 rounded-sm px-2 py-1 border-gray-300 hover:bg-indigo-600/50">
+                  Import File
+                </button>
+              </div>
+            </div>
+            <hr className="border-gray-200 dark:border-gray-700" />
+
+            {/* Column Headers */}
+            <div className="grid grid-cols-12 gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 px-2">
+              <div className="col-span-1"></div>
+              <div className="col-span-3">Name</div>
+              <div className="col-span-3">Type</div>
+              <div className="col-span-3">Default Value</div>
+              <div className="col-span-1">Primary</div>
+              <div className="col-span-1"></div>
+            </div>
+
+            {/* Column Rows */}
+            <div className="space-y-2">
+              {columns.map((column) => (
+                <div
+                  key={column.id}
+                  className="grid grid-cols-12 gap-2 items-center bg-gray-50 dark:bg-slate-950 p-2 rounded"
+                >
+                  {/* Drag Handle */}
+                  <div className="col-span-1 flex justify-center">
+                    <GripVertical className="h-4 w-4 text-gray-400 cursor-grab" />
+                  </div>
+
+                  {/* Column Name */}
+                  <div className="col-span-3">
+                    <div className="flex rounded-md shadow-sm">
+                      <Input
+                        value={column.name}
+                        onChange={(e) =>
+                          updateColumn(column.id, "name", e.target.value)
+                        }
+                        className="bg-transparent text-sm border-gray-200 dark:border-gray-700 rounded-l-md rounded-r-none focus:ring-0 dark:bg-gray-950"
+                        placeholder="Column name"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setIsFKDialogOpen(true)}
+                        className="inline-flex items-center px-2 border border-l-0 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-950 rounded-r-md"
+                      >
+                        <Link className="h-4 w-4 text-gray-800 dark:text-gray-100" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Column Type */}
+                  <div className="col-span-3">
+                    <Select
+                      value={column.type}
+                      onValueChange={(value) =>
+                        updateColumn(column.id, "type", value)
+                      }
+                    >
+                      <SelectTrigger className="w-full bg-white dark:bg-gray-950">
+                        <SelectValue placeholder="Choose a data type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-950 dark:text-gray-100">
+                        <SelectItem value="int">int</SelectItem>
+                        <SelectItem value="varchar">varchar</SelectItem>
+                        <SelectItem value="text">text</SelectItem>
+                        <SelectItem value="boolean">boolean</SelectItem>
+                        <SelectItem value="timestamp">timestamp</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Default Value */}
+                  <div className="col-span-3">
+                    <Input
+                      value={column.defaultValue}
+                      onChange={(e) =>
+                        updateColumn(column.id, "defaultValue", e.target.value)
+                      }
+                      className="text-sm text-gray-400 bg-transparent border-gray-200 dark:border-gray-700 dark:bg-gray-950"
+                      placeholder="NULL"
+                    />
+                  </div>
+
+                  {/* Primary Key */}
+                  <div className="col-span-2 flex justify-center items-center gap-2">
+                    <input
+                      type="radio"
+                      name="primary-key"
+                      checked={column.isPrimary}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setColumns(
+                            columns.map((col) => ({
+                              ...col,
+                              isPrimary: col.id === column.id,
+                            }))
+                          );
+                        }
+                      }}
+                      className="w-4 h-4 accent-teal-500"
+                    />
+
+                    {/* Actions */}
+                    <div className="flex justify-center gap-1">
+                      <button className="h-4 w-4 p-0">
+                        <Settings className="h-4 w-4 mx-auto text-gray-400" />
+                      </button>
+                      <button
+                        className="h-4 w-4 p-0"
+                        onClick={() => removeColumn(column.id)}
+                      >
+                        <X className="h-4 w-4 mx-auto text-gray-400" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center border border-gray-200 dark:border-gray-700 py-3">
+              <button
+                onClick={addColumn}
+                className="w-fit text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 py-1 px-3 rounded-sm"
+              >
+                Add column
+              </button>
+            </div>
+          </div>
+
+          {/* Foreign Keys Section */}
+          <div className="space-y-4">
+            <hr className="border-gray-200 dark:border-gray-700" />
+            <h3 className="text-sm font-medium">Foreign Keys</h3>
+            <hr className="border-gray-200 dark:border-gray-700" />
+            <div className="flex justify-center border border-gray-200 dark:border-gray-700 py-3">
+              <button
+                onClick={() => setIsFKDialogOpen(true)}
+                className="w-fit text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 py-1 px-3 rounded-sm"
+              >
+                Add foreign key relation
+              </button>
+            </div>
+          </div>
+
+          {/* FK Dialog */}
+          <Dialog open={isFKDialogOpen} onOpenChange={setIsFKDialogOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
+              <DialogHeader>
+                <DialogTitle className="text-lg font-medium">
+                  Add Foreign Key
+                </DialogTitle>
+              </DialogHeader>
+              <hr className="border-gray-200 dark:border-gray-700" />
+
+              <div className="flex items-center justify-between">
+                <div className="w-full">
+                  <span className="text-md font-semibold">Select Schema</span>
+                </div>
+                <Select>
+                  <SelectTrigger className="w-full bg-white dark:bg-transparent">
+                    <SelectValue placeholder="Select Schema" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-gray-950 dark:text-gray-100">
+                    <SelectItem value="product">
+                      <Database /> Product
+                    </SelectItem>
+                    <SelectItem value="user">
+                      <Database /> User
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <hr className="border-gray-200 dark:border-gray-700" />
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium">
+                      Select column from{" "}
+                      <span className="text-teal-800 dark:text-teal-300">
+                        product
+                      </span>{" "}
+                      to reference to
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    {columns.map((column) => (
+                      <div
+                        key={column.id}
+                        className="flex items-center gap-4 bg-gray-50 dark:bg-slate-950 p-2 rounded"
+                      >
+                        <div className="w-full">
+                          <Select>
+                            <SelectTrigger className="w-full bg-white dark:bg-gray-950">
+                              <SelectValue placeholder="---" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-950 dark:text-gray-100">
+                              <SelectItem value="id">id</SelectItem>
+                              <SelectItem value="created_at">
+                                created_at
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <ArrowRight className="w-8 h-8"/>
+                        <div className="w-full">
+                          <Select>
+                            <SelectTrigger className="w-full bg-white dark:bg-gray-950">
+                              <SelectValue placeholder="---" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-950 dark:text-gray-100">
+                              <SelectItem value="id">id</SelectItem>
+                              <SelectItem value="created_at">
+                                created_at
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="flex justify-center gap-1">
+                          <button
+                            className="h-4 w-4 p-0"
+                            onClick={() => removeColumn(column.id)}
+                          >
+                            <X className="h-4 w-4 mx-auto text-gray-400" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex justify-center border border-gray-200 dark:border-gray-700 py-3">
+                    <button
+                      onClick={addColumn}
+                      className="w-fit text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 py-1 px-3 rounded-sm"
+                    >
+                      Add column
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <button
+                    className="text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 py-1 px-3 rounded-sm"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="text-sm text-white bg-teal-500 hover:bg-teal-600 py-1 px-3 rounded-sm"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button
+              className="text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 py-1 px-3 rounded-sm"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="text-sm text-white bg-teal-500 hover:bg-teal-600 py-1 px-3 rounded-sm"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

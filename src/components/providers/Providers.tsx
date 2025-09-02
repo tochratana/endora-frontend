@@ -1,12 +1,13 @@
 "use client";
 
 import { store } from "@/service/store/store";
+import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Provider as ReduxProvider } from "react-redux";
 
 interface ProvidersProps {
   children: React.ReactNode;
-  session?: any;
+  session?: Session | null;
 }
 
 export default function Providers({ children, session }: ProvidersProps) {
