@@ -121,7 +121,8 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
             <Separator className="my-1" />
             <DropdownMenuRadioGroup
               value={sidebarMode}
-              onValueChange={(v: SidebarMode) => setSidebarMode(v)}
+              // onValueChange={(v: SidebarMode) => setSidebarMode(v)}
+               onValueChange={(v) => setSidebarMode(v as SidebarMode)}
             >
               <DropdownMenuRadioItem value="expanded">Expanded</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="collapsed">Collapsed</DropdownMenuRadioItem>
