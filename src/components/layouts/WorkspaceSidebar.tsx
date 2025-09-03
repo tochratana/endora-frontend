@@ -9,7 +9,12 @@ import { getSidebarItems } from "@/types/sidebarItem";
 
 // shadcn/ui
 // import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -21,7 +26,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Button from "@/components/ui/button"
+import Button from "@/components/ui/button";
 
 // ----- Types -----
 type SidebarMode = "expanded" | "collapsed" | "hover";
@@ -43,18 +48,20 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
     localStorage.setItem("sidebar:mode", sidebarMode);
   }, [sidebarMode]);
 
-  const isExpanded = sidebarMode === "expanded" || (sidebarMode === "hover" && isHovered);
+  const isExpanded =
+    sidebarMode === "expanded" || (sidebarMode === "hover" && isHovered);
   const showOverlay = sidebarMode === "hover" && isHovered;
 
   const items = getSidebarItems(workspaceId);
 
-  const isActive = (href: string) => href === pathname || pathname.startsWith(href);
+  const isActive = (href: string) =>
+    href === pathname || pathname.startsWith(href);
 
   const handleMouseEnter = () => sidebarMode === "hover" && setIsHovered(true);
   const handleMouseLeave = () => sidebarMode === "hover" && setIsHovered(false);
 
   const toggleExpandCollapse = () => {
-    setSidebarMode((m) => (m === "expanded" ? "collapsed" : "expanded"));
+    setSidebarMode(m => (m === "expanded" ? "collapsed" : "expanded"));
   };
 
   // --- Nav list ---
@@ -71,7 +78,7 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors outline-none",
                   active
                     ? "bg-slate-800 text-white"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/50",
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                 )}
                 aria-current={active ? "page" : undefined}
               >
@@ -122,11 +129,17 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
             <DropdownMenuRadioGroup
               value={sidebarMode}
               // onValueChange={(v: SidebarMode) => setSidebarMode(v)}
-               onValueChange={(v) => setSidebarMode(v as SidebarMode)}
+              onValueChange={v => setSidebarMode(v as SidebarMode)}
             >
-              <DropdownMenuRadioItem value="expanded">Expanded</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="collapsed">Collapsed</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="hover">Expand on hover</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="expanded">
+                Expanded
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="collapsed">
+                Collapsed
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="hover">
+                Expand on hover
+              </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -157,12 +170,21 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
         <Sheet>
           <div className="p-2 border-b border-slate-800 bg-slate-900 flex items-center gap-2">
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm">Menu</Button>
+              <Button variant="outline" size="sm">
+                Menu
+              </Button>
             </SheetTrigger>
             <div className="text-sm text-slate-300">Workspace</div>
           </div>
-          <SheetContent side="left" className="p-0 bg-slate-900 border-slate-800 w-72">
-            <div className="h-full flex flex-col" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <SheetContent
+            side="left"
+            className="p-0 bg-slate-900 border-slate-800 w-72"
+          >
+            <div
+              className="h-full flex flex-col"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               <NavList expanded />
               <Separator />
               <div className="p-2">
@@ -174,7 +196,7 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
       </div>
 
       {/* Desktop sidebar */}
-      <div
+      {/* <div
         className={cn(
           "hidden md:flex bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out flex-col h-screen sticky top-0",
           sidebarMode === "hover" ? "w-16" : isExpanded ? "w-64" : "w-16",
@@ -185,6 +207,26 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
         <NavList expanded={sidebarMode === "expanded"} />
         <Separator />
         <div className="p-2">
+          <ControlsRow />
+        </div>
+      </div> */}
+
+      <div
+        className={cn(
+          "hidden md:flex bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out flex-col h-screen sticky top-0",
+          sidebarMode === "hover" ? "w-16" : isExpanded ? "w-64" : "w-16"
+        )}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Scrollable nav section */}
+        <ScrollArea className="flex-1 px-2 pt-2">
+          <NavList expanded={sidebarMode === "expanded"} />
+        </ScrollArea>
+
+        {/* Bottom controls pinned */}
+        <Separator />
+        <div className="p-2 shrink-0">
           <ControlsRow />
         </div>
       </div>
@@ -208,4 +250,3 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
     </div>
   );
 }
-
