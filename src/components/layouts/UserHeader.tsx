@@ -32,7 +32,9 @@ export default function UserHeader() {
             />
           </div>
           <div className="w-1 h-7 bg-secondary-900 rounded-md"></div>
-          <Boxes className="text-gray-900 dark:text-white"/>
+          <Link href="/dashboard">
+            <Boxes className="text-gray-900 dark:text-white" />
+          </Link>
           <span className="text-sm font-medium text-gray-900 dark:text-white">
             {session?.user?.name || "User"}
           </span>
