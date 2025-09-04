@@ -32,19 +32,19 @@ export default async function ProfilePage() {
         <div className="mb-6 flex items-center gap-2 text-sm text-gray-400">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 hover:text-gray-200"
+            className="inline-flex items-center gap-2 hover:text-gray-900 text-gray-700"
           >
             <span aria-hidden>←</span>
             <span>Back to dashboard</span>
           </Link>
         </div>
 
-        <h1 className="mb-8 text-2xl font-semibold tracking-tight">
+        <h1 className="mb-8 text-2xl font-semibold tracking-tight dark:text-white text-[#0E0E1C]">
           Account settings
         </h1>
 
         <div className="grid gap-8 md:grid-cols-[320px,1fr]">
-          <section className="rounded-[8px] p-6 shadow-lg ring-1 ring-white/5">
+          <section className="rounded-[4px] p-6 shadow-md border-1 dark:ring-white/5">
             <div className="flex flex-col items-center">
               <div className="relative">
                 {session?.user?.image ? (
@@ -62,7 +62,7 @@ export default async function ProfilePage() {
 
                 <label
                   htmlFor="avatarUpload"
-                  className="absolute bottom-2 left-2 inline-flex cursor-pointer items-center gap-2 rounded-[8px] bg-[#12192b] px-3 py-2 text-sm text-gray-200 ring-1 ring-white/10 hover:bg-[#18223a] focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="absolute bottom-2 left-2 inline-flex cursor-pointer items-center gap-2 rounded-[4px] bg-[#12192b] px-3 py-2 text-sm text-gray-200 ring-1 ring-white/10 hover:bg-[#18223a] focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <span aria-hidden>✎</span>
                   Edit
@@ -75,14 +75,14 @@ export default async function ProfilePage() {
                 />
               </div>
 
-              <p className="mt-6 text-center text-2xl font-semibold">
+              <p className="mt-6 text-center text-2xl font-semibold dark:text-white text-[#0E0E1C]">
                 {fullName || "Your name"}
               </p>
             </div>
           </section>
 
-          <section className="space-y-8">
-            <div className="rounded-[8px] shadow-lg ring-1 ring-white/5">
+          <section className="space-y-8 ">
+            <div className="rounded-[4px] shadow-md border-1 ring-white/5">
               <div className="border-b border-white/10 px-6 py-4">
                 <h2 className="text-lg font-semibold">Profile Information</h2>
               </div>
@@ -92,7 +92,7 @@ export default async function ProfilePage() {
                   <div className="flex flex-col">
                     <label
                       htmlFor="firstName"
-                      className="mb-2 text-sm text-gray-400"
+                      className="mb-2 text-sm dark:text-gray-400 text-[#0E0E1C]"
                     >
                       First name
                     </label>
@@ -102,14 +102,14 @@ export default async function ProfilePage() {
                       defaultValue={firstName}
                       placeholder="Enter first name"
                       autoComplete="given-name"
-                      className="h-11 rounded-[8px] border border-white/10 px-3 text-gray-100 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
+                      className="h-11 rounded-[4px] border dark:border-white/10 border-gray-400 px-3 dark:text-gray-100 text-gray-600 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
                     />
                   </div>
 
                   <div className="flex flex-col">
                     <label
                       htmlFor="lastName"
-                      className="mb-2 text-sm text-gray-400"
+                      className="mb-2 text-sm dark:text-gray-400 text-[#0E0E1C]"
                     >
                       Last name
                     </label>
@@ -119,7 +119,7 @@ export default async function ProfilePage() {
                       defaultValue={lastName}
                       placeholder="Enter last name"
                       autoComplete="family-name"
-                      className="h-11 rounded-[8px] border border-white/10 px-3 text-gray-100 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
+                      className="h-11 rounded-[4px] border dark:border-white/10 border-gray-400 px-3 dark:text-gray-100 text-gray-600 outline-none placeholder:text-gray-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30"
                     />
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default async function ProfilePage() {
                 <div className="mt-8 flex items-center justify-end gap-3">
                   <button
                     type="reset"
-                    className="h-10 rounded-[8px] px-4 text-sm text-gray-300 ring-1 ring-white/10 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="h-7 rounded-[4px] px-3 text-sm dark:text-gray-300 text-[#0E0E1C] ring-1 dark:ring-white/10 ring-[#0E0E1C] hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   >
                     Cancel
                   </button>
@@ -136,11 +136,11 @@ export default async function ProfilePage() {
               </form>
             </div>
 
-            <div className="rounded-[8px] shadow-lg ring-1 ring-white/5">
+            <div className="rounded-[4px] shadow-md border-1 ring-white/5">
               <div className="flex items-center justify-between px-6 py-5">
                 <div>
-                  <h3 className="text-base font-medium">Reset Password</h3>
-                  <p className="mt-1 text-sm text-gray-400">
+                  <h3 className="text-base font-medium dark:text-white text-[#0E0E1C]">Reset Password</h3>
+                  <p className="mt-1 text-sm text-gray-600">
                     Generate a link to update your password.
                   </p>
                 </div>
