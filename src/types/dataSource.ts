@@ -21,7 +21,6 @@
 //   created_date: string
 // }
 
-
 // //todo: for adding sample data
 // export interface ActivityLog {
 //   id: string
@@ -39,7 +38,8 @@
 // }
 
 // types/dataSource.ts
-export type TabType = "database" | "logs" | "schedule";
+// types/dataSource.ts
+export type TabType = "database" | "real-data" | "logs" | "schedule";
 
 export type LogAction = "IMPORT" | "DELETE" | "CREATE" | "UPDATE";
 

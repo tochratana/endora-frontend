@@ -18,3 +18,28 @@ export interface ProductResponse {
   skip: number;
   limit: number;
 }
+
+export interface Project {
+  id: string;
+  projectName: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  userId?: string;
+  userUuid: string;
+  projectUuid: string;
+  hasUsersTable: boolean;
+  jwtSecret: string | null;
+}
+
+export interface ProjectResponse {
+  projects: Project[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+export interface CreateProjectRequest {
+  projectName: string;
+  description: string;
+}

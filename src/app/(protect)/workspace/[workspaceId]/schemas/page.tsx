@@ -4,13 +4,23 @@ import { useState } from "react";
 import { SchemaSidebar } from "@/components/schema-sidebar";
 import { SchemaContent } from "@/components/schema-content";
 
-export default function SchemaManager() {
+interface PageProps {
+  params: {
+    workspaceId: string;
+  };
+}
+
+export default function SchemaManager({ params }: PageProps) {
   const [activeTable, setActiveTable] = useState("products");
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <SchemaSidebar activeTable={activeTable} onTableSelect={setActiveTable} />
+      <SchemaSidebar
+        activeTable={activeTable}
+        onTableSelect={setActiveTable}
+        projectUuid={params.workspaceId}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -28,7 +38,10 @@ export default function SchemaManager() {
 
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
-          <SchemaContent activeTable={activeTable} />
+          <SchemaContent
+            activeTable={activeTable}
+            projectUuid={params.workspaceId}
+          />
         </div>
       </div>
     </div>
