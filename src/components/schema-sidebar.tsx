@@ -6,13 +6,6 @@ import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CreateSchemaDialog } from "@/components/create-schema-dialog";
 
-{
-  /*const sidebarItems = [
-  { id: "visualizer", label: "Schema Visualizer", icon: Database },
-  { id: "schema", label: "Schema", icon: Database, active: true },
-];*/
-}
-
 const tables = [
   { id: "products", label: "Products", icon: Table },
   { id: "users", label: "Users", icon: Table },
@@ -47,41 +40,6 @@ export function SchemaSidebar({
           Schema
         </h1>
       </div>
-
-      {/* Navigation Items */}
-      {/*<div className="p-2 space-y-1">
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeItem === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                router.push(
-                  item.id === "schema" ? "/schema" : "/schema/visualizer"
-                );
-              }}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-sm transition-all duration-200 text-left group",
-                isActive
-                  ? "bg-sidebar-accent text-indigo-500 shadow-sm"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-              )}
-            >
-              <Icon
-                className={cn(
-                  "h-4 w-4 transition-colors",
-                  isActive ? "text-indigo-500" : ""
-                )}
-              />
-              <span className="flex-1">{item.label}</span>
-              {isActive && (
-                <ChevronRight className="h-3 w-3 text-sidebar-primary" />
-              )}
-            </button>
-          );
-        })}
-      </div>*/}
 
       {/* New Schema Button */}
       <div className="p-2">

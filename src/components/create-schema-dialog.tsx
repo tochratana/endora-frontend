@@ -137,8 +137,7 @@ export function CreateSchemaDialog({
         </DialogHeader>
         <hr className="border-gray-200 dark:border-gray-700" />
 
-        <div className="space-y-6">
-          {/* Schema Name and Description */}
+          {/* Schema Name*/}
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
               <Label htmlFor="schema-name" className="text-sm font-medium">
@@ -151,19 +150,6 @@ export function CreateSchemaDialog({
                 className="bg-transparent border-gray-200 dark:border-gray-700"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="description" className="text-sm font-medium">
-                Description
-              </Label>
-              <Input
-                id="description"
-                placeholder="Optional"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="bg-transparent border-gray-200 dark:border-gray-700"
-              />
-            </div>
-          </div>
 
           {/* Columns Section */}
           <div className="space-y-4">
