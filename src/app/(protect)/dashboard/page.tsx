@@ -1,7 +1,9 @@
+// app/dashboard/page.tsx
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Lock, Search } from "lucide-react";
+import NewProjectButton from "./topupPage/newProjectButton"; // ⬅️ add this
 
 export const metadata = {
   title: "Dashboard - Endora",
@@ -32,9 +34,8 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex w-full sm:w-auto items-center gap-3">
-            <button className="inline-flex items-center justify-center rounded-[8px] bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-110 active:scale-[0.98] dark:bg-emerald-500">
-              New Project
-            </button>
+            {/* ⬇️ Replaced Link with modal-trigger button */}
+            <NewProjectButton />
 
             <div className="relative w-full sm:w-72">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 dark:text-zinc-500" />
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map(c => (
+          {cards.map((c) => (
             <Link
               key={c.id}
               href={c.href}
@@ -63,14 +64,12 @@ export default async function DashboardPage() {
                     {c.desc}
                   </p>
                 </div>
-
                 {c.locked && (
                   <div className="rounded-[8px] border border-teal-600/30 bg-teal-500/5 p-2 dark:border-emerald-600/30 dark:bg-emerald-500/5">
                     <Lock className="h-4 w-4 text-teal-600 dark:text-emerald-400" />
                   </div>
                 )}
               </div>
-
               <div className="absolute inset-0 rounded-[8px] bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Link>
           ))}
