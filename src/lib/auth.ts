@@ -46,16 +46,17 @@ export const authOptions: NextAuthOptions = {
   providers: [
     // Keep provider config simple; NextAuth handles PKCE when needed.
     // We avoid complex typing to match the project's next-auth version.
-    // @ts-expect-error: provider config typed differently across next-auth versions
     KeycloakProvider({
       issuer,
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
-      clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || undefined,
+      ...(process.env.KEYCLOAK_CLIENT_SECRET
+        ? { clientSecret: process.env.KEYCLOAK_CLIENT_SECRET }
+        : {}),
       authorization: {
         params: { scope: "openid profile email offline_access" },
       },
       checks: ["pkce", "state"],
-    }),
+    } as any),
   ],
 
   session: { strategy: "jwt" },
@@ -65,9 +66,10 @@ export const authOptions: NextAuthOptions = {
       // first sign-in
       if (account) {
         const now = Math.floor(Date.now() / 1000);
+        const expires_in = (account as any).expires_in;
         const expiresAt =
           (account as any).expires_at ??
-          (account.expires_in ? now + account.expires_in : undefined);
+          (typeof expires_in === "number" ? now + expires_in : undefined);
 
         return {
           ...token,
@@ -100,6 +102,22 @@ export const authOptions: NextAuthOptions = {
       // expose minimal user info only
       session.user = session.user ?? (token as any).user;
       return session;
+    },
+    // Control where NextAuth redirects after sign in/out
+    async redirect({ url, baseUrl }) {
+      // Allow relative callback paths
+      try {
+        if (url.startsWith("/")) return `${baseUrl}${url}`;
+
+        const urlObj = new URL(url);
+        // If the callback is same-origin, allow it
+        if (urlObj.origin === baseUrl) return url;
+      } catch {
+        // fallthrough
+      }
+
+      // Default: send users to dashboard after successful sign in
+      return `${baseUrl}/dashboard`;
     },
   },
 

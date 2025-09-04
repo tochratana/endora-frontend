@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getSession } from "next-auth/react";
 
 export interface User {
   id: string;
@@ -25,10 +24,8 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL || "/api",
     prepareHeaders: async headers => {
-      const session = await getSession();
-      if (session?.accessToken) {
-        headers.set("authorization", `Bearer ${session.accessToken}`);
-      }
+      // Do not access tokens on the client — refresh tokens are server-side only.
+      // For server-to-server calls, use a dedicated proxy endpoint that attaches the access token.
       return headers;
     },
   }),

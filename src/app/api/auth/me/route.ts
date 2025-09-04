@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import type { Session } from "next-auth";
 
 export async function GET() {
   try {
@@ -10,12 +11,17 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
+    const s = session as Session & {
+      provider?: string;
+      user?: { id?: string };
+    };
+
     const user = {
-      id: (session.user as any)?.id,
-      name: session.user?.name,
-      email: session.user?.email,
-      image: session.user?.image,
-      provider: (session as any).provider,
+      id: s.user?.id,
+      name: s.user?.name,
+      email: s.user?.email,
+      image: s.user?.image,
+      provider: s.provider,
     };
 
     return NextResponse.json(user);
