@@ -3,12 +3,15 @@ import { ProductResponse } from "@/types/product";
 
 export const createApiSlide = createApi({
   reducerPath: "createApiSlide",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://api.api-ngin.oudom.dev" }),
   endpoints: builder => ({
-    getProduct: builder.query<ProductResponse, void>({
-      query: () => "/products",
+    createProject : builder.mutation<ProductResponse, void>({
+      query: () => ({
+        url: "/projects",
+        method: "POST",
+      }),
     }),
   }),
 });
 
-export const { useGetProductQuery } = createApiSlide;
+export const { useCreateProjectMutation } = createApiSlide;
