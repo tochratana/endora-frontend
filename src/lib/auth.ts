@@ -1,138 +1,125 @@
-import { NextAuthOptions } from "next-auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { loginSchema } from "@/lib/validations/auth";
+import type { JWT } from "next-auth/jwt";
+
+const issuer = process.env.KEYCLOAK_ISSUER;
+if (!issuer) throw new Error("KEYCLOAK_ISSUER is required");
+
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      client_id: String(process.env.KEYCLOAK_CLIENT_ID),
+      refresh_token: String((token as any).refreshToken),
+    });
+    if (process.env.KEYCLOAK_CLIENT_SECRET) {
+      body.set("client_secret", process.env.KEYCLOAK_CLIENT_SECRET);
+    }
+
+    const res = await fetch(`${issuer}/protocol/openid-connect/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+
+    const refreshed = await res.json();
+    if (!res.ok) throw refreshed;
+
+    return {
+      ...token,
+      accessToken: refreshed.access_token,
+      expiresAt:
+        typeof refreshed.expires_in === "number"
+          ? Math.floor(Date.now() / 1000) + refreshed.expires_in
+          : undefined,
+      refreshToken: refreshed.refresh_token ?? (token as any).refreshToken,
+      idToken: refreshed.id_token ?? (token as any).idToken,
+      error: undefined,
+    } as JWT;
+  } catch {
+    return { ...token, error: "RefreshAccessTokenError" as const } as JWT;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET ?? "",
-    }),
-    CredentialsProvider({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+    // Keep provider config simple; NextAuth handles PKCE when needed.
+    // We avoid complex typing to match the project's next-auth version.
+    KeycloakProvider({
+      issuer,
+      clientId: process.env.KEYCLOAK_CLIENT_ID!,
+      ...(process.env.KEYCLOAK_CLIENT_SECRET
+        ? { clientSecret: process.env.KEYCLOAK_CLIENT_SECRET }
+        : {}),
+      authorization: {
+        params: { scope: "openid profile email offline_access" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        try {
-          // Validate input
-          const { email, password } = loginSchema.parse(credentials);
-
-          // Authenticate with Keycloak
-          const keycloakAuth = await authenticateWithKeycloak(email, password);
-
-          if (keycloakAuth.access_token) {
-            // Get user info from Keycloak
-            const userInfo = await getUserFromKeycloak(
-              keycloakAuth.access_token
-            );
-
-            return {
-              id: userInfo.sub,
-              email: userInfo.email,
-              name: userInfo.name || userInfo.preferred_username,
-              image: userInfo.picture,
-            };
-          }
-
-          return null;
-        } catch (error) {
-          console.error("Auth error:", error);
-          return null;
-        }
-      },
-    }),
+      checks: ["pkce", "state"],
+    } as any),
   ],
+
+  session: { strategy: "jwt" },
+
   callbacks: {
-    async jwt({ token, account, profile, user }) {
+    async jwt({ token, account, profile }) {
+      // first sign-in
       if (account) {
-        token.accessToken = account.access_token;
-        token.idToken = account.id_token;
-        token.refreshToken = account.refresh_token;
-        token.provider = account.provider;
+        const now = Math.floor(Date.now() / 1000);
+        const expires_in = (account as any).expires_in;
+        const expiresAt =
+          (account as any).expires_at ??
+          (typeof expires_in === "number" ? now + expires_in : undefined);
+
+        return {
+          ...token,
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+          idToken: account.id_token,
+          expiresAt,
+          user: {
+            name: profile?.name ?? undefined,
+            email: profile?.email ?? undefined,
+          },
+        } as JWT;
       }
 
-      if (user) {
-        token.id = user.id;
+      // refresh if expired
+      if (
+        (token as any).expiresAt &&
+        Date.now() / 1000 > (token as any).expiresAt - 60
+      ) {
+        if ((token as any).refreshToken) {
+          return refreshAccessToken(token);
+        }
+        return { ...token, error: "NoRefreshToken" } as JWT;
       }
 
       return token;
     },
+
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
-      session.provider = token.provider as string;
-      if (session.user) {
-        session.user.id = token.id as string;
-      }
+      // expose minimal user info only
+      session.user = session.user ?? (token as any).user;
       return session;
     },
-  },
-  pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
-  },
-  events: {
-    async signIn({ user }) {
-      console.log("User signed in:", user);
+    // Control where NextAuth redirects after sign in/out
+    async redirect({ url, baseUrl }) {
+      // Allow relative callback paths
+      try {
+        if (url.startsWith("/")) return `${baseUrl}${url}`;
+
+        const urlObj = new URL(url);
+        // If the callback is same-origin, allow it
+        if (urlObj.origin === baseUrl) return url;
+      } catch {
+        // fallthrough
+      }
+
+      // Default: send users to dashboard after successful sign in
+      return `${baseUrl}/dashboard`;
     },
   },
-  session: {
-    strategy: "jwt",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+
+  debug: process.env.NODE_ENV === "development",
 };
-
-async function authenticateWithKeycloak(email: string, password: string) {
-  const response = await fetch(
-    `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "password",
-        client_id: process.env.KEYCLOAK_ID!,
-        client_secret: process.env.KEYCLOAK_SECRET!,
-        username: email,
-        password: password,
-        scope: "openid profile email",
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Authentication failed");
-  }
-
-  return response.json();
-}
-
-async function getUserFromKeycloak(accessToken: string) {
-  const response = await fetch(
-    `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/userinfo`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to get user info");
-  }
-
-  return response.json();
-}

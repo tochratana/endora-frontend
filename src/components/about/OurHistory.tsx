@@ -1,5 +1,4 @@
-import Image from "next/image"
-import history from "../../../public/history.jpg"
+// import Image from "next/image"
 
 export default function OurHistory() {
   return (

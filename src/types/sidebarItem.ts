@@ -15,7 +15,7 @@ export function getSidebarItems(workspaceId: string): SidebarItem[] {
   // const base = `/${workspaceId}`
 
   return [
-    { icon: Home,     label: "Project Overview", href: base },
+    { icon: Home,     label: "Project Overview", href:` ${base}/projectOverview` },
     { icon: Grid3X3,  label: "Schemas",          href: `${base}/schemas` },
     { icon: Database, label: "Schema Visualizer",href: `${base}/visualizer` },
     { icon: Globe,    label: "Public API",       href: `${base}/api` },

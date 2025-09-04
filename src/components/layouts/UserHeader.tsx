@@ -32,7 +32,9 @@ export default function UserHeader() {
             />
           </div>
           <div className="w-1 h-7 bg-secondary-900 rounded-md"></div>
-          <Boxes className="text-gray-900 dark:text-white"/>
+          <Link href="/dashboard">
+            <Boxes className="text-gray-900 dark:text-white" />
+          </Link>
           <span className="text-sm font-medium text-gray-900 dark:text-white">
             {session?.user?.name || "User"}
           </span>
@@ -93,7 +95,17 @@ export default function UserHeader() {
               {/* Log out */}
               <DropdownMenuItem className="cursor-pointer text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-teal-500 dark:text-white dark:hover:bg-slate-800 dark:focus:text-indigo-400">
                 <LogOut className="mr-2 h-4 w-4" />
-                <button onClick={handleSignOut}>Sign out</button>
+                <button
+                  onClick={async () => {
+                    // Clear local session
+                    await signOut({ redirect: false });
+                    // Optional: also log out at Keycloak (SSO end-session)
+                    window.location.href = "/api/auth/kc-logout";
+                  }}
+                  aria-label="Sign out"
+                >
+                  Sign out
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

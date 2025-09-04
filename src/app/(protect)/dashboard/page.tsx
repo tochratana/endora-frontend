@@ -16,13 +16,12 @@ export default async function DashboardPage() {
     title: "Ecommerce",
     desc: "Products and Order management.",
     locked: true,
-    href: `/projects/${i + 1}`,
+    href: `/workspace/${i + 1}/projectOverview`,
   }));
 
   return (
     <div className="min-h-screen text-zinc-900 dark:text-zinc-200">
       <div className="mx-auto w-full max-w-7xl px-0 py-8 space-y-8">
-
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <h1 className="text-xl font-semibold tracking-tight">Projects</h1>
@@ -48,7 +47,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map(c => (
             <Link
@@ -72,7 +70,6 @@ export default async function DashboardPage() {
                   </div>
                 )}
               </div>
-
 
               <div className="absolute inset-0 rounded-[8px] bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Link>

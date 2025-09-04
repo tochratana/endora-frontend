@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link"; 
 
 export default function StartProject() {
@@ -19,7 +19,7 @@ export default function StartProject() {
         </div>
       </div>
       <div className="md:col-span-4 col-span-8 md:justify-self-end">
-        <Image src="" alt="image" unoptimized className="" />
+        {/* <Image src="" alt="image" unoptimized className="" /> */}
       </div>
     </section>
   );
