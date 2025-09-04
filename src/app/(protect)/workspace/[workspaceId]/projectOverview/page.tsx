@@ -1,9 +1,15 @@
 import ProjectOverview from "@/components/projectoverview/ProjectOverview";
 
-export default function page() {
+interface PageProps {
+  params: {
+    workspaceId: string;
+  };
+}
+
+export default function page({ params }: PageProps) {
   return (
     <section>
-      <ProjectOverview/>
+      <ProjectOverview projectUuid={params.workspaceId} />
     </section>
-  )
+  );
 }

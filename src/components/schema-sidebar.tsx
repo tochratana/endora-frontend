@@ -21,15 +21,17 @@ const tables = [
 interface SchemaSidebarProps {
   activeTable: string;
   onTableSelect: (tableId: string) => void;
+  projectUuid: string;
 }
 
 export function SchemaSidebar({
   activeTable,
   onTableSelect,
+  projectUuid,
 }: SchemaSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTables = tables.filter((table) =>
+  const filteredTables = tables.filter(table =>
     table.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -96,6 +98,7 @@ export function SchemaSidebar({
       <CreateSchemaDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
+        projectUuid={projectUuid}
         onSave={handleSaveSchema}
       />
 
@@ -106,7 +109,7 @@ export function SchemaSidebar({
           <Input
             placeholder="Search schema"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-9 py-2 bg-sidebar border-sidebar-border focus:ring-sidebar-ring transition-all duration-200"
           />
         </div>
@@ -115,7 +118,7 @@ export function SchemaSidebar({
       {/* Tables List */}
       <div className="flex-1 p-2 space-y-1">
         {filteredTables.length > 0 ? (
-          filteredTables.map((table) => {
+          filteredTables.map(table => {
             const Icon = table.icon;
             const isActive = activeTable === table.id;
             return (
