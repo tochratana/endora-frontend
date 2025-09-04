@@ -8,7 +8,7 @@ export function SaveButton() {
   return (
     <button
       type="submit"
-      className="h-10 rounded-[8px] bg-teal-500 px-5 text-sm font-medium text-black shadow
+      className="h-8 rounded-[4px] bg-teal-500 px-4 text-sm font-medium dark:text-white text-white shadow
                  hover:bg-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-300
                  disabled:opacity-60"
       disabled={pending}
