@@ -1,3 +1,4 @@
+import UserHeader from "@/components/layouts/UserHeader";
 import { Sidebar } from "@/components/layouts/WorkspaceSidebar";
 
 export default async function WorkspaceLayout({
@@ -17,15 +18,47 @@ export default async function WorkspaceLayout({
     ? workspaceIdRaw[0]
     : workspaceIdRaw;
 
-  return (
-    <div className="flex h-screen">
-      {/* Sidebar pinned on the left */}
-      <aside className="sticky h-[calc(100vh-3.5rem)]">
-        <Sidebar workspaceId={workspaceId ?? ""} />
-      </aside>
+  // return (
+  //   <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+  //     <UserHeader />
+  //     {/* Sidebar pinned on the left */}
+  //     <div className="flex sticky">
+  //       <aside>
+  //         <Sidebar workspaceId={workspaceId ?? ""} />
+  //       </aside>
 
-      {/* Main content area (scrollable) */}
-      <main className="flex-1 overflow-y-auto">{children}</main>
+  //       {/* Main content area (scrollable) */}
+  //       <main className="flex-1">{children}</main>
+  //     </div>
+  //   </div>
+  // );
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Sticky top header */}
+      <header
+        className="sticky top-0 z-50 border-b border-gray-200/60 dark:border-gray-800/60
+                       bg-gray-100/90 dark:bg-gray-900/90 backdrop-blur"
+      >
+        {/* Give the header a known height so the sidebar can offset correctly */}
+        <div className="h-10 lg:h-16">
+          <UserHeader />
+        </div>
+      </header>
+
+      {/* Content row */}
+      <div className="flex">
+        {/* Sticky left sidebar (offset by header height) */}
+        <aside
+          className="sticky top-14 lg:top-16 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-4rem)]
+                   shrink-0 overflow-y-auto border-r border-gray-200 dark:border-gray-800
+                   bg-gray-50 dark:bg-gray-950"
+        >
+          <Sidebar workspaceId={workspaceId ?? ""} />
+        </aside>
+
+        {/* Main content */}
+        <main className="flex-1 min-w-0">{children}</main>
+      </div>
     </div>
   );
 }
