@@ -5,18 +5,7 @@ import Input from "@/components/ui/input";
 import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CreateSchemaDialog } from "@/components/create-schema-dialog";
-
-{
-  /*const sidebarItems = [
-  { id: "visualizer", label: "Schema Visualizer", icon: Database },
-  { id: "schema", label: "Schema", icon: Database, active: true },
-];*/
-}
-
-const tables = [
-  { id: "products", label: "Products", icon: Table },
-  { id: "users", label: "Users", icon: Table },
-];
+import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface SchemaSidebarProps {
   activeTable: string;
@@ -31,9 +20,14 @@ export function SchemaSidebar({
 }: SchemaSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTables = tables.filter(table =>
-    table.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Fetch schemas from API
+  const { data: schemas, error, isLoading } = useGetSchemasQuery(projectUuid);
+
+  // Filter schemas based on search query
+  const filteredSchemas =
+    schemas?.filter(schema =>
+      schema.schemaName.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleSaveSchema = (schema: unknown) => {
@@ -50,41 +44,6 @@ export function SchemaSidebar({
         </h1>
       </div>
 
-      {/* Navigation Items */}
-      {/*<div className="p-2 space-y-1">
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeItem === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                router.push(
-                  item.id === "schema" ? "/schema" : "/schema/visualizer"
-                );
-              }}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-sm transition-all duration-200 text-left group",
-                isActive
-                  ? "bg-sidebar-accent text-indigo-500 shadow-sm"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-              )}
-            >
-              <Icon
-                className={cn(
-                  "h-4 w-4 transition-colors",
-                  isActive ? "text-indigo-500" : ""
-                )}
-              />
-              <span className="flex-1">{item.label}</span>
-              {isActive && (
-                <ChevronRight className="h-3 w-3 text-sidebar-primary" />
-              )}
-            </button>
-          );
-        })}
-      </div>*/}
-
       {/* New Schema Button */}
       <div className="p-2">
         <button
@@ -95,6 +54,7 @@ export function SchemaSidebar({
           New Schema
         </button>
       </div>
+
       <CreateSchemaDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
@@ -115,16 +75,29 @@ export function SchemaSidebar({
         </div>
       </div>
 
-      {/* Tables List */}
+      {/* Loading State */}
+      {isLoading && (
+        <div className="p-2 text-center text-sm text-muted-foreground">
+          Loading schemas...
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="p-2 text-center text-sm text-red-500">
+          Failed to load schemas
+        </div>
+      )}
+
+      {/* Schemas List */}
       <div className="flex-1 p-2 space-y-1">
-        {filteredTables.length > 0 ? (
-          filteredTables.map(table => {
-            const Icon = table.icon;
-            const isActive = activeTable === table.id;
+        {!isLoading && !error && filteredSchemas.length > 0 ? (
+          filteredSchemas.map(schema => {
+            const isActive = activeTable === schema.id;
             return (
               <button
-                key={table.id}
-                onClick={() => onTableSelect(table.id)}
+                key={schema.id}
+                onClick={() => onTableSelect(schema.id)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
                   isActive
@@ -132,24 +105,24 @@ export function SchemaSidebar({
                     : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1"
                 )}
               >
-                <Icon
+                <Table
                   className={cn(
                     "h-4 w-4 transition-colors",
                     isActive ? "text-sidebar-primary" : ""
                   )}
                 />
-                <span className="flex-1">{table.label}</span>
+                <span className="flex-1">{schema.schemaName}</span>
                 {isActive && (
                   <div className="w-2 h-2 rounded-full bg-sidebar-primary" />
                 )}
               </button>
             );
           })
-        ) : (
+        ) : !isLoading && !error ? (
           <div className="px-3 py-2 text-sm text-muted-foreground text-center">
-            No tables found
+            No schemas found
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

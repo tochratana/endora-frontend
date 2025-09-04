@@ -46,7 +46,12 @@ export const schemaApi = createApi({
       }),
       invalidatesTags: ["Schema"],
     }),
+
+    getSchemas: builder.query<Schema[], string>({
+      query: projectUuid => `table/project/${projectUuid}`,
+      providesTags: ["Schema"],
+    }),
   }),
 });
 
-export const { useCreateSchemaMutation } = schemaApi;
+export const { useCreateSchemaMutation, useGetSchemasQuery } = schemaApi;

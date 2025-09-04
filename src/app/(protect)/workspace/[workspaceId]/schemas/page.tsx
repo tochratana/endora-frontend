@@ -38,7 +38,10 @@ export default function SchemaManager({ params }: PageProps) {
 
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
-          <SchemaContent activeTable={activeTable} />
+          <SchemaContent
+            activeTable={activeTable}
+            projectUuid={params.workspaceId}
+          />
         </div>
       </div>
     </div>
