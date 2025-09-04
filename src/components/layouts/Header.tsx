@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import Button from "../button/Button";
 import { InstallPWA } from "../InstallPWA";
+import { signIn } from "next-auth/react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,12 +39,18 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex space-x-4">
-          <Link
+          <Button
+            onClick={() => signIn("keycloak")} aria-label="Sign in"
+            className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
+          >
+            Sign Up
+          </Button>
+          {/* <Link
             href="/auth/signin"
             className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
           >
             Sign Up
-          </Link>
+          </Link> */}
           <InstallPWA />
         </div>
 
