@@ -10,6 +10,7 @@ type Props = {
 export default function TopupForm({ onDone }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const [createProject, { isLoading, isError, error }] =
     useCreateProjectMutation();
 
