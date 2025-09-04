@@ -55,31 +55,31 @@
 // //   // );
 // // }
 
-// import { redirect } from "next/navigation";
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-// export default async function RootPage() {
-//   const session = await getServerSession(authOptions);
+export default async function RootPage() {
+  const session = await getServerSession(authOptions);
 
-//   if (session) {
-//     redirect("/dashboard");
-//   }
+  if (session) {
+    redirect("/dashboard");
+  }
 
-//   redirect("/home");
-// }
-import Link from "next/link"
-import { AuthButtons } from "@/components/auth-buttons"
-
-export default function Home() {
-  return (
-    <main style={{ padding: 24 }}>
-      <h1>Welcome</h1>
-      <p>This app uses Keycloak via NextAuth (OIDC + PKCE).</p>
-      <AuthButtons />
-      <p style={{ marginTop: 16 }}>
-        Protected area: <Link href="/dashboard">/dashboard</Link>
-      </p>
-    </main>
-  )
+  redirect("/home");
 }
+// import Link from "next/link";
+// import { AuthButtons } from "@/components/auth-buttons";
+
+// export default function Home() {
+//   return (
+//     <main style={{ padding: 24 }}>
+//       <h1>Welcome</h1>
+//       <p>This app uses Keycloak via NextAuth (OIDC + PKCE).</p>
+//       <AuthButtons />
+//       <p style={{ marginTop: 16 }}>
+//         Protected area: <Link href="/dashboard">/dashboard</Link>
+//       </p>
+//     </main>
+//   );
+// }

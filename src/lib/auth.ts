@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import type { JWT } from "next-auth/jwt";
@@ -5,16 +6,12 @@ import type { JWT } from "next-auth/jwt";
 const issuer = process.env.KEYCLOAK_ISSUER;
 if (!issuer) throw new Error("KEYCLOAK_ISSUER is required");
 
-/**
- * Refresh the access token using the refresh token.
- * Keeps refresh_token server-side in the NextAuth JWT only.
- */
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     const body = new URLSearchParams({
       grant_type: "refresh_token",
-      client_id: process.env.KEYCLOAK_CLIENT_ID!,
-      refresh_token: String(token.refreshToken),
+      client_id: String(process.env.KEYCLOAK_CLIENT_ID),
+      refresh_token: String((token as any).refreshToken),
     });
     if (process.env.KEYCLOAK_CLIENT_SECRET) {
       body.set("client_secret", process.env.KEYCLOAK_CLIENT_SECRET);
@@ -36,82 +33,75 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
         typeof refreshed.expires_in === "number"
           ? Math.floor(Date.now() / 1000) + refreshed.expires_in
           : undefined,
-      refreshToken: refreshed.refresh_token ?? token.refreshToken,
-      idToken: refreshed.id_token ?? token.idToken,
+      refreshToken: refreshed.refresh_token ?? (token as any).refreshToken,
+      idToken: refreshed.id_token ?? (token as any).idToken,
       error: undefined,
-    };
-  } catch (err) {
-    return { ...token, error: "RefreshAccessTokenError" as const };
+    } as JWT;
+  } catch {
+    return { ...token, error: "RefreshAccessTokenError" as const } as JWT;
   }
 }
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Keep provider config simple; NextAuth handles PKCE when needed.
+    // We avoid complex typing to match the project's next-auth version.
+    // @ts-expect-error: provider config typed differently across next-auth versions
     KeycloakProvider({
       issuer,
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || undefined,
       authorization: {
-        params: {
-          scope: "openid profile email offline_access",
-          // Ensure we're using the correct response type
-          response_type: "code",
-        },
+        params: { scope: "openid profile email offline_access" },
       },
       checks: ["pkce", "state"],
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+
+  session: { strategy: "jwt" },
+
   callbacks: {
     async jwt({ token, account, profile }) {
+      // first sign-in
       if (account) {
         const now = Math.floor(Date.now() / 1000);
         const expiresAt =
           (account as any).expires_at ??
           (account.expires_in ? now + account.expires_in : undefined);
 
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.idToken = account.id_token;
-        token.expiresAt = expiresAt;
-        token.user = token.user ?? {
-          name: profile?.name ?? undefined,
-          email: profile?.email ?? undefined,
-        };
-        return token;
+        return {
+          ...token,
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+          idToken: account.id_token,
+          expiresAt,
+          user: {
+            name: profile?.name ?? undefined,
+            email: profile?.email ?? undefined,
+          },
+        } as JWT;
       }
 
-      if (token.expiresAt && Date.now() / 1000 > token.expiresAt - 60) {
-        if (token.refreshToken) {
+      // refresh if expired
+      if (
+        (token as any).expiresAt &&
+        Date.now() / 1000 > (token as any).expiresAt - 60
+      ) {
+        if ((token as any).refreshToken) {
           return refreshAccessToken(token);
         }
-        return { ...token, error: "NoRefreshToken" as const };
+        return { ...token, error: "NoRefreshToken" } as JWT;
       }
 
       return token;
     },
 
     async session({ session, token }) {
-      session.user = session.user ?? (token.user as any);
-      (session as any).error = token.error;
+      // expose minimal user info only
+      session.user = session.user ?? (token as any).user;
       return session;
     },
   },
-  // Add debug logging in development
-  debug: process.env.NODE_ENV === "development",
 
-  // Ensure cookies work properly
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
+  debug: process.env.NODE_ENV === "development",
 };

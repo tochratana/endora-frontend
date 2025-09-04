@@ -95,7 +95,17 @@ export default function UserHeader() {
               {/* Log out */}
               <DropdownMenuItem className="cursor-pointer text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-teal-500 dark:text-white dark:hover:bg-slate-800 dark:focus:text-indigo-400">
                 <LogOut className="mr-2 h-4 w-4" />
-                <button onClick={handleSignOut}>Sign out</button>
+                <button
+                  onClick={async () => {
+                    // Clear local session
+                    await signOut({ redirect: false });
+                    // Optional: also log out at Keycloak (SSO end-session)
+                    window.location.href = "/api/auth/kc-logout";
+                  }}
+                  aria-label="Sign out"
+                >
+                  Sign out
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
