@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getToken } from "next-auth/jwt";
 import { Lock, Search } from "lucide-react";
 import NewProjectButton from "./topupPage/newProjectButton"; // ⬅️ add this
 
@@ -13,13 +14,92 @@ export const metadata = {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
 
-  const cards = Array.from({ length: 9 }).map((_, i) => ({
-    id: i + 1,
-    title: "Ecommerce",
-    desc: "Products and Order management.",
-    locked: true,
-    href: `/workspace/${i + 1}/projectOverview`,
-  }));
+  // Try to obtain the server-side JWT (which should contain the Keycloak access token)
+  // and use it to call the external API that returns projects for the current user.
+  // If anything fails, fall back to an empty list and show a helpful message.
+  let cards: Array<{
+    id: string | number;
+    title: string;
+    desc?: string;
+    locked?: boolean;
+    href: string;
+  }> = [];
+
+  try {
+    // getToken can accept a missing req in server components; silence the explicit-any warning for this call.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const jwt = await getToken({
+      req: undefined as any,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    const accessToken =
+      jwt && (jwt as unknown as Record<string, unknown>)["accessToken"]
+        ? String((jwt as unknown as Record<string, unknown>)["accessToken"])
+        : undefined;
+
+    if (accessToken) {
+      const res = await fetch(
+        "https://api.api-ngin.oudom.dev/projects/my-projects",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+          cache: "no-store",
+        }
+      );
+
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.includes("application/json");
+      const body = isJson ? await res.json() : null;
+
+      // Normalize a few possible response shapes.
+      let projects: unknown[] = [];
+      if (Array.isArray(body)) projects = body as unknown[];
+      else if (body && Array.isArray((body as Record<string, unknown>).data))
+        projects = (body as Record<string, unknown>).data as unknown[];
+      else if (
+        body &&
+        Array.isArray((body as Record<string, unknown>).projects)
+      )
+        projects = (body as Record<string, unknown>).projects as unknown[];
+      else if (body && Array.isArray((body as Record<string, unknown>).items))
+        projects = (body as Record<string, unknown>).items as unknown[];
+
+      const getField = (o: unknown, key: string) => {
+        const r = o as Record<string, unknown> | null;
+        if (!r) return undefined;
+        const v = r[key];
+        return typeof v === "string" || typeof v === "number" ? v : undefined;
+      };
+
+      cards = projects.map((p, idx) => {
+        const id = getField(p, "id") ?? getField(p, "_id") ?? idx + 1;
+        const title =
+          getField(p, "projectName") ??
+          getField(p, "name") ??
+          `Project ${idx + 1}`;
+        const desc = getField(p, "description");
+        return {
+          id,
+          title: String(title),
+          desc: desc ? String(desc) : undefined,
+          locked: false,
+          href: `/workspace/${id}/projectOverview`,
+        };
+      });
+    } else {
+      // No server-side token; leave cards empty (user might not be signed in server-side)
+      cards = [];
+    }
+  } catch (err) {
+    // swallow the error and render fallback UI — keep server logs clean for now
+    // You can also log to your server logger here if desired.
+    console.error("Failed to load projects on server:", err);
+    cards = [];
+  }
 
   return (
     <div className="min-h-screen text-zinc-900 dark:text-zinc-200">
@@ -49,7 +129,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((c) => (
+          {cards.map(c => (
             <Link
               key={c.id}
               href={c.href}
