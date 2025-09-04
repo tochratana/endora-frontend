@@ -1,20 +1,12 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { withAuth } from "next-auth/middleware"
 
-export function middleware(request: NextRequest) {
-  // Redirect /auth to /auth/signin
-  if (request.nextUrl.pathname === "/auth") {
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
-  }
-
-  // Handle root path explicitly
-  if (request.nextUrl.pathname === "/") {
-    return NextResponse.next();
-  }
-
-  return NextResponse.next();
-}
+export default withAuth({
+  pages: {
+    // Unauthenticated users will be sent here; NextAuth will show provider(s) and redirect to Keycloak
+    signIn: "/api/auth/signin",
+  },
+})
 
 export const config = {
-  matcher: ["/", "/auth/:path*", "/dashboard/:path*"],
-};
+  matcher: ["/dashboard/:path*", "/account/:path*"],
+}
