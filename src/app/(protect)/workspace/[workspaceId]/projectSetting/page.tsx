@@ -86,7 +86,7 @@ const ProjectSettings = () => {
                   value={projectName}
                   onChange={e => setProjectName(e.target.value)}
                   placeholder="Enter project name"
-                  className="h-10 w-full border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-slate-500 focus:border-blue-500 dark:focus:border-slate-500 focus:ring-blue-500 dark:focus:ring-slate-500"
+                  className="h-10 w-full border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white "
                 />
               </div>
 
@@ -103,7 +103,7 @@ const ProjectSettings = () => {
                     value={projectId}
                     readOnly
                     aria-readonly
-                    className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-20"
+                    className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-20 "
                   />
                   <Button
                     onClick={handleCopy}
@@ -138,7 +138,7 @@ const ProjectSettings = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-10 border-[#00c9b7] bg-[#00c9b7] px-4 sm:px-6 text-white hover:bg-[#00c9b7]/90 hover:text-white"
+                  className="h-10 border-secondary bg-[#00c9b7] px-4 sm:px-6 hover:bg-[#00c9b7]/90 text-black dark:text-white hover:text-black"
                 >
                   Update
                 </Button>
