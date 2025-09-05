@@ -31,6 +31,10 @@ import {
   Database,
   ArrowRight,
 } from "lucide-react";
+import {
+  useCreateSchemaMutation,
+  type SchemaDefinition,
+} from "@/service/apiSlide/schemaApi";
 
 interface Column {
   id: string;
@@ -43,6 +47,7 @@ interface Column {
 interface CreateSchemaDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  projectUuid: string;
   onSave?: (schema: {
     name: string;
     description: string;
@@ -53,6 +58,7 @@ interface CreateSchemaDialogProps {
 export function CreateSchemaDialog({
   open,
   onOpenChange,
+  projectUuid,
   onSave,
 }: CreateSchemaDialogProps) {
   const [schemaName, setSchemaName] = useState("");
@@ -67,6 +73,11 @@ export function CreateSchemaDialog({
       isPrimary: false,
     },
   ]);
+
+  const [createSchema, { isLoading, error }] = useCreateSchemaMutation();
+
+  // Debug log to check projectUuid
+  console.log("CreateSchemaDialog projectUuid:", projectUuid);
 
   const addColumn = () => {
     const newColumn: Column = {
@@ -85,19 +96,119 @@ export function CreateSchemaDialog({
     value: string | boolean
   ) => {
     setColumns(
-      columns.map((col) => (col.id === id ? { ...col, [field]: value } : col))
+      columns.map(col => (col.id === id ? { ...col, [field]: value } : col))
     );
   };
 
   const removeColumn = (id: string) => {
-    setColumns(columns.filter((col) => col.id !== id));
+    setColumns(columns.filter(col => col.id !== id));
   };
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave({ name: schemaName, description, columns });
+  // Helper function to convert columns to schema format
+  const convertColumnsToSchema = (columns: Column[]): SchemaDefinition => {
+    const schema: SchemaDefinition = {};
+
+    columns.forEach(column => {
+      if (column.name && column.type) {
+        // Only include columns with names and types
+        let sqlDefinition = "";
+
+        // Handle different data types
+        switch (column.type.toLowerCase()) {
+          case "varchar":
+            sqlDefinition = "VARCHAR(255)";
+            break;
+          case "text":
+            sqlDefinition = "TEXT";
+            break;
+          case "int":
+            sqlDefinition = column.isPrimary ? "SERIAL PRIMARY KEY" : "INT";
+            break;
+          case "boolean":
+            sqlDefinition = "BOOLEAN";
+            break;
+          case "timestamp":
+            sqlDefinition = "TIMESTAMP";
+            break;
+          case "date":
+            sqlDefinition = "DATE";
+            break;
+          case "decimal":
+            sqlDefinition = "DECIMAL(10,2)";
+            break;
+          case "float":
+            sqlDefinition = "FLOAT";
+            break;
+          default:
+            sqlDefinition = column.type.toUpperCase();
+        }
+
+        // Add PRIMARY KEY for non-int types
+        if (column.isPrimary && column.type.toLowerCase() !== "int") {
+          sqlDefinition += " PRIMARY KEY";
+        }
+
+        // Add NOT NULL if default is not NULL and not primary key
+        if (column.defaultValue !== "NULL" && !column.isPrimary) {
+          sqlDefinition += " NOT NULL";
+        }
+
+        schema[column.name] = sqlDefinition;
+      }
+    });
+
+    return schema;
+  };
+
+  const handleSave = async () => {
+    if (!schemaName.trim()) {
+      alert("Please enter a schema name");
+      return;
     }
-    onOpenChange(false);
+
+    if (columns.length === 0) {
+      alert("Please add at least one column");
+      return;
+    }
+
+    try {
+      const schema = convertColumnsToSchema(columns);
+
+      await createSchema({
+        schemaName: schemaName.trim(),
+        schema,
+        projectUuid,
+      }).unwrap();
+
+      // Call the original onSave if provided
+      if (onSave) {
+        onSave({ name: schemaName, description, columns });
+      }
+
+      // Reset form and close dialog
+      setSchemaName("");
+      setDescription("");
+      setColumns([
+        {
+          id: "1",
+          name: "id",
+          type: "int",
+          defaultValue: "NULL",
+          isPrimary: true,
+        },
+        {
+          id: "2",
+          name: "",
+          type: "",
+          defaultValue: "NULL",
+          isPrimary: false,
+        },
+      ]);
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Failed to create schema:", err);
+      alert("Failed to create schema. Please try again.");
+    }
   };
 
   const handleCancel = () => {
@@ -129,7 +240,7 @@ export function CreateSchemaDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
+      <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
         <DialogHeader>
           <DialogTitle className="text-lg font-medium">
             Create new Schema
@@ -138,6 +249,18 @@ export function CreateSchemaDialog({
         <hr className="border-gray-200 dark:border-gray-700" />
 
         <div className="space-y-6">
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
+              <p className="text-sm text-red-600 dark:text-red-400">
+                Error creating schema:{" "}
+                {error && "data" in error
+                  ? String(error.data)
+                  : "Unknown error"}
+              </p>
+            </div>
+          )}
+
           {/* Schema Name and Description */}
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
@@ -147,7 +270,7 @@ export function CreateSchemaDialog({
               <Input
                 id="schema-name"
                 value={schemaName}
-                onChange={(e) => setSchemaName(e.target.value)}
+                onChange={e => setSchemaName(e.target.value)}
                 className="bg-transparent border-gray-200 dark:border-gray-700"
               />
             </div>
@@ -159,7 +282,7 @@ export function CreateSchemaDialog({
                 id="description"
                 placeholder="Optional"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={e => setDescription(e.target.value)}
                 className="bg-transparent border-gray-200 dark:border-gray-700"
               />
             </div>
@@ -208,7 +331,7 @@ export function CreateSchemaDialog({
 
             {/* Column Rows */}
             <div className="space-y-2">
-              {columns.map((column) => (
+              {columns.map(column => (
                 <div
                   key={column.id}
                   className="grid grid-cols-12 gap-2 items-center bg-gray-50 dark:bg-slate-950 p-2 rounded"
@@ -223,7 +346,7 @@ export function CreateSchemaDialog({
                     <div className="flex rounded-md shadow-sm">
                       <Input
                         value={column.name}
-                        onChange={(e) =>
+                        onChange={e =>
                           updateColumn(column.id, "name", e.target.value)
                         }
                         className="bg-transparent text-sm border-gray-200 dark:border-gray-700 rounded-l-md rounded-r-none focus:ring-0 dark:bg-gray-950"
@@ -243,7 +366,7 @@ export function CreateSchemaDialog({
                   <div className="col-span-3">
                     <Select
                       value={column.type}
-                      onValueChange={(value) =>
+                      onValueChange={value =>
                         updateColumn(column.id, "type", value)
                       }
                     >
@@ -256,6 +379,9 @@ export function CreateSchemaDialog({
                         <SelectItem value="text">text</SelectItem>
                         <SelectItem value="boolean">boolean</SelectItem>
                         <SelectItem value="timestamp">timestamp</SelectItem>
+                        <SelectItem value="date">date</SelectItem>
+                        <SelectItem value="decimal">decimal</SelectItem>
+                        <SelectItem value="float">float</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -264,7 +390,7 @@ export function CreateSchemaDialog({
                   <div className="col-span-3">
                     <Input
                       value={column.defaultValue}
-                      onChange={(e) =>
+                      onChange={e =>
                         updateColumn(column.id, "defaultValue", e.target.value)
                       }
                       className="text-sm text-gray-400 bg-transparent border-gray-200 dark:border-gray-700 dark:bg-gray-950"
@@ -278,10 +404,10 @@ export function CreateSchemaDialog({
                       type="radio"
                       name="primary-key"
                       checked={column.isPrimary}
-                      onChange={(e) => {
+                      onChange={e => {
                         if (e.target.checked) {
                           setColumns(
-                            columns.map((col) => ({
+                            columns.map(col => ({
                               ...col,
                               isPrimary: col.id === column.id,
                             }))
@@ -335,7 +461,7 @@ export function CreateSchemaDialog({
 
           {/* FK Dialog */}
           <Dialog open={isFKDialogOpen} onOpenChange={setIsFKDialogOpen}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
+            <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-950 dark:text-gray-100">
               <DialogHeader>
                 <DialogTitle className="text-lg font-medium">
                   Add Foreign Key
@@ -376,7 +502,7 @@ export function CreateSchemaDialog({
                   </div>
 
                   <div className="space-y-2">
-                    {columns.map((column) => (
+                    {columns.map(column => (
                       <div
                         key={column.id}
                         className="flex items-center gap-4 bg-gray-50 dark:bg-slate-950 p-2 rounded"
@@ -394,7 +520,7 @@ export function CreateSchemaDialog({
                             </SelectContent>
                           </Select>
                         </div>
-                        <ArrowRight className="w-8 h-8"/>
+                        <ArrowRight className="w-8 h-8" />
                         <div className="w-full">
                           <Select>
                             <SelectTrigger className="w-full bg-white dark:bg-gray-950">
@@ -440,9 +566,13 @@ export function CreateSchemaDialog({
                   </button>
                   <button
                     onClick={handleSave}
-                    className="text-sm text-white bg-teal-500 hover:bg-teal-600 py-1 px-3 rounded-sm"
+                    disabled={isLoading}
+                    className="text-sm text-white bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400 disabled:cursor-not-allowed py-1 px-3 rounded-sm flex items-center gap-2"
                   >
-                    Save
+                    {isLoading && (
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                    )}
+                    {isLoading ? "Creating..." : "Save"}
                   </button>
                 </div>
               </div>
@@ -459,9 +589,13 @@ export function CreateSchemaDialog({
             </button>
             <button
               onClick={handleSave}
-              className="text-sm text-white bg-teal-500 hover:bg-teal-600 py-1 px-3 rounded-sm"
+              disabled={isLoading}
+              className="text-sm text-white bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400 disabled:cursor-not-allowed py-1 px-3 rounded-sm flex items-center gap-2"
             >
-              Save
+              {isLoading && (
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+              )}
+              {isLoading ? "Creating..." : "Save"}
             </button>
           </div>
         </div>

@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +10,8 @@ import { EmptyState } from "@/components/data-sources/empty-state";
 import { DataTable } from "@/components/data-sources/data-table";
 import { ActivityLogs } from "@/components/data-sources/activity-logs";
 import { ScheduleReset } from "@/components/data-sources/schedule-reset";
+import { SchemaDataViewer } from "@/components/data-sources/schema-data-viewer";
+// import { InsertDataDialog } from "@/components/data-sources/schema-insert-dialog";
 
 import type {
   SampleData,
@@ -22,6 +22,12 @@ import type {
   LogAction,
 } from "@/types/dataSource";
 
+interface PageProps {
+  params: {
+    workspaceId: string;
+  };
+}
+
 const CURRENT_USER = "You";
 
 const LS_KEYS = {
@@ -30,7 +36,9 @@ const LS_KEYS = {
 } as const;
 
 function isValidTab(v: unknown): v is TabType {
-  return v === "database" || v === "logs" || v === "schedule";
+  return (
+    v === "database" || v === "real-data" || v === "logs" || v === "schedule"
+  );
 }
 
 function todayLocalISO(): string {
@@ -66,10 +74,13 @@ function getInitialState(): { tab: TabType; sample: SampleData } {
   return { tab, sample };
 }
 
-export default function Page() {
+export default function Page({ params }: PageProps) {
   const { tab: initialTab, sample: initialSample } = getInitialState();
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [sampleData, setSampleData] = useState<SampleData>(initialSample);
+
+  // Mock user UUID - in real app, get from session
+  const userUuid = "user-123";
 
   // keep tab in URL
   useEffect(() => {
@@ -87,7 +98,16 @@ export default function Page() {
   }, [sampleData]);
 
   const tabs: TabItem[] = [
-    { id: "database", label: "Database", icon: <Database className="w-4 h-4" /> },
+    {
+      id: "database",
+      label: "Database",
+      icon: <Database className="w-4 h-4" />,
+    },
+    {
+      id: "real-data",
+      label: "Schema Data",
+      icon: <Database className="w-4 h-4" />,
+    },
     { id: "logs", label: "Logs", icon: <FileText className="w-4 h-4" /> },
     { id: "schedule", label: "Schedule", icon: <Clock className="w-4 h-4" /> },
   ];
@@ -101,7 +121,7 @@ export default function Page() {
     let lastUpdate = "—";
     if (totalRecords > 0) {
       const maxTs = Math.max(
-        ...sampleData.products.map((p) => new Date(p.created_date).getTime())
+        ...sampleData.products.map(p => new Date(p.created_date).getTime())
       );
       lastUpdate = new Date(maxTs).toLocaleDateString(undefined, {
         year: "numeric",
@@ -127,11 +147,11 @@ export default function Page() {
       action,
       timestamp: new Date().toISOString(),
     };
-    setSampleData((prev) => ({ ...prev, logs: [entry, ...prev.logs] }));
+    setSampleData(prev => ({ ...prev, logs: [entry, ...prev.logs] }));
   };
 
   const handleProductsChange = (next: SampleProduct[]) => {
-    setSampleData((prev) => ({
+    setSampleData(prev => ({
       ...prev,
       products: next,
       hasData: next.length > 0,
@@ -145,23 +165,46 @@ export default function Page() {
       { id: 3, name: "Skirt", price: 25.99, created_date: "2025-08-16" },
     ];
     setSampleData({ products, logs: [], hasData: true });
-    addLog("IMPORT", "Sample data imported", `Imported ${products.length} products`);
+    addLog(
+      "IMPORT",
+      "Sample data imported",
+      `Imported ${products.length} products`
+    );
     setActiveTab("database");
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <DataSourceHeader />
+        <div className="flex justify-between items-center">
+          <DataSourceHeader />
+
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatsCard icon={<Database className="w-6 h-6 text-teal-400" />} value={String(totalFields)} label="Total Fields" />
-          <StatsCard icon={<FileText className="w-6 h-6 text-teal-400" />} value={String(totalRecords)} label="Total Records" />
-          <StatsCard icon={<Clock className="w-6 h-6 text-teal-400" />} value={lastUpdate} label="Last Update" />
+          <StatsCard
+            icon={<Database className="w-6 h-6 text-teal-400" />}
+            value={String(totalFields)}
+            label="Total Fields"
+          />
+          <StatsCard
+            icon={<FileText className="w-6 h-6 text-teal-400" />}
+            value={String(totalRecords)}
+            label="Total Records"
+          />
+          <StatsCard
+            icon={<Clock className="w-6 h-6 text-teal-400" />}
+            value={lastUpdate}
+            label="Last Update"
+          />
         </div>
 
         <div className="bg-slate-900 rounded-lg border border-slate-800">
-          <TabNavigation tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+          <TabNavigation
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
 
           <div className="p-8">
             {activeTab === "database" &&
@@ -169,18 +212,29 @@ export default function Page() {
                 <DataTable
                   products={sampleData.products}
                   onProductsChange={handleProductsChange}
-                  onLog={(action, title, description) => addLog(action, title, description)}
+                  onLog={(action, title, description) =>
+                    addLog(action, title, description)
+                  }
                 />
               ) : (
                 <EmptyState onAddSample={handleAddSample} />
               ))}
+
+            {activeTab === "real-data" && (
+              <SchemaDataViewer
+                projectUuid={params.workspaceId}
+                userUuid={userUuid}
+              />
+            )}
 
             {activeTab === "logs" &&
               (sampleData.logs.length ? (
                 <ActivityLogs logs={sampleData.logs} />
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-slate-400">Activity logs will appear here</p>
+                  <p className="text-slate-400">
+                    Activity logs will appear here
+                  </p>
                 </div>
               ))}
 
