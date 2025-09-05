@@ -97,19 +97,19 @@ const ProjectSettings = () => {
                 >
                   Project ID
                 </Label>
-                <Input
-                  id="project-id"
-                  value={projectId}
-                  readOnly
-                  aria-readonly
-                  className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white"
-                />
-                <div className="mt-2">
+                <div className="relative">
+                  <Input
+                    id="project-id"
+                    value={projectId}
+                    readOnly
+                    aria-readonly
+                    className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-20"
+                  />
                   <Button
                     onClick={handleCopy}
                     variant="outline"
                     size="sm"
-                    className="h-8 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 text-xs text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+                    className="absolute right-1 top-1 h-8 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 text-xs text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
                     aria-label="Copy project ID"
                   >
                     {isCopied ? (

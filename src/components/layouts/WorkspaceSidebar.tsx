@@ -205,8 +205,8 @@ export function Sidebar({
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors outline-none",
                 isActive(href)
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                  ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium"
+                  : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 font-normal"
               )}
               title={!expanded ? label : ""}
               aria-current={isActive(href) ? "page" : undefined}
@@ -229,7 +229,7 @@ export function Sidebar({
             e.stopPropagation();
             setShowModeDropdown(v => !v);
           }}
-          className="flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-colors"
+          className="flex items-center justify-center p-2 text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/30 rounded-lg transition-colors"
           title="Sidebar mode"
           aria-haspopup="menu"
           aria-expanded={showModeDropdown}
@@ -245,13 +245,13 @@ export function Sidebar({
               ref={menuRef}
               role="menu"
               className={cn(
-                "fixed z-[1000] bg-slate-800 border border-slate-700 rounded-lg shadow-lg py-2 min-w-[180px]",
+                "fixed z-[1000] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 min-w-[180px]",
                 "origin-bottom-left translate-y-[-100%]"
               )}
               style={menuPos ?? undefined}
               onClick={e => e.stopPropagation()}
             >
-              <div className="px-3 py-2 text-sm font-medium text-slate-300 border-b border-slate-700">
+              <div className="px-3 py-2 text-sm font-normal text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                 Sidebar mode
               </div>
               {(["expanded", "collapsed", "hover"] as SidebarMode[]).map(
@@ -265,11 +265,11 @@ export function Sidebar({
                     }}
                     role="menuitemradio"
                     aria-checked={sidebarMode === mode}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-colors"
                   >
-                    <div className="w-3 h-3 rounded-full border border-slate-500 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full border border-slate-400 dark:border-slate-500 flex items-center justify-center">
                       {sidebarMode === mode && (
-                        <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                        <div className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                       )}
                     </div>
                     {mode === "hover"
@@ -323,7 +323,7 @@ export function Sidebar({
     >
       <div
         className={cn(
-          "bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out flex flex-col overflow-hidden",
+          "bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out flex flex-col overflow-hidden",
           "h-full",
           isMobile
             ? sidebarMode === "expanded"
@@ -352,7 +352,7 @@ export function Sidebar({
             expanded={isExpanded && (isSmUp || sidebarMode === "expanded")}
           />
         </div>
-        <div className="flex-shrink-0 p-2 border-t border-slate-800">
+        <div className="flex-shrink-0 p-2 border-t border-slate-200 dark:border-slate-800">
           <ControlsRow />
         </div>
       </div>
@@ -362,7 +362,7 @@ export function Sidebar({
         createPortal(
           <div
             ref={overlayPanelRef}
-            className="fixed bg-slate-900 border-r border-slate-800 flex flex-col shadow-2xl overflow-hidden"
+            className="fixed bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shadow-2xl overflow-hidden"
             style={{
               top: overlayBox.top,
               left: overlayBox.left,
@@ -397,7 +397,7 @@ export function Sidebar({
             >
               <NavList expanded />
             </div>
-            <div className="flex-shrink-0 p-2 border-t border-slate-800">
+            <div className="flex-shrink-0 p-2 border-t border-slate-200 dark:border-slate-800">
               <ControlsRow />
             </div>
           </div>,
