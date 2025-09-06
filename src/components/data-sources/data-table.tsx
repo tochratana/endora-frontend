@@ -1,7 +1,15 @@
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
+import {
+  ColumnDef,
+  RowSelectionState,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
 import {
   ClipboardList,
   Clock,
@@ -12,9 +20,14 @@ import {
   Edit2,
   Trash2,
 } from "lucide-react";
+
+import { Checkbox } from "@/components/ui/checkbox";
+// import { Input } from "@/components/ui/input";
+
 import { ScheduleAutoResetModal } from "../popup/autoResetSchedule";
 import { ImportDataModal } from "../popup/importDataModel";
 import type { SampleProduct, LogAction } from "@/types/dataSource";
+import Input from "../ui/input";
 
 interface DataTableProps {
   products: SampleProduct[];
@@ -40,7 +53,8 @@ export function DataTable({
   onLog,
 }: DataTableProps) {
   const [products, setProducts] = useState<SampleProduct[]>(initialProducts);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  // const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState<NewProductForm>({
     name: "",
@@ -48,14 +62,15 @@ export function DataTable({
     created_date: todayLocalISO(),
   });
 
+  const [autoResetOpen, setAutoResetOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+
   // sync when parent updates
   useEffect(() => {
     setProducts(initialProducts);
-    setSelectedRows(new Set());
+    // setSelectedRows(new Set());
+    setRowSelection({});
   }, [initialProducts]);
-
-  const [autoResetOpen, setAutoResetOpen] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
 
   const commit = (next: SampleProduct[]) => {
     setProducts(next);
@@ -63,34 +78,155 @@ export function DataTable({
   };
 
   const handleImport = (file: File, method: string) => {
-    onLog?.("IMPORT", "Data Imported", `Imported file "${file.name}" via ${method}`);
+    onLog?.(
+      "IMPORT",
+      "Data Imported",
+      `Imported file "${file.name}" via ${method}`
+    );
   };
 
-  const isAllSelected = useMemo(
-    () => products.length > 0 && selectedRows.size === products.length,
-    [products.length, selectedRows.size]
-  );
-  const isIndeterminate = useMemo(
-    () => selectedRows.size > 0 && selectedRows.size < products.length,
-    [products.length, selectedRows.size]
-  );
+  // const isAllSelected = useMemo(
+  //   () => products.length > 0 && selectedRows.size === products.length,
+  //   [products.length, selectedRows.size]
+  // );
+  // const isIndeterminate = useMemo(
+  //   () => selectedRows.size > 0 && selectedRows.size < products.length,
+  //   [products.length, selectedRows.size]
+  // );
 
-  const handleSelectAll = (checked: boolean) =>
-    setSelectedRows(checked ? new Set(products.map((p) => p.id)) : new Set());
+  // const handleSelectAll = (checked: boolean) =>
+  //   setSelectedRows(checked ? new Set(products.map((p) => p.id)) : new Set());
 
-  const handleSelectRow = (id: number, checked: boolean) => {
-    setSelectedRows((prev) => {
-      const next = new Set(prev);
-      checked ? next.add(id) : next.delete(id);
-      return next;
-    });
-  };
+  // const handleSelectRow = (id: number, checked: boolean) => {
+  //   setSelectedRows((prev) => {
+  //     const next = new Set(prev);
+  //     checked ? next.add(id) : next.delete(id);
+  //     return next;
+  //   });
+  // };
+
+const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
+    const selectCol: ColumnDef<SampleProduct> = {
+      id: "_select",
+      header: ({ table }) => (
+        <Checkbox
+          aria-label="Select all"
+          checked={table.getIsAllRowsSelected()}
+          onCheckedChange={(v) => table.toggleAllRowsSelected(!!v)}
+          className="translate-y-[1px]"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          aria-label="Select row"
+          checked={row.getIsSelected()}
+          onCheckedChange={(v) => row.toggleSelected(!!v)}
+        />
+      ),
+      size: 48,
+      enableSorting: false,
+      enableHiding: false,
+    };
+
+    const idCol: ColumnDef<SampleProduct> = {
+      accessorKey: "id",
+      header: () => <span className="text-slate-300 font-medium">id</span>,
+      cell: ({ getValue }) => (
+        <span className="text-slate-200 font-mono">{String(getValue())}</span>
+      ),
+    };
+
+    const nameCol: ColumnDef<SampleProduct> = {
+      accessorKey: "name",
+      header: () => <span className="text-slate-300 font-medium">name</span>,
+      cell: ({ getValue }) => (
+        <span className="text-white">{String(getValue() ?? "")}</span>
+      ),
+    };
+
+    const priceCol: ColumnDef<SampleProduct> = {
+      accessorKey: "price",
+      header: () => <span className="text-slate-300 font-medium">price</span>,
+      cell: ({ getValue }) => {
+        const v = Number(getValue());
+        return (
+          <span className="text-white font-mono">
+            {`$${Number.isFinite(v) ? v.toFixed(2) : "0.00"}`}
+          </span>
+        );
+      },
+    };
+
+    const dateCol: ColumnDef<SampleProduct> = {
+      accessorKey: "created_date",
+      header: () => (
+        <span className="text-slate-300 font-medium">created_date</span>
+      ),
+      cell: ({ getValue }) => (
+        <span className="text-slate-300 font-mono">
+          {String(getValue() ?? "")}
+        </span>
+      ),
+    };
+
+    const actionsCol: ColumnDef<SampleProduct> = {
+      id: "_actions",
+      header: () => null,
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center gap-1">
+          <button
+            className="text-slate-400 hover:text-blue-400 p-1 rounded transition-colors"
+            title="Edit"
+          >
+            <Edit2 size={14} />
+          </button>
+          <button
+            className="text-slate-400 hover:text-red-400 p-1 rounded transition-colors"
+            title="Delete"
+            onClick={() => {
+              const product = row.original;
+              const next = products.filter((p) => p.id !== product.id);
+              commit(next);
+              onLog?.(
+                "DELETE",
+                "Product Deleted",
+                `Removed ${product.name} (id ${product.id})`
+              );
+              setRowSelection((prev) => {
+                const n = { ...prev };
+                delete (n as any)[String(product.id)];
+                return n;
+              });
+            }}
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      ),
+      size: 56,
+      enableSorting: false,
+      enableHiding: false,
+    };
+
+    return [selectCol, idCol, nameCol, priceCol, dateCol, actionsCol];
+  }, [products, onLog]);
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    state: { rowSelection },
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => String(row.id), // stable selection
+    enableRowSelection: true,
+  });
+
 
   const handleAddProduct = () => {
     const price = parseFloat(newProduct.price);
     if (!newProduct.name.trim() || Number.isNaN(price)) return;
 
-    const newId = Math.max(0, ...products.map((p) => p.id)) + 1;
+    const newId = Math.max(0, ...products.map(p => p.id)) + 1;
     const p: SampleProduct = {
       id: newId,
       name: newProduct.name.trim(),
@@ -98,22 +234,38 @@ export function DataTable({
       created_date: newProduct.created_date || todayLocalISO(),
     };
     commit([...products, p]);
-    onLog?.("CREATE", "New Product Created", `Added ${p.name} ($${p.price.toFixed(2)})`);
+    onLog?.(
+      "CREATE",
+      "New Product Created",
+      `Added ${p.name} ($${p.price.toFixed(2)})`
+    );
 
     setNewProduct({ name: "", price: "", created_date: todayLocalISO() });
     setShowAddForm(false);
   };
 
+  
   const handleDeleteSelected = () => {
-    if (selectedRows.size === 0) return;
-    const next = products.filter((p) => !selectedRows.has(p.id));
+  
+    // if (selectedRows.size === 0) return;
+    // const next = products.filter(p => !selectedRows.has(p.id));
+    // commit(next);
+    // onLog?.(
+    //   "DELETE",
+    //   "Products Deleted",
+    //   `Removed ${selectedRows.size} product(s)`
+    // );
+    // setSelectedRows(new Set());
+     const ids = table.getSelectedRowModel().rows.map((r) => r.original.id);
+    if (ids.length === 0) return;
+    const next = products.filter((p) => !ids.includes(p.id));
     commit(next);
-    onLog?.("DELETE", "Products Deleted", `Removed ${selectedRows.size} product(s)`);
-    setSelectedRows(new Set());
+    onLog?.("DELETE", "Products Deleted", `Removed ${ids.length} product(s)`);
+    setRowSelection({});
   };
 
   return (
-    <div className="space-y-4">
+   <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -123,13 +275,13 @@ export function DataTable({
           <span className="text-sm text-slate-300">products collection</span>
         </div>
         <div className="flex gap-2">
-          {selectedRows.size > 0 && (
+          {table.getSelectedRowModel().rows.length > 0 && (
             <button
               onClick={handleDeleteSelected}
               className="flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
             >
               <Trash2 size={14} aria-hidden />
-              Delete ({selectedRows.size})
+              Delete ({table.getSelectedRowModel().rows.length})
             </button>
           )}
 
@@ -167,98 +319,64 @@ export function DataTable({
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-slate-600 bg-slate-750">
-              <th className="p-3 w-12 border-r border-slate-600">
-                <input
-                  type="checkbox"
-                  className="rounded bg-slate-700 border-slate-600 text-teal-600 focus:ring-teal-500"
-                  checked={isAllSelected}
-                  ref={(el) => {
-                    if (el) el.indeterminate = isIndeterminate;
-                  }}
-                  onChange={(e) => handleSelectAll(e.target.checked)}
-                />
-              </th>
-              <th className="text-left p-3 text-slate-300 font-medium border-r border-slate-600">
-                id
-              </th>
-              <th className="text-left p-3 text-slate-300 font-medium border-r border-slate-600">
-                name
-              </th>
-              <th className="text-left p-3 text-slate-300 font-medium border-r border-slate-600">
-                price
-              </th>
-              <th className="text-left p-3 text-slate-300 font-medium border-r border-slate-600">
-                created_date
-              </th>
-              <th className="w-12 p-3 text-center">
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="text-slate-400 hover:text-white hover:bg-slate-700 p-1 rounded transition-colors"
-                  title="Add new row"
+              {table.getFlatHeaders().map((header, i) => (
+                <th
+                  key={header.id}
+                  className={
+                    "p-3 " +
+                    (i === 0 || i === table.getFlatHeaders().length - 1
+                      ? "w-12 "
+                      : "") +
+                    "border-r border-slate-600 text-left text-slate-300 font-medium"
+                  }
                 >
-                  <Plus size={16} />
-                </button>
-              </th>
+                  {header.id === "_actions" ? (
+                    <button
+                      onClick={() => setShowAddForm(true)}
+                      className="float-right text-slate-400 hover:text-white hover:bg-slate-700 p-1 rounded transition-colors"
+                      title="Add new row"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  ) : (
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )
+                  )}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {table.getRowModel().rows.map((row) => (
               <tr
-                key={product.id}
+                key={row.id}
                 className={`border-b border-slate-700 hover:bg-slate-750 ${
-                  selectedRows.has(product.id) ? "bg-slate-750" : ""
+                  row.getIsSelected() ? "bg-slate-750" : ""
                 }`}
               >
-                <td className="p-3 border-r border-slate-700">
-                  <input
-                    type="checkbox"
-                    className="rounded bg-slate-700 border-slate-600 text-teal-600 focus:ring-teal-500"
-                    checked={selectedRows.has(product.id)}
-                    onChange={(e) => handleSelectRow(product.id, e.target.checked)}
-                  />
-                </td>
-                <td className="p-3 text-slate-200 border-r border-slate-700 font-mono">
-                  {product.id}
-                </td>
-                <td className="p-3 text-white border-r border-slate-700">
-                  {product.name}
-                </td>
-                <td className="p-3 text-white border-r border-slate-700 font-mono">
-                  ${product.price.toFixed(2)}
-                </td>
-                <td className="p-3 text-slate-300 border-r border-slate-700 font-mono">
-                  {product.created_date}
-                </td>
-                <td className="p-3 text-center">
-                  <div className="flex items-center justify-center gap-1">
-                    <button
-                      className="text-slate-400 hover:text-blue-400 p-1 rounded transition-colors"
-                      title="Edit"
-                    >
-                      <Edit2 size={14} />
-                    </button>
-                    <button
-                      className="text-slate-400 hover:text-red-400 p-1 rounded transition-colors"
-                      title="Delete"
-                      onClick={() => {
-                        const next = products.filter((p) => p.id !== product.id);
-                        commit(next);
-                        onLog?.(
-                          "DELETE",
-                          "Product Deleted",
-                          `Removed ${product.name} (id ${product.id})`
-                        );
-                        setSelectedRows((prev) => {
-                          const s = new Set(prev);
-                          s.delete(product.id);
-                          return s;
-                        });
-                      }}
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </td>
+                {row.getVisibleCells().map((cell, i) => (
+                  <td
+                    key={cell.id}
+                    className={
+                      "p-3 " +
+                      (i < row.getVisibleCells().length - 1
+                        ? "border-r border-slate-700 "
+                        : "") +
+                      (["id", "price", "created_date"].includes(cell.column.id)
+                        ? "font-mono "
+                        : "") +
+                      (cell.column.id === "name" ? "text-white " : "") +
+                      (cell.column.id === "_actions" ? "text-center " : "")
+                    }
+                  >
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>
+                ))}
               </tr>
             ))}
 
@@ -270,7 +388,7 @@ export function DataTable({
                   auto
                 </td>
                 <td className="p-3 border-r border-slate-700">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Product name"
                     value={newProduct.name}
@@ -281,7 +399,7 @@ export function DataTable({
                   />
                 </td>
                 <td className="p-3 border-r border-slate-700">
-                  <input
+                  <Input
                     type="number"
                     step="0.01"
                     placeholder="0.00"
@@ -293,11 +411,14 @@ export function DataTable({
                   />
                 </td>
                 <td className="p-3 border-r border-slate-700">
-                  <input
+                  <Input
                     type="date"
                     value={newProduct.created_date}
                     onChange={(e) =>
-                      setNewProduct({ ...newProduct, created_date: e.target.value })
+                      setNewProduct({
+                        ...newProduct,
+                        created_date: e.target.value,
+                      })
                     }
                     className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm font-mono"
                   />
@@ -336,17 +457,12 @@ export function DataTable({
       {/* Footer */}
       <div className="flex items-center justify-between text-sm text-slate-400">
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            className="rounded bg-slate-700 border-slate-600 text-teal-600 focus:ring-teal-500"
-            checked={isAllSelected}
-            ref={(el) => {
-              if (el) el.indeterminate = isIndeterminate;
-            }}
-            onChange={(e) => handleSelectAll(e.target.checked)}
+          <Checkbox
+            checked={table.getIsAllRowsSelected()}
+            onCheckedChange={(v) => table.toggleAllRowsSelected(!!v)}
           />
           <span>
-            {selectedRows.size} of {products.length}
+            {table.getSelectedRowModel().rows.length} of {products.length}
           </span>
           <button className="p-1 hover:text-white transition-colors">
             <Play size={14} />

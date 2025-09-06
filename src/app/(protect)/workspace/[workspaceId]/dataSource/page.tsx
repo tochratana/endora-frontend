@@ -174,7 +174,7 @@ export default function Page({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <DataSourceHeader />
@@ -199,7 +199,7 @@ export default function Page({ params }: PageProps) {
           />
         </div>
 
-        <div className="bg-slate-900 rounded-lg border border-slate-800">
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-800">
           <TabNavigation
             tabs={tabs}
             activeTab={activeTab}
