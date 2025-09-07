@@ -288,13 +288,9 @@ export function Sidebar({
   const containerStyle: React.CSSProperties = isMobile
     ? {
         position: "fixed",
-        top: headerOffsetPx + 16,
+        top: headerOffsetPx,
         left: 0,
-        height: isMobile
-          ? `calc(100vh - ${headerOffsetPx + 16}px + 32px)`
-          : isTablet
-            ? `calc(100vh - ${headerOffsetPx + 8}px + 16px)`
-            : `calc(100vh - ${headerOffsetPx}px)`,
+        height: `calc(100vh - ${headerOffsetPx}px)`,
         width: sidebarMode === "expanded" ? "224px" : "56px",
         zIndex: sidebarZ,
       }
@@ -317,7 +313,7 @@ export function Sidebar({
           ? "relative h-full"
           : isTablet
             ? "fixed inset-0 top-16 z-30"
-            : "fixed inset-0 top-20 z-30"
+            : "fixed inset-0 top-10 z-30"
       )}
       style={containerStyle}
     >
@@ -367,7 +363,7 @@ export function Sidebar({
               top: overlayBox.top,
               left: overlayBox.left,
               height: isMobile
-                ? `calc(100vh - ${headerOffsetPx + 16}px + 32px)`
+                ? `calc(100vh - ${headerOffsetPx}px)`
                 : isTablet
                   ? `calc(100vh - ${headerOffsetPx + 8}px + 16px)`
                   : `calc(100vh - ${headerOffsetPx}px)`,
