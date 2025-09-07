@@ -51,7 +51,7 @@ const ProjectSettings = () => {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6 pt-12">
+    <div className="mx-auto max-w-4xl p-6 pt-12 md:pl-6 pl-2">
       <h1 className="mb-8 text-3xl font-semibold text-gray-900 dark:text-white">
         Project Settings
       </h1>
@@ -103,13 +103,13 @@ const ProjectSettings = () => {
                     value={projectId}
                     readOnly
                     aria-readonly
-                    className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-20 "
+                    className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-16 sm:pr-20"
                   />
                   <Button
                     onClick={handleCopy}
                     variant="outline"
                     size="sm"
-                    className="absolute right-1 top-1 h-8 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 text-xs text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+                    className="absolute right-1 top-1 h-8 sm:h-8 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-2 sm:px-3 text-xs text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
                     aria-label="Copy project ID"
                   >
                     {isCopied ? (
@@ -148,7 +148,7 @@ const ProjectSettings = () => {
         </div>
       </section>
 
-      <section>
+      <section className="mb-8">
         <h2 className="mb-6 text-lg font-medium text-gray-900 dark:text-white">
           Delete Project
         </h2>

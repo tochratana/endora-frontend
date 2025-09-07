@@ -19,37 +19,39 @@ export default function UserHeader() {
     await signOut({ callbackUrl: "/" });
   };
   return (
-    <nav className="bg-white border-b border-slate-800 px-[100px] py-3 dark:bg-slate-900">
+    <nav className="bg-white border-b border-slate-800 px-4 sm:px-6 md:px-8 lg:px-[100px] py-3 dark:bg-slate-900">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center justify-center">
             <Image
               src="/logo-v3.png"
-              width={45}
-              height={48}
+              width={35}
+              height={38}
               alt="logo"
               unoptimized
+              className="sm:w-[45px] sm:h-[48px]"
             />
           </div>
-          <div className="w-1 h-7 bg-secondary-900 rounded-md"></div>
+          <div className="w-1 h-5 sm:h-7 bg-secondary-900 rounded-md"></div>
           <Link href="/dashboard">
-            <Boxes className="text-gray-900 dark:text-white" />
+            <Boxes className="text-gray-900 dark:text-white w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
-          <span className="text-sm font-medium text-gray-900 dark:text-white">
+          <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white hidden sm:inline">
             {session?.user?.name || "User"}
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
+        <div className="flex items-center gap-1 sm:gap-3">
+          <button className="px-1 sm:px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
             My API
           </button>
-          <button className="px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white">
-            Feedback
+          <button className="px-1 sm:px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
+            <span className="hidden sm:inline">Feedback</span>
+            <span className="sm:hidden">Help</span>
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="relative h-10 w-10 rounded-full p-0">
+              <button className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-full p-0">
                 {session?.user?.image ? (
                   <Image
                     src={session.user.image}
@@ -57,17 +59,17 @@ export default function UserHeader() {
                     width={50}
                     height={50}
                     unoptimized
-                    className="rounded-full"
+                    className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                    <span className="text-sm text-gray-600">?</span>
+                  <div className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gray-300 flex items-center justify-center">
+                    <span className="text-xs sm:text-sm text-gray-600">?</span>
                   </div>
                 )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-64 bg-white border-slate-700 text-white dark:bg-slate-900 dark:text-white"
+              className="w-56 sm:w-64 bg-white border-slate-700 text-white dark:bg-slate-900 dark:text-white"
               align="end"
               forceMount
             >

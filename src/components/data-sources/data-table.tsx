@@ -1,6 +1,8 @@
 "use client";
+import type React from "react"
 
 import { useEffect, useMemo, useState } from "react";
+
 
 import {
   ColumnDef,
@@ -17,13 +19,10 @@ import {
   RefreshCcw,
   Plus,
   Play,
-  Edit2,
   Trash2,
 } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
-// import { Input } from "@/components/ui/input";
-
 import { ScheduleAutoResetModal } from "../popup/autoResetSchedule";
 import { ImportDataModal } from "../popup/importDataModel";
 import type { SampleProduct, LogAction } from "@/types/dataSource";
@@ -53,7 +52,6 @@ export function DataTable({
   onLog,
 }: DataTableProps) {
   const [products, setProducts] = useState<SampleProduct[]>(initialProducts);
-  // const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState<NewProductForm>({
@@ -65,10 +63,8 @@ export function DataTable({
   const [autoResetOpen, setAutoResetOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
 
-  // sync when parent updates
   useEffect(() => {
     setProducts(initialProducts);
-    // setSelectedRows(new Set());
     setRowSelection({});
   }, [initialProducts]);
 
@@ -85,27 +81,7 @@ export function DataTable({
     );
   };
 
-  // const isAllSelected = useMemo(
-  //   () => products.length > 0 && selectedRows.size === products.length,
-  //   [products.length, selectedRows.size]
-  // );
-  // const isIndeterminate = useMemo(
-  //   () => selectedRows.size > 0 && selectedRows.size < products.length,
-  //   [products.length, selectedRows.size]
-  // );
-
-  // const handleSelectAll = (checked: boolean) =>
-  //   setSelectedRows(checked ? new Set(products.map((p) => p.id)) : new Set());
-
-  // const handleSelectRow = (id: number, checked: boolean) => {
-  //   setSelectedRows((prev) => {
-  //     const next = new Set(prev);
-  //     checked ? next.add(id) : next.delete(id);
-  //     return next;
-  //   });
-  // };
-
-const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
+  const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
     const selectCol: ColumnDef<SampleProduct> = {
       id: "_select",
       header: ({ table }) => (
@@ -175,12 +151,6 @@ const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
       cell: ({ row }) => (
         <div className="flex items-center justify-center gap-1">
           <button
-            className="text-slate-400 hover:text-blue-400 p-1 rounded transition-colors"
-            title="Edit"
-          >
-            <Edit2 size={14} />
-          </button>
-          <button
             className="text-slate-400 hover:text-red-400 p-1 rounded transition-colors"
             title="Delete"
             onClick={() => {
@@ -217,16 +187,15 @@ const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
     state: { rowSelection },
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => String(row.id), // stable selection
+    getRowId: (row) => String(row.id),
     enableRowSelection: true,
   });
-
 
   const handleAddProduct = () => {
     const price = parseFloat(newProduct.price);
     if (!newProduct.name.trim() || Number.isNaN(price)) return;
 
-    const newId = Math.max(0, ...products.map(p => p.id)) + 1;
+    const newId = Math.max(0, ...products.map((p) => p.id)) + 1;
     const p: SampleProduct = {
       id: newId,
       name: newProduct.name.trim(),
@@ -244,19 +213,8 @@ const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
     setShowAddForm(false);
   };
 
-  
   const handleDeleteSelected = () => {
-  
-    // if (selectedRows.size === 0) return;
-    // const next = products.filter(p => !selectedRows.has(p.id));
-    // commit(next);
-    // onLog?.(
-    //   "DELETE",
-    //   "Products Deleted",
-    //   `Removed ${selectedRows.size} product(s)`
-    // );
-    // setSelectedRows(new Set());
-     const ids = table.getSelectedRowModel().rows.map((r) => r.original.id);
+    const ids = table.getSelectedRowModel().rows.map((r) => r.original.id);
     if (ids.length === 0) return;
     const next = products.filter((p) => !ids.includes(p.id));
     commit(next);
@@ -265,14 +223,30 @@ const columns = useMemo<ColumnDef<SampleProduct>[]>(() => {
   };
 
   return (
-   <div className="space-y-4">
-      {/* Header */}
+    <div className="space-y-4">
+      {/* Collection Header Row */}
+      <div className="flex items-center justify-between bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        <div className="flex items-center gap-2">
+          <span className="w-6 h-6 flex items-center justify-center rounded bg-slate-800 border border-slate-700">
+            <ClipboardList size={14} className="text-slate-400" />
+          </span>
+          <span className="text-sm text-slate-300">(products collection)</span>
+        </div>
+        <button
+          onClick={() => {
+            // 👉 open schema creator or new collection modal here
+          }}
+          className="w-8 h-8 flex items-center justify-center rounded bg-slate-800 border border-slate-700 hover:bg-slate-700"
+          title="Add new collection"
+        >
+          <Plus size={16} />
+        </button>
+      </div>
+
+      {/* Toolbar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-6 h-6 rounded bg-slate-700 flex items-center justify-center">
-            <ClipboardList size={14} className="text-slate-400" aria-hidden />
-          </span>
-          <span className="text-sm text-slate-300">products collection</span>
+          <span className="text-sm text-slate-300">products table</span>
         </div>
         <div className="flex gap-2">
           {table.getSelectedRowModel().rows.length > 0 && (

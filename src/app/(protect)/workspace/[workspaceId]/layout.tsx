@@ -47,17 +47,22 @@ export default async function WorkspaceLayout({
 
       {/* Content row */}
       <div className="flex">
-        {/* Sticky left sidebar (offset by header height) */}
+        {/* Sticky left sidebar (offset by header height) - hidden on mobile since sidebar is fixed */}
         <aside
-          className="sticky top-14 lg:top-16 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-4rem)]
+          className="hidden md:block sticky top-14 lg:top-16 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-4rem)]
                    shrink-0 overflow-y-auto border-r border-gray-200 dark:border-gray-800
                    bg-gray-50 dark:bg-gray-950"
         >
-          <Sidebar workspaceId={workspaceId ?? ""} />
+          <Sidebar workspaceId={workspaceId ?? ""} headerOffsetPx={64} />
         </aside>
 
-        {/* Main content */}
-        <main className="flex-1 min-w-0">{children}</main>
+        {/* Main content with mobile padding to account for fixed sidebar */}
+        <main className="flex-1 min-w-0 pl-14 md:pl-0">{children}</main>
+      </div>
+
+      {/* Mobile sidebar - fixed positioned */}
+      <div className="md:hidden">
+        <Sidebar workspaceId={workspaceId ?? ""} headerOffsetPx={48} />
       </div>
     </div>
   );
