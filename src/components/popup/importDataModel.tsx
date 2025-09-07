@@ -109,16 +109,16 @@ export function ImportDataModal({ isOpen, onClose, onImport }: ImportDataModalPr
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-4"
             >
-              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-xl bg-slate-900 border border-slate-700 p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-xl dark:bg-slate-900 bg-white border dark:border-slate-700 p-6 text-left align-middle shadow-xl transition-all">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
-                    <Database className="w-6 h-6 text-slate-400" />
-                    <Dialog.Title className="text-xl font-semibold text-white">Import Data</Dialog.Title>
+                    <Database className="w-6 h-6 dark:text-slate-400 text-gray-600" />
+                    <Dialog.Title className="text-xl font-semibold text-gray-600 dark:text-white">Import Data</Dialog.Title>
                   </div>
                   <button
                     onClick={handleClose}
-                    className="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="rounded-lg p-2 text-gray-600 dark:text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -169,10 +169,10 @@ export function ImportDataModal({ isOpen, onClose, onImport }: ImportDataModalPr
                   <label className="block text-white font-medium mb-3">Import Method</label>
                   <Listbox value={selectedMethod} onChange={setSelectedMethod}>
                     <div className="relative">
-                      <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-slate-800 border border-slate-600 py-3 pl-4 pr-10 text-left text-white hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors">
+                      <Listbox.Button className="relative w-full cursor-pointer rounded-lg dark:bg-slate-800 border dark:border-slate-600 py-3 pl-4 pr-10 text-left text-gray-600 dark:text-white hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors">
                         <span className="block truncate">{selectedMethod.name}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                          <ChevronDown className="h-5 w-5 text-slate-400" />
+                          <ChevronDown className="h-5 w-5 text-gray-600 dark:text-slate-400" />
                         </span>
                       </Listbox.Button>
 
@@ -182,14 +182,14 @@ export function ImportDataModal({ isOpen, onClose, onImport }: ImportDataModalPr
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                       >
-                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-slate-800 border border-slate-600 py-1 shadow-lg focus:outline-none">
+                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-600 py-1 shadow-lg focus:outline-none">
                           {importMethods.map((method) => (
                             <Listbox.Option
                               key={method.id}
                               className={({ active }) =>
                                 cn(
                                   "relative cursor-pointer select-none py-3 px-4 transition-colors",
-                                  active ? "bg-purple-500/20 text-white" : "text-slate-300",
+                                  active ? "bg-purple-500/20 dark:text-white text-gray-600" : "text-slate-300",
                                 )
                               }
                               value={method}
@@ -211,7 +211,7 @@ export function ImportDataModal({ isOpen, onClose, onImport }: ImportDataModalPr
                 <div className="flex justify-end gap-3">
                   <button
                     onClick={handleClose}
-                    className="px-6 py-2.5 rounded-lg bg-slate-700 text-white font-medium hover:bg-slate-600 transition-colors"
+                    className="px-6 py-2.5 rounded-lg dark:bg-slate-700 text-gray-600 dark:text-white font-medium border-1 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                   >
                     Cancel
                   </button>

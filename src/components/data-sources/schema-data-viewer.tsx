@@ -135,8 +135,8 @@ export function SchemaDataViewer({
       ) : (
         <div className="space-y-4">
           {/* Schema Info */}
-          <div className="bg-slate-800 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">
+          <div className="dark:bg-slate-800 border-1 rounded-lg p-4">
+            <h3 className="font-semibold text-gray-800 dark:text-white mb-2">
               {currentSchema?.schemaName}
             </h3>
             <p className="text-sm text-slate-400">
@@ -150,10 +150,10 @@ export function SchemaDataViewer({
           </div>
 
           {/* Data Table */}
-          <div className="bg-slate-800 rounded-lg overflow-hidden">
+          <div className="dark:bg-slate-800 border rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-700">
+                <thead className="dark:bg-slate-700 bg-slate-100">
                   <tr>
                     {dataResponse.data.length > 0 &&
                       Object.keys(dataResponse.data[0]).map(key => (
@@ -170,7 +170,7 @@ export function SchemaDataViewer({
                   {dataResponse.data.map((record, index) => (
                     <tr
                       key={record.id || index}
-                      className="border-t border-slate-600"
+                      className="border-t dark:border-slate-600"
                     >
                       {Object.values(record).map((value, cellIndex) => (
                         <td
