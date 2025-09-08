@@ -15,10 +15,10 @@ export function TabNavigation({ tabs, activeTab, onTabChange }: TabNavigationPro
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
+          className={`flex items-center gap-2 px-6 py-3 m-1 text-sm font-medium transition-colors ${
             activeTab === tab.id
-              ? "text-white bg-teal-600 border-b-2 border-teal-400"
-              : "text-gray-400 hover:text-white"
+              ? "text-white bg-teal-600  rounded-lg"
+              : "text-gray-400 hover:text-gray-500 dark:hover:text-white"
           }`}
         >
           <div className="w-4 h-4">{tab.icon}</div>
