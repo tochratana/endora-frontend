@@ -15,7 +15,7 @@ export default function DashboardPage() {
   // Use real project data or fallback to empty array
   const projects = data || [];
 
-  console.log(projects )
+  console.log(projects);
 
   if (isLoading) {
     return (

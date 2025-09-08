@@ -43,7 +43,21 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    createProject: builder.mutation<
+      unknown,
+      { projectName: string; description?: string }
+    >({
+      query: payload => ({
+        url: "/proxy/projects",
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useGetCurrentUserQuery, useRegisterMutation } = authApi;
+export const {
+  useGetCurrentUserQuery,
+  useRegisterMutation,
+  useCreateProjectMutation,
+} = authApi;

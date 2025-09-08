@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react"
 export function AuthButtons() {
   return (
     <div style={{ display: "flex", gap: 12 }}>
-      <button onClick={() => signIn("keycloak")} aria-label="Sign in">
+  <button onClick={() => signIn("keycloak", { callbackUrl: "/dashboard" })} aria-label="Sign in">
         Sign in
       </button>
       <button

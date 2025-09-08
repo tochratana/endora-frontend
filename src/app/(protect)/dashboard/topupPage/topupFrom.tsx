@@ -10,12 +10,15 @@ type Props = {
 export default function TopupForm({ onDone }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const [createProject, { isLoading, isError, error }] =
     useCreateProjectMutation();
 
   async function handleSubmit(e: React.FormEvent) {
     console.log("Form submitted with:", { name, description });
     e.preventDefault();
+    setErrorMessage(null);
+    const payload = { projectName: name, description };
 
     if (!name.trim() || !description.trim()) {
       return;
@@ -36,7 +39,7 @@ export default function TopupForm({ onDone }: Props) {
     }
   }
 
-  console.log()
+  console.log();
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-2">
@@ -87,6 +90,9 @@ export default function TopupForm({ onDone }: Props) {
           Cancel
         </button>
       </div>
+      {errorMessage && (
+        <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
+      )}
     </form>
   );
 }
