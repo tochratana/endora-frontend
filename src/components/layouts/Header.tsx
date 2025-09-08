@@ -21,7 +21,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 ">
             <Image
-              src="/Logo-v4.png"
+              src="/logo-v4.png"
               alt="Logo"
               width={60}
               height={60}
@@ -40,7 +40,8 @@ export default function Header() {
 
         <div className="hidden md:flex space-x-4">
           <Button
-            onClick={() => signIn("keycloak")} aria-label="Sign in"
+            onClick={() => signIn("keycloak", { callbackUrl: "/dashboard" })}
+            aria-label="Sign in"
             className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
           >
             Sign Up

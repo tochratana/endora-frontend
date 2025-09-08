@@ -7,7 +7,7 @@ This repository contains the UI used to create/manage workspaces, project overvi
 ## Quick overview
 
 - Framework: Next.js (App Router)
-- Auth: NextAuth (Google, GitHub, Credentials/Keycloak)
+  -- Auth: NextAuth (Keycloak only)
 - Styling: Tailwind CSS
 - Animations: framer-motion / custom "magicui" components
 - Deployment: Vercel
@@ -17,8 +17,7 @@ This repository contains the UI used to create/manage workspaces, project overvi
 - Workspace / Dashboard UI
 - Project overview pages under `/workspace/[workspaceId]/projectOverview`
 - Data source, visualizer and project settings pages per workspace
-- OAuth providers (Google, GitHub) via NextAuth
-- Credentials provider integrated with Keycloak token endpoints
+  -- Keycloak as the single OAuth provider via NextAuth
 - Client/server-safe components and client-only wrappers for animation components
 
 ## Routes (not exhaustive)
@@ -61,10 +60,9 @@ Add these to your `.env.local` for local development and to Vercel for productio
 
 - NEXTAUTH_URL — e.g. `http://localhost:3000` (or `https://your-app.vercel.app` in production)
 - NEXTAUTH_SECRET — long random string used to sign tokens
-- GOOGLE_CLIENT_ID
-- GOOGLE_CLIENT_SECRET
-- GITHUB_ID
-- GITHUB_SECRET
+  -- KEYCLOAK_ISSUER
+  -- KEYCLOAK_CLIENT_ID
+  -- KEYCLOAK_CLIENT_SECRET (optional for public clients)
 
 Optional (Keycloak / credentials provider)
 
@@ -78,17 +76,15 @@ Debug flag
 
 ## OAuth / Provider callback URLs (important)
 
-Register the following callback URLs in the provider consoles (Google / GitHub), replacing `your-domain` with your deployed domain (or use `localhost` setup for dev):
+Register your Keycloak client with the following callback URLs (replace `your-domain`):
 
-- Google callback: `https://your-domain/api/auth/callback/google`
-- GitHub callback: `https://your-domain/api/auth/callback/github`
+- `https://your-domain/api/auth/callback/keycloak`
 
-If using `localhost` for testing, add:
+For local testing add:
 
-- `http://localhost:3000/api/auth/callback/google`
-- `http://localhost:3000/api/auth/callback/github`
+- `http://localhost:3000/api/auth/callback/keycloak`
 
-Make sure the client id/secret in Vercel env vars match the provider settings exactly.
+Make sure the Keycloak client has `openid`, `profile`, `email` scopes and (optionally) `offline_access` if you need refresh tokens. If your Keycloak client is public (no client secret), leave `KEYCLOAK_CLIENT_SECRET` unset.
 
 ## Deploying to Vercel
 
