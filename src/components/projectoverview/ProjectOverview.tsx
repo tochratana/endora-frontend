@@ -89,7 +89,7 @@ export default function ProjectOverview({ projectUuid }: ProjectOverviewProps) {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-8 h-70 w-full gap-3">
+        <div className="grid grid-cols-8 h-70 w-full gap-4">
           {/*  */}
           <div className="col-span-2 p-3 border rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
             <div className="h-[50%]">

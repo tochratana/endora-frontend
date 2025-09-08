@@ -13,17 +13,17 @@ export default function WhyUs() {
           <div className="col-span-4 border border-(--color-secondary) rounded-md md:p-5 p-3 flex flex-col items-center">
             <DatabaseZapIcon className="text-white"/>
             <h3 className="text-gray-500 font-semibold my-2">Schema Builder</h3>
-            <p className="text-white">Create and manage database schemas with an intuitive visual editor and relationships without needing complex SQL.</p>
+            <p className="text-white md:text-base text-sm">Create and manage database schemas with an intuitive visual editor and relationships without needing complex SQL.</p>
           </div>
           <div className="col-span-4 border border-(--color-secondary) rounded-md md:p-5 p-3 flex flex-col items-center">
             <Settings className="text-white"/>
             <h3 className="text-gray-500 font-semibold my-2">API Generator</h3>
-            <p className="text-white ">Generate RESTful API endpoints from your schema in seconds, just design your schema and get production-ready APIs instantly.</p>
+            <p className="text-white md:text-base text-sm">Generate RESTful API endpoints from your schema in seconds, just design your schema and get production-ready APIs instantly.</p>
           </div>
           <div className="col-span-8 border border-(--color-secondary) rounded-md md:p-5 p-3 flex flex-col items-center">
             <FolderOpenIcon className="text-white"/>
             <h3 className="text-gray-500 font-semibold my-2">Download JSON</h3>
-            <p className="text-white ">Download ready-to-use JSON collections for Postman. Save time by testing your endpoints immediately with structured requests and sample payloads.</p>
+            <p className="text-white md:text-base text-sm">Download ready-to-use JSON collections for Postman. Save time by testing your endpoints immediately with structured requests and sample payloads.</p>
           </div>
         </div>
       </div>

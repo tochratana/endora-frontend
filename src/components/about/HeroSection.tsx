@@ -6,7 +6,7 @@ export default function HeroSection() {
       <h1 className="md:text-5xl text-4xl font-semibold text-black dark:text-white">
         Welcome to <span className="text-(--color-secondary)">Endora</span>
       </h1>
-      <p className="md:w-[60%] w-[80%] m-auto md:text-md text-sm font-bold text-black dark:text-white">
+      <p className="md:w-[60%] w-[80%] m-auto md:text-lg font-bold text-black dark:text-white">
         Endora is a lightweight Backend-as-a-Service(Baas) platform that
         simplifies backend development by generating REST APIs from schemas or
         data sources.

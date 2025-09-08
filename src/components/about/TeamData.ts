@@ -1,7 +1,7 @@
 export type SocialLinks = {
   github?: string;
-  linkedin?:string;
-  portfolio?:string;
+  linkedin?: string;
+  portfolio?: string;
 };
 
 export type TeamMember = {
@@ -10,126 +10,126 @@ export type TeamMember = {
   position: string;
   image: string;
   background?: string;
-  socials: SocialLinks
+  socials: SocialLinks;
 };
 
-export const teamMembers:TeamMember[] =[
-    {
-      id: 1, 
-      name: "Kay Keo Sokcheat",
-      position: "Mentor",
-      socials: {
-        github: " saef",
-        linkedin: "dsf",
-        portfolio: "eaf"
-      },
-      image: "/images/cherkeo.png"
+export const teamMembers: TeamMember[] = [
+  {
+    id: 1,
+    name: "Kay Keo",
+    position: "Mentor",
+    socials: {
+      github: " saef",
+      linkedin: "dsf",
+      portfolio: "eaf",
     },
-    {
-      id: 2, 
-      name: "Srong Sokcheat",
-      position: "Mentor",
-      socials: {
-        github: "fsa",
-        linkedin: "  ds",
-        portfolio: "fea"
-      },
-      image: "/images/chercheat.png"
+    image: "/images/cherkeo.png",
+  },
+  {
+    id: 2,
+    name: "Srong Sokcheat",
+    position: "Mentor",
+    socials: {
+      github: "fsa",
+      linkedin: "  ds",
+      portfolio: "fea",
     },
-    {
-      id: 3, 
-      name: "Heng Liza",
-      position: "Team Leader",
-      socials: {
-        github: "",
-        linkedin: "",
-        portfolio: "",
-      },
-      background:"/team-background/blob1.svg",
-      image: "/images/liza.png"
+    image: "/images/chercheat.png",
+  },
+  {
+    id: 3,
+    name: "Heng Liza",
+    position: "Team Leader",
+    socials: {
+      github: "",
+      linkedin: "",
+      portfolio: "wds",
     },
-    {
-      id: 4, 
-      name: "Lim Ansoleaphea",
-      position: "Team member",
-      socials: {
-        github: "",
-        linkedin: "",
-        portfolio: ""
-      },
-      background:"/team-background/blob2.svg",
-      image: "/images/leaphea.png"
+    background: "/team-background/blob9.svg",
+    image: "/images/heng-liza.png",
+  },
+  {
+    id: 4,
+    name: "Lim Ansoleaphea",
+    position: "Team member",
+    socials: {
+      github: "",
+      linkedin: "sw",
+      portfolio: "",
     },
-    {
-      id: 5, 
-      name: "Rin Sanom",
-      position: "Team member",
-      socials: {
-        github: "https://github.com/RinSanom",
-        linkedin: "",
-        portfolio: ""
-      },
-      background:"/team-background/blob3.svg",
-      image: "/images/sanom.png"
+    background: "/team-background/blob2.svg",
+    image: "/images/lim-ansoleaphea.png",
+  },
+  {
+    id: 5,
+    name: "Rin Sanom",
+    position: "Team member",
+    socials: {
+      github: "https://github.com/RinSanom",
+      linkedin: "ds",
+      portfolio: "",
     },
-    {
-      id: 6, 
-      name: "Toch Ratana",
-      position: "Team member",
-      socials: {
-        github: "",
-        linkedin: "",
-        portfolio: ""
-      },
-      background:"/team-background/blob4.svg",
-      image: "/images/ratana.png"
+    background: "/team-background/blob5.svg",
+    image: "/images/rin-sanom.png",
+  },
+  {
+    id: 6,
+    name: "Toch Ratana",
+    position: "Team member",
+    socials: {
+      github: "dd",
+      linkedin: "",
+      portfolio: "",
     },
-    {
-      id: 7, 
-      name: "Phoem Oudom",
-      position: "Team member",
-      socials: {
-        github: "https://github.com/oudomm",
-        linkedin: "https://www.linkedin.com/in/oudomm",
-        portfolio: "https://www.oudom.dev"
-      },
-      background:"/team-background/blob.svg",
-      image: "/images/oudom.png"
+    background: "/team-background/blob7.svg",
+    image: "/images/toch-ratana.png",
+  },
+  {
+    id: 7,
+    name: "Phoem Oudom",
+    position: "Team member",
+    socials: {
+      github: "https://github.com/oudomm",
+      linkedin: "https://www.linkedin.com/in/oudomm",
+      portfolio: "https://www.oudom.dev",
     },
-    {
-      id: 8, 
-      name: "Korm Taingan",
-      position: "Team member",
-      socials: {
-        github: "https://github.com/TaingAnKorm",
-        linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
-        portfolio: ""
-      },
-      background:"/team-background/blob6.svg",
-      image: "/images/taingan.png"
+    background: "/team-background/blob1.svg",
+    image: "/images/phoem-oudom.png",
+  },
+  {
+    id: 8,
+    name: "Korm Taingan",
+    position: "Team member",
+    socials: {
+      github: "https://github.com/TaingAnKorm",
+      linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
+      portfolio: ""
     },
-    {
-      id: 9, 
-      name: "Kea Daron",
-      position: "Team member",
-      socials: {
-        github: "https://github.com/kea-daron",
-        linkedin: "",
-        portfolio: "https://my-folio-pearl.vercel.app/"
-      },
-      background:"/team-background/blob7.svg",
-      image: "/images/daron.png"
+    background:"/team-background/blob6.svg",
+    image: "/images/kea-daron.png"
+  },
+  {
+    id: 9,
+    name: "Kea Daron",
+    position: "Team member",
+    socials: {
+      github: "https://github.com/kea-daron",
+      linkedin: "",
+      portfolio: "https://my-folio-pearl.vercel.app/",
     },
-    {
-      id: 10, 
-      name: "Korm Taiyi",
-      position: "Team member",
-      socials: {
-        github: "https://github.com/KormTaiyi",
-        linkedin: "https://www.linkedin.com/in/korm-taiyi-906407327/",
-        portfolio: "ssd"
-      },
-      background:"/team-background/blob8.svg",
-      image: "/images/taiyi.png"
+    background: "/team-background/blob8.svg",
+    image: "/images/kea-daron.png",
+  },
+  {
+    id: 10,
+    name: "Korm Taiyi",
+    position: "Team member",
+    socials: {
+      github: "https://github.com/KormTaiyi",
+      linkedin: "https://www.linkedin.com/in/korm-taiyi-906407327/",
+      portfolio: "",
     },
-  ]
+    background: "/team-background/blob.svg",
+    image: "/images/korm-taiyi.png",
+  },
+];
