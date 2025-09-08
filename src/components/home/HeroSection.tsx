@@ -30,7 +30,7 @@ export default function HeroSection() {
           <div className="text-center lg:text-left">
             <div className="inline-flex items-baseline text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
               <span>
-                Say Good Bye To <WordRotateDemo />{" "}
+                Say Goodbye To <WordRotateDemo />{" "}
               </span>
             </div>
 

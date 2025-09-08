@@ -5,10 +5,10 @@ export function WordRotateDemo() {
     <WordRotate
       className=" text-start inline bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent"
       words={[
-        "Backend Manually",
-        "Complex Setup",
-        "Database Config",
-        "API Building",
+        "Manual Backend Setup",
+        "Complex Configurations",
+        "Database Struggles",
+        "API Building Headaches",
       ]}
       duration={980}
     />
