@@ -19,8 +19,9 @@ export default function Header() {
                  dark:supports-[backdrop-filter]:bg-slate-900/80"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-2">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 ">
+        {/* Left - Logo only */}
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/logo-v4.png"
               alt="Logo"
@@ -30,36 +31,38 @@ export default function Header() {
               priority
             />
           </Link>
-
-          <nav className="hidden md:flex space-x-8 font-medium mx-5">
-            <Link
-              href="/about"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              About
-            </Link>
-            <Link
-              href="https://docusaurus.io/"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-              target="blank"
-            >
-              Document
-            </Link>
-            <Link
-              href="/service"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              Service
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              Contact
-            </Link>
-          </nav>
         </div>
 
+        {/* Center - Navigation */}
+        <nav className="hidden md:flex space-x-8 font-medium">
+          <Link
+            href="/about"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
+          >
+            About
+          </Link>
+          <Link
+            href="https://docusaurus.io/"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
+            target="blank"
+          >
+            Document
+          </Link>
+          <Link
+            href="/service"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
+          >
+            Service
+          </Link>
+          <Link
+            href="/contact"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
+          >
+            Contact
+          </Link>
+        </nav>
+
+        {/* Right - Actions */}
         <div className="hidden md:flex items-center space-x-4">
           <AnimatedThemeToggler className="hover:cursor-pointer" />
           <Button

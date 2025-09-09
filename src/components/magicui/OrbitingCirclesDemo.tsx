@@ -37,11 +37,11 @@ export function OrbitingCirclesDemo() {
           return (
             <div
               key={iconData.name}
-              className="flex items-center justify-center w-[65px] h-[65px] bg-white/30 rounded-full backdrop-blur-sm border border-white/50"
+              className="flex items-center justify-center w-[65px] h-[65px] bg-white/20 dark:bg-gray-800/40 rounded-full backdrop-blur-sm border border-white/40 dark:border-gray-700/50"
             >
               <IconComponent
                 size={32}
-                className="text-primary-500 dark:text-primary-600"
+                className="text-primary-600 dark:text-primary-400"
               />
             </div>
           );
@@ -53,11 +53,11 @@ export function OrbitingCirclesDemo() {
           return (
             <div
               key={iconData.name}
-              className="flex items-center justify-center w-[50px] h-[50px] bg-white/10 rounded-full backdrop-blur-sm border border-white/20"
+              className="flex items-center justify-center w-[50px] h-[50px] bg-white/15 dark:bg-gray-800/30 rounded-full backdrop-blur-sm border border-white/30 dark:border-gray-700/40"
             >
               <IconComponent
                 size={24}
-                className="text-teal-500 dark:text-teal-600"
+                className="text-primary-400 dark:text-primary-300"
               />
             </div>
           );

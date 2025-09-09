@@ -2,11 +2,6 @@
 
 import React from "react";
 import {
-  FiDatabase,
-  FiDownload,
-  FiCheckCircle,
-  FiGrid,
-  FiFile,
   FiGlobe,
   FiServer,
   FiHardDrive,
@@ -19,7 +14,6 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: <FiServer className="w-12 h-12" />,
-      titleIcon: <FiDatabase className="w-5 h-5 text-teal-500" />,
       title: "Auto-Generated RESTful APIs",
       description:
         "Transform your database into production-ready APIs instantly with PostgreSQL reliability.",
@@ -27,7 +21,6 @@ export default function FeaturesSection() {
     },
     {
       icon: <FiHardDrive className="w-12 h-12" />,
-      titleIcon: <FiDownload className="w-5 h-5 text-teal-500" />,
       title: "Universal Data Import",
       description:
         "Import from SQL, JSON, Excel, CSV with intelligent parsing and validation.",
@@ -35,15 +28,13 @@ export default function FeaturesSection() {
     },
     {
       icon: <FiGlobe className="w-12 h-12" />,
-      titleIcon: <FiGlobe className="w-5 h-5 text-teal-500" />,
-      title: "Web Scraping & Data Extraction",
+      title: "Web Scraping",
       description:
         "Extract data from any website automatically with our intelligent web scraping engine.",
       highlight: "web scraping engine",
     },
     {
       icon: <FiCode className="w-12 h-12" />,
-      titleIcon: <FiCheckCircle className="w-5 h-5 text-teal-500" />,
       title: "Interactive API Testing",
       description:
         "Test APIs instantly with built-in Swagger-style interface and endpoint validation.",
@@ -51,7 +42,6 @@ export default function FeaturesSection() {
     },
     {
       icon: <FiSettings className="w-12 h-12" />,
-      titleIcon: <FiGrid className="w-5 h-5 text-teal-500" />,
       title: "Visual Data Management",
       description:
         "Manage data with intuitive dashboard. Perform CRUD operations with ease.",
@@ -59,7 +49,6 @@ export default function FeaturesSection() {
     },
     {
       icon: <FiShield className="w-12 h-12" />,
-      titleIcon: <FiFile className="w-5 h-5 text-teal-500" />,
       title: "One-Click Postman Export",
       description:
         "Generate complete Postman collections automatically for team collaboration.",
@@ -92,7 +81,6 @@ export default function FeaturesSection() {
               >
                 {/* Title */}
                 <div className="flex items-center gap-2 mb-4">
-                  {feature.titleIcon}
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {feature.title}
                   </h3>
@@ -102,7 +90,7 @@ export default function FeaturesSection() {
                 <div className="flex items-start justify-between">
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed flex-1 pr-4">
                     {feature.description.split(feature.highlight)[0]}
-                    <span className="text-teal-500 font-semibold">
+                    <span className="text-secondary-600 dark:text-secondary-400 font-semibold">
                       {feature.highlight}
                     </span>
                     {feature.description.split(feature.highlight)[1]}
@@ -110,8 +98,8 @@ export default function FeaturesSection() {
 
                   {/* Icon on the right of description */}
                   <div className="flex-shrink-0">
-                    <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-teal-200 dark:border-teal-700/50">
-                      <div className="text-teal-600 dark:text-teal-400">
+                    <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-gray-200 dark:border-gray-600">
+                      <div className="text-primary-600 dark:text-primary-400">
                         {feature.icon}
                       </div>
                     </div>
@@ -130,7 +118,6 @@ export default function FeaturesSection() {
               >
                 {/* Title */}
                 <div className="flex items-center gap-2 mb-4">
-                  {feature.titleIcon}
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {feature.title}
                   </h3>
@@ -140,7 +127,7 @@ export default function FeaturesSection() {
                 <div className="flex items-start justify-between">
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed flex-1 pr-4">
                     {feature.description.split(feature.highlight)[0]}
-                    <span className="text-teal-500 font-semibold">
+                    <span className="text-secondary-600 dark:text-secondary-400 font-semibold">
                       {feature.highlight}
                     </span>
                     {feature.description.split(feature.highlight)[1]}
@@ -148,8 +135,8 @@ export default function FeaturesSection() {
 
                   {/* Icon on the right of description */}
                   <div className="flex-shrink-0">
-                    <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-teal-200 dark:border-teal-700/50">
-                      <div className="text-teal-600 dark:text-teal-400">
+                    <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-gray-200 dark:border-gray-600">
+                      <div className="text-primary-600 dark:text-primary-400">
                         {feature.icon}
                       </div>
                     </div>
