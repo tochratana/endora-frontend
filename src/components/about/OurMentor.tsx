@@ -4,12 +4,12 @@ import { teamMembers } from "./TeamData";
 
 export default function OurMentor() {
   return (
-    <section className="w-full py-10 px-2 bg-white">
+    <section className="w-full py-10 px-2">
       <div className="max-w-6xl m-auto">
         <h1 className="text-(--color-primary) text-center md:text-5xl text-4xl font-semibold mb-4">
           Our Mentor
         </h1>
-        <p className="text-black font-semibold text-center mb-15 md:text-xl text-lg">
+        <p className="text-gray-800 dark:text-white text-center mb-15 md:text-xl text-lg">
           Behind every great achievement is great guidance-ours comes from an
           exceptional mentor.
         </p>

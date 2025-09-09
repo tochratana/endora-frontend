@@ -1,5 +1,5 @@
+import ContactForm from "@/components/about/ContactForm";
 import HeroSection from "@/components/about/HeroSection";
-import JoinTeam from "@/components/about/JoinTeam";
 import OurHistory from "@/components/about/OurHistory";
 import OurMentor from "@/components/about/OurMentor";
 import OurMission from "@/components/about/OurMission";
@@ -15,7 +15,7 @@ export default function page() {
       <OurMentor />
       <OurTeam />
       <WhyUs />
-      <JoinTeam />
+      <ContactForm/>
     </section>
   );
 }
