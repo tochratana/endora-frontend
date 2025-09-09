@@ -4,7 +4,7 @@ import { Project } from "@/types/product";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectUuid: string } }
+  { params }: { params: Promise<{ projectUuid: string }> }
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,7 +15,7 @@ export async function GET(
   }
 
   try {
-    const { projectUuid } = params;
+    const { projectUuid } = await params;
 
     // First try to get all projects and find the specific one
     // This is a fallback approach in case the backend doesn't have a single project endpoint

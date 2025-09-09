@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, use } from "react";
 import { Database, FileText, Clock } from "lucide-react";
 
 import { DataSourceHeader } from "@/components/data-sources/data-source-header";
@@ -23,9 +23,9 @@ import type {
 } from "@/types/dataSource";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     workspaceId: string;
-  };
+  }>;
 }
 
 const CURRENT_USER = "You";
@@ -75,6 +75,7 @@ function getInitialState(): { tab: TabType; sample: SampleData } {
 }
 
 export default function Page({ params }: PageProps) {
+  const { workspaceId } = use(params);
   const { tab: initialTab, sample: initialSample } = getInitialState();
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [sampleData, setSampleData] = useState<SampleData>(initialSample);
@@ -178,7 +179,6 @@ export default function Page({ params }: PageProps) {
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <DataSourceHeader />
-
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -221,10 +221,7 @@ export default function Page({ params }: PageProps) {
               ))}
 
             {activeTab === "real-data" && (
-              <SchemaDataViewer
-                projectUuid={params.workspaceId}
-                userUuid={userUuid}
-              />
+              <SchemaDataViewer projectUuid={workspaceId} userUuid={userUuid} />
             )}
 
             {activeTab === "logs" &&

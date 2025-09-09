@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { SchemaSidebar } from "@/components/schema-sidebar";
 import { SchemaContent } from "@/components/schema-content";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     workspaceId: string;
-  };
+  }>;
 }
 
 export default function SchemaManager({ params }: PageProps) {
+  const { workspaceId } = use(params);
   const [activeTable, setActiveTable] = useState("products");
 
   return (
@@ -19,7 +20,7 @@ export default function SchemaManager({ params }: PageProps) {
       <SchemaSidebar
         activeTable={activeTable}
         onTableSelect={setActiveTable}
-        projectUuid={params.workspaceId}
+        projectUuid={workspaceId}
       />
 
       {/* Main Content */}
@@ -38,10 +39,7 @@ export default function SchemaManager({ params }: PageProps) {
 
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
-          <SchemaContent
-            activeTable={activeTable}
-            projectUuid={params.workspaceId}
-          />
+          <SchemaContent activeTable={activeTable} projectUuid={workspaceId} />
         </div>
       </div>
     </div>
