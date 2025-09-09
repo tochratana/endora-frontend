@@ -88,9 +88,10 @@ export const InstallPWA = () => {
   // TODO PWA not support
   if (!supportsPWA) {
     return (
-      <div className="fixed bottom-4 right-4 bg-yellow-100 text-yellow-800 p-2 rounded-lg">
-        {/* PWA not supported yet - waiting for browser criteria */}
-      </div>
+      // <div className="fixed bottom-4 right-4 bg-yellow-100 text-yellow-800 p-2 rounded-lg">
+      //   {/* PWA not supported yet - waiting for browser criteria */}
+      // </div>
+      <div></div>
     );
   }
 

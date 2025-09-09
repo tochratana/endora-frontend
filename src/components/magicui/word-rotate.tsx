@@ -61,7 +61,7 @@ export function WordRotate({
   return (
     <div className="overflow-hidden py-2 min-h-[60px] flex items-center justify-center w-full text-start">
       <div className="flex items-center gap-2">
-        <span>Say Goodbye To</span>
+        {/* <span>Say Goodbye To</span> */}
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentWord}-${index}`}

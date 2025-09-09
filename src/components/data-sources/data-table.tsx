@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 
 import {
   ColumnDef,
@@ -67,10 +67,13 @@ export function DataTable({
     setRowSelection({});
   }, [initialProducts]);
 
-  const commit = (next: SampleProduct[]) => {
-    setProducts(next);
-    onProductsChange?.(next);
-  };
+  const commit = useCallback(
+    (next: SampleProduct[]) => {
+      setProducts(next);
+      onProductsChange?.(next);
+    },
+    [onProductsChange]
+  );
 
   const handleImport = (file: File, method: string) => {
     onLog?.(
@@ -163,7 +166,7 @@ export function DataTable({
               );
               setRowSelection(prev => {
                 const n = { ...prev };
-                delete (n as any)[String(product.id)];
+                delete (n as Record<string, boolean>)[String(product.id)];
                 return n;
               });
             }}
@@ -178,7 +181,7 @@ export function DataTable({
     };
 
     return [selectCol, idCol, nameCol, priceCol, dateCol, actionsCol];
-  }, [products, onLog]);
+  }, [products, onLog, commit]);
 
   const table = useReactTable({
     data: products,
@@ -229,7 +232,9 @@ export function DataTable({
           <span className="w-6 h-6 flex items-center justify-center rounded  border dark:border-slate-700">
             <ClipboardList size={14} className="text-gray-500" />
           </span>
-          <span className="text-sm text-gray-500 dark:text-slate-300">(products collection)</span>
+          <span className="text-sm text-gray-500 dark:text-slate-300">
+            (products collection)
+          </span>
         </div>
         <button
           onClick={() => {

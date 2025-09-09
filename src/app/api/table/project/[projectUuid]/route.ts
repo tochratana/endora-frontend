@@ -3,7 +3,7 @@ import { getToken } from "next-auth/jwt";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectUuid: string } }
+  { params }: { params: Promise<{ projectUuid: string }> }
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +14,7 @@ export async function GET(
   }
 
   try {
-    const { projectUuid } = params;
+    const { projectUuid } = await params;
 
     console.log("Fetching schemas for project:", projectUuid);
 

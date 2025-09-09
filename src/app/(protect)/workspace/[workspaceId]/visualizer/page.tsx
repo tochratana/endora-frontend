@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, use } from "react";
 import ReactFlow, {
   Background,
   ReactFlowProvider,
@@ -24,9 +24,9 @@ import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 const nodeTypes = { dbNode: DatabaseSchemaDemo };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     workspaceId: string;
-  };
+  }>;
 }
 
 // Helper function to parse schema definition into expected format
@@ -39,12 +39,9 @@ const parseSchemaToColumns = (schema: Record<string, string>) => {
 };
 
 export default function SchemaVisualizerPage({ params }: PageProps) {
+  const { workspaceId } = use(params);
   // Fetch schemas from API
-  const {
-    data: schemas,
-    error,
-    isLoading,
-  } = useGetSchemasQuery(params.workspaceId);
+  const { data: schemas, error, isLoading } = useGetSchemasQuery(workspaceId);
 
   // Transform schemas into nodes
   const nodes = useMemo(() => {
@@ -184,7 +181,7 @@ export default function SchemaVisualizerPage({ params }: PageProps) {
               onConnect={onConnect}
               fitView
             >
-              <Background className="dark:bg-slate-950"/>
+              <Background className="dark:bg-slate-950" />
             </ReactFlow>
           </ReactFlowProvider>
         )}

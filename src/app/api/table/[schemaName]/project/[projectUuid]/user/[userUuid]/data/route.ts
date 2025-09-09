@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     schemaName: string;
     projectUuid: string;
     userUuid: string;
-  };
+  }>;
 }
 
 // POST /api/table/[schemaName]/project/[projectUuid]/user/[userUuid]/data
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid, userUuid } = params;
+    const { schemaName, projectUuid, userUuid } = await params;
 
     // Get the request body (data to insert)
     const requestData = await request.json();
@@ -118,7 +118,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid, userUuid } = params;
+    const { schemaName, projectUuid, userUuid } = await params;
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");

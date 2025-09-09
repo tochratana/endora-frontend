@@ -1,133 +1,163 @@
 "use client";
 
 import React from "react";
+import {
+  FiDatabase,
+  FiDownload,
+  FiCheckCircle,
+  FiGrid,
+  FiFile,
+  FiGlobe,
+  FiServer,
+  FiHardDrive,
+  FiCode,
+  FiShield,
+  FiSettings,
+} from "react-icons/fi";
 
 export default function FeaturesSection() {
   const features = [
     {
-      icon: (
-        <svg
-          className="h-8 w-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-          />
-        </svg>
-      ),
-      title: "Modern Database",
+      icon: <FiServer className="w-12 h-12" />,
+      titleIcon: <FiDatabase className="w-5 h-5 text-teal-500" />,
+      title: "Auto-Generated RESTful APIs",
       description:
-        "PostgreSQL database with instant APIs, real-time subscriptions, and automatic scaling.",
+        "Transform your database into production-ready APIs instantly with PostgreSQL reliability.",
+      highlight: "PostgreSQL",
     },
     {
-      icon: (
-        <svg
-          className="h-8 w-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
-        </svg>
-      ),
-      title: "Authentication",
+      icon: <FiHardDrive className="w-12 h-12" />,
+      titleIcon: <FiDownload className="w-5 h-5 text-teal-500" />,
+      title: "Universal Data Import",
       description:
-        "Complete auth solution with social logins, multi-factor authentication, and user management.",
+        "Import from SQL, JSON, Excel, CSV with intelligent parsing and validation.",
+      highlight: "SQL, JSON, Excel, CSV",
     },
     {
-      icon: (
-        <svg
-          className="h-8 w-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M13 10V3L4 14h7v7l9-11h-7z"
-          />
-        </svg>
-      ),
-      title: "Personal Dashboard",
+      icon: <FiGlobe className="w-12 h-12" />,
+      titleIcon: <FiGlobe className="w-5 h-5 text-teal-500" />,
+      title: "Web Scraping & Data Extraction",
       description:
-        "Customize your workspace with a personal dashboard that provides at-a-glance insights..",
+        "Extract data from any website automatically with our intelligent web scraping engine.",
+      highlight: "web scraping engine",
     },
     {
-      icon: (
-        <svg
-          className="h-8 w-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-          />
-        </svg>
-      ),
-      title: "File Storage",
+      icon: <FiCode className="w-12 h-12" />,
+      titleIcon: <FiCheckCircle className="w-5 h-5 text-teal-500" />,
+      title: "Interactive API Testing",
       description:
-        "Secure file storage with CDN delivery, image transformations, and automatic backups.",
+        "Test APIs instantly with built-in Swagger-style interface and endpoint validation.",
+      highlight: "Swagger-style",
+    },
+    {
+      icon: <FiSettings className="w-12 h-12" />,
+      titleIcon: <FiGrid className="w-5 h-5 text-teal-500" />,
+      title: "Visual Data Management",
+      description:
+        "Manage data with intuitive dashboard. Perform CRUD operations with ease.",
+      highlight: "CRUD operations",
+    },
+    {
+      icon: <FiShield className="w-12 h-12" />,
+      titleIcon: <FiFile className="w-5 h-5 text-teal-500" />,
+      title: "One-Click Postman Export",
+      description:
+        "Generate complete Postman collections automatically for team collaboration.",
+      highlight: "Postman collections",
     },
   ];
 
   return (
-    <section className="py-24 bg-white dark:bg-gray-900">
+    <section className="py-24 bg-gray-50 dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-primary dark:text-white sm:text-5xl mb-4">
-            Explore The Benefits of Our Features
+          <h2 className="text-4xl font-bold sm:text-5xl mb-4 bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+            Everything you need to build APIs
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Endura provides all the backend services you need to build modern
-            applications. Start with our intuitive APIs and scale to millions of
-            users.
+            From data import to testing and deployment. Transform any data
+            source into powerful APIs with zero coding required.
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group relative p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/10"
-            >
-              {/* Radial hover effect background - starts from icon position */}
-              <div className="absolute top-8 left-8 w-16 h-16 bg-primary rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-[20] group-hover:rounded-full origin-center"></div>
-
-              {/* Content wrapper with higher z-index */}
-              <div className="relative z-10">
-                {/* Icon */}
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-xl mb-6 group-hover:bg-white/20 group-hover:text-white transition-all duration-500 relative z-20">
-                  {feature.icon}
+        <div className="space-y-8">
+          {/* First Row - 3 cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.slice(0, 3).map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+              >
+                {/* Title */}
+                <div className="flex items-center gap-2 mb-4">
+                  {feature.titleIcon}
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
                 </div>
 
-                {/* Content */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-white mb-3 transition-colors duration-500">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 group-hover:text-white/90 leading-relaxed transition-colors duration-500">
-                  {feature.description}
-                </p>
+                {/* Description with Image */}
+                <div className="flex items-start justify-between">
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed flex-1 pr-4">
+                    {feature.description.split(feature.highlight)[0]}
+                    <span className="text-teal-500 font-semibold">
+                      {feature.highlight}
+                    </span>
+                    {feature.description.split(feature.highlight)[1]}
+                  </p>
+
+                  {/* Icon on the right of description */}
+                  <div className="flex-shrink-0">
+                    <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-teal-200 dark:border-teal-700/50">
+                      <div className="text-teal-600 dark:text-teal-400">
+                        {feature.icon}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Second Row - 3 cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.slice(3, 6).map((feature, index) => (
+              <div
+                key={index + 3}
+                className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+              >
+                {/* Title */}
+                <div className="flex items-center gap-2 mb-4">
+                  {feature.titleIcon}
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                </div>
+
+                {/* Description with Image */}
+                <div className="flex items-start justify-between">
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed flex-1 pr-4">
+                    {feature.description.split(feature.highlight)[0]}
+                    <span className="text-teal-500 font-semibold">
+                      {feature.highlight}
+                    </span>
+                    {feature.description.split(feature.highlight)[1]}
+                  </p>
+
+                  {/* Icon on the right of description */}
+                  <div className="flex-shrink-0">
+                    <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-teal-200 dark:border-teal-700/50">
+                      <div className="text-teal-600 dark:text-teal-400">
+                        {feature.icon}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
