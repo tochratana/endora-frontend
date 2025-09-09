@@ -35,10 +35,6 @@ export default function TopupForm({ onDone }: Props) {
       <div className="grid gap-2">
         <label className="text-sm">Discrition</label>
         <textarea
-          value={credits}
-          onChange={(e) =>
-            setCredits(e.target.value === "" ? "" : Number(e.target.value))
-          }
           className="w-full rounded-[8px] border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-teal-400 hover:border-teal-400 dark:border-zinc-800 dark:bg-[#0F0F1A] dark:text-zinc-200 dark:focus:border-emerald-500 dark:hover:border-emerald-500"
           placeholder="Discrition of project"
         />
