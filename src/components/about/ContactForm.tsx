@@ -32,7 +32,7 @@ export default function ContactForm() {
           data-aos-offset="50"
           className="md:col-span-4 col-span-8 flex flex-col gap-6 justify-center"
         >
-          <h1 className="text-[var(--color-primary)] md:text-4xl text-3xl font-semibold mb-2">
+          <h1 className="text-[var(--color-primary)] md:text-5xl text-3xl font-semibold mb-2">
             Lets talk with us
           </h1>
           <p className="text-gray-600 dark:text-gray-300 md:text-lg">
@@ -42,10 +42,12 @@ export default function ContactForm() {
 
           {/* Contact Info */}
           <ul className="flex flex-col gap-3 text-[var(--color-primary)] font-semibold">
-            <li className="flex items-center gap-2 group">
+            <a
+            href="#"
+            className="flex items-center gap-2 group hover:text-teal-500 transition-colors">
               <MapPin className="transition-all duration-300 group-hover:text-teal-500 group-hover:animate-pulse" />
               ISTAD, Phnom Penh, Cambodia
-            </li>
+            </a>
             <li className="flex items-center gap-2 group">
               <Phone className="transition-all duration-300 group-hover:text-teal-500 group-hover:animate-bounce" />
               <a

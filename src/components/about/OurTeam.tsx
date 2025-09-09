@@ -38,7 +38,11 @@ export default function OurTeam() {
             together to make APIs effortless.
           </p>
         </div>
-        <div className="grid md:grid-cols-8 sm:grid-cols-4 grid-cols-2 w-full gap-y-9 gap-1">
+        <div 
+        //  data-aos="zoom-out-up"
+        //   data-aos-delay="120"
+        //   data-aos-offset="50"
+        className="grid md:grid-cols-8 sm:grid-cols-4 grid-cols-2 w-full gap-y-9 gap-1">
           {teamMembers
             .filter(
               (tm) =>

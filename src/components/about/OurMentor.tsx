@@ -45,16 +45,16 @@ export default function OurMentor() {
                 className={`flex md:flex-row flex-col md:text-left items-center md:gap-6 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
               >
                 <div
-                  // data-aos="zoom-out"
-                  // data-aos-delay="120"
-                  // data-aos-offset="50"
+                  data-aos="zoom-in"
+                  data-aos-delay="120"
+                  data-aos-offset="50"
                   className="flex-shrink-0"
                 >
                   <Image
                     src={tm.image}
                     alt={tm.name}
-                    width={200}
-                    height={200}
+                    width={350}
+                    height={350}
                     className="rounded-lg object-cover"
                   />
                 </div>

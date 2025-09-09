@@ -23,7 +23,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/kaykeo",
       portfolio: "https://kaykeo.dev",
     },
-    image: "/images/cherkeo.png",
+    image: "/images/teacher-keo.png",
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/srongsokcheat",
       portfolio: "https://sokcheat.dev",
     },
-    image: "/images/chercheat.png",
+    image: "/images/teacher-cheat-half.png",
   },
   {
     id: 3,

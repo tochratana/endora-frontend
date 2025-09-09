@@ -8,13 +8,14 @@ export default function HeroSection() {
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/30 to-purple-50/40 dark:from-teal-950/20 dark:via-purple-950/10 dark:to-teal-950/20"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/30 to-purple-50/40 dark:from-teal-950/20 dark:via-purple-950/10 dark:to-teal-950/20"></div> */}
+        <div className="absolute inset-0 dark:bg-slate-900"></div>
 
         {/* Floating Orbs - Enhanced for light mode */}
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-teal-400/40 to-purple-400/40 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-r from-purple-400/40 to-teal-400/40 rounded-full blur-xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-gradient-to-r from-purple-400/35 to-teal-400/35 rounded-full blur-lg animate-pulse delay-500"></div>
-        
+
         {/* Additional subtle orbs for more visibility */}
         <div className="absolute top-1/3 right-1/5 w-20 h-20 bg-gradient-to-r from-cyan-400/30 to-blue-400/30 rounded-full blur-lg animate-pulse delay-700"></div>
         <div className="absolute bottom-1/3 left-1/5 w-28 h-28 bg-gradient-to-r from-purple-400/35 to-teal-400/35 rounded-full blur-xl animate-pulse delay-300"></div>
@@ -46,9 +47,10 @@ export default function HeroSection() {
         </div>
 
         {/* CTA Section */}
-        <Button 
-        // variant="secondaryTeal"
-        className="flex justify-center">
+        <Button
+          // variant="secondaryTeal"
+          className="flex justify-center"
+        >
           <Link
             href="/"
             className="group inline-flex items-center px-6 py-2 text-white text-[18px]  font-bold hover:opacity-90 transition-all duration-300   hover:scale-105 active:scale-95"
@@ -73,7 +75,8 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none"></div>
+      {/* <div className="absolute bottom-[-70] left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-60"></div> */}
+      <div className=" absolute bottom-[-70] left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-30"></div>
     </section>
   );
 }

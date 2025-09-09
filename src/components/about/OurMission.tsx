@@ -44,7 +44,7 @@ export default function OurMission() {
           data-aos-offset="50"
           className="col-span-4 md:col-span-5 lg:col-span-4 px-4 md:order-2 order-1"
         >
-          <h1 className="md:text-5xl text-4xl text-(--color-primary) font-semibold mb-5">
+          <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">
             Our Mission
           </h1>
           <ul className="list-disc marker:text-(--color-secondary)">
