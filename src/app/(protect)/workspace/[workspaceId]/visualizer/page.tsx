@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo, use } from "react";
 import ReactFlow, {
   Background,
-  Controls,
   ReactFlowProvider,
   addEdge,
   Connection,
   Edge,
-  Node,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
@@ -21,83 +19,63 @@ import {
 import DatabaseSchemaDemo from "@/components/database-schema-demo";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 const nodeTypes = { dbNode: DatabaseSchemaDemo };
 
-export default function SchemaVisualizerPage() {
-  const [nodes, setNodes] = useState<Node[]>([
-    {
-      id: "products",
-      type: "dbNode",
-      position: { x: 50, y: 50 },
-      data: {
-        label: "Products",
-        schema: [
-          { title: "id", type: "uuid" },
-          { title: "name", type: "varchar" },
-          { title: "description", type: "varchar" },
-          { title: "warehouse_id", type: "uuid" },
-          { title: "supplier_id", type: "uuid" },
-          { title: "price", type: "money" },
-          { title: "quantity", type: "int4" },
-        ],
-      },
-    },
-    {
-      id: "warehouses",
-      type: "dbNode",
-      position: { x: 350, y: 50 },
-      data: {
-        label: "Warehouses",
-        schema: [
-          { title: "id", type: "uuid" },
-          { title: "name", type: "varchar" },
-          { title: "address", type: "varchar" },
-          { title: "capacity", type: "int4" },
-        ],
-      },
-    },
-    {
-      id: "suppliers",
-      type: "dbNode",
-      position: { x: 350, y: 250 },
-      data: {
-        label: "Suppliers",
-        schema: [
-          { title: "id", type: "uuid" },
-          { title: "name", type: "varchar" },
-          { title: "description", type: "varchar" },
-          { title: "country", type: "varchar" },
-        ],
-      },
-    },
-  ]);
+interface PageProps {
+  params: Promise<{
+    workspaceId: string;
+  }>;
+}
 
-  const [edges, setEdges] = useState<Edge[]>([
-    {
-      id: "e1-2",
-      source: "products",
-      sourceHandle: "warehouse_id",
-      target: "warehouses",
-      targetHandle: "id",
-    },
-    {
-      id: "e1-3",
-      source: "products",
-      sourceHandle: "supplier_id",
-      target: "suppliers",
-      targetHandle: "id",
-    },
-  ]);
+// Helper function to parse schema definition into expected format
+const parseSchemaToColumns = (schema: Record<string, string>) => {
+  return Object.entries(schema).map(([title, definition]) => {
+    // Extract the base type (e.g., "SERIAL PRIMARY KEY" -> "serial")
+    const type = definition.split(" ")[0].toLowerCase();
+    return { title, type };
+  });
+};
+
+export default function SchemaVisualizerPage({ params }: PageProps) {
+  const { workspaceId } = use(params);
+  // Fetch schemas from API
+  const { data: schemas, error, isLoading } = useGetSchemasQuery(workspaceId);
+
+  // Transform schemas into nodes
+  const nodes = useMemo(() => {
+    if (!schemas || schemas.length === 0) {
+      return [];
+    }
+
+    return schemas.map((schema, index) => {
+      const columns = parseSchemaToColumns(schema.schema);
+      const xPos = (index % 3) * 350 + 50; // Arrange in grid
+      const yPos = Math.floor(index / 3) * 300 + 50;
+
+      return {
+        id: schema.id,
+        type: "dbNode",
+        position: { x: xPos, y: yPos },
+        data: {
+          label: schema.schemaName,
+          schema: columns,
+        },
+      };
+    });
+  }, [schemas]);
+
+  const [edges, setEdges] = useState<Edge[]>([]);
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges(eds => addEdge(params, eds)),
     []
   );
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card/50">
+      <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card/50 dark:bg-slate-950">
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">
             Schema Visualizer
@@ -167,17 +145,46 @@ export default function SchemaVisualizerPage() {
         </div>
       </div>
       <div className="flex-1 relative">
-        <ReactFlowProvider>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            onConnect={onConnect}
-            fitView
-          >
-            <Background />
-          </ReactFlow>
-        </ReactFlowProvider>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading schemas...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <p className="text-red-500 mb-2">Failed to load schemas</p>
+              <p className="text-sm text-muted-foreground">
+                {error && "data" in error
+                  ? String(error.data)
+                  : "Unknown error"}
+              </p>
+            </div>
+          </div>
+        ) : nodes.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <p className="text-muted-foreground mb-2">No schemas found</p>
+              <p className="text-sm text-muted-foreground">
+                Create some schemas first to visualize them here
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              onConnect={onConnect}
+              fitView
+            >
+              <Background className="dark:bg-slate-950" />
+            </ReactFlow>
+          </ReactFlowProvider>
+        )}
       </div>
     </div>
   );

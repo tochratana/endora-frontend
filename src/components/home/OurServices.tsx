@@ -1,50 +1,16 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import type { AnimationItem } from "lottie-web";
+import React from "react";
 import SchemaServiceSection from "./SchemaServiceSection";
 import EndPointServiceSection from "./EndPointServiceSection";
 import APIDocServiceSection from "./APIDocServiceSection";
 
 export default function OurServices() {
-  const cloudRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let animationInstance: AnimationItem | null = null;
-
-    const loadLottie = async () => {
-      try {
-        // Dynamically import lottie-web to avoid SSR issues
-        const lottie = (await import("lottie-web")).default;
-
-        if (cloudRef.current) {
-          animationInstance = lottie.loadAnimation({
-            container: cloudRef.current,
-            renderer: "svg",
-            loop: true,
-            autoplay: true,
-            path: "/home/cloud.json",
-          });
-        }
-      } catch (error) {
-        console.error("Error loading Lottie animation:", error);
-      }
-    };
-
-    loadLottie();
-
-    return () => {
-      if (animationInstance) {
-        animationInstance.destroy();
-      }
-    };
-  }, []);
-
   return (
-    <section className=" bg-white dark:bg-gray-900">
+    <section className="py-24 bg-white dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-primary dark:text-white sm:text-5xl mb-4">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent sm:text-5xl mb-4">
             Our Services
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">

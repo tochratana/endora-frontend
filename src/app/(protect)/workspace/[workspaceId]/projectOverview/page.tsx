@@ -1,9 +1,16 @@
 import ProjectOverview from "@/components/projectoverview/ProjectOverview";
 
-export default function page() {
+interface PageProps {
+  params: Promise<{
+    workspaceId: string;
+  }>;
+}
+
+export default async function page({ params }: PageProps) {
+  const { workspaceId } = await params;
   return (
     <section>
-      <ProjectOverview/>
+      <ProjectOverview projectUuid={workspaceId} />
     </section>
-  )
+  );
 }

@@ -10,12 +10,12 @@ export default function OurTeam() {
           <h1 className="md:text-5xl text-4xl mb-5 text-[var(--color-primary)]">
             Our team members
           </h1>
-          <p className="text-black">
+          <p className="text-black md:text-xl text-lg px-1">
             A passionate group of innovators, builders, and dreamers working
             together to make APIs effortless.
           </p>
         </div>
-        <div className="grid md:grid-cols-8 sm:grid-cols-4 grid-cols-2 w-full gap-1">
+        <div className="grid md:grid-cols-8 sm:grid-cols-4 grid-cols-2 w-full gap-y-9 gap-1">
           {teamMembers
             .filter(
               (tm) =>
@@ -24,20 +24,22 @@ export default function OurTeam() {
             .map((tm) => (
               <div
                 key={tm.id}
-                className="col-span-2 flex flex-col items-center h-full text-center bg-no-repeat bg-center bg-contain"
-                style={{ backgroundImage: `url(${tm.background})` }}
-              >
+                className="col-span-2 flex flex-col items-center h-full bg-no-repeat bg-top bg-contain"
+                style={{ backgroundImage: `url(${tm.background})` }}>
                 <div className="relative w-full h-full">
                   <Image
                     src={tm.image}
                     alt={tm.name}
-                    width={200}
+                    width={0}
                     height={0}
-                    className="object-contain h-auto"
+                    unoptimized
+                    sizes="100vw"
+                    style={{ width: "100%", height: "auto" }}
+                    className="object-contain"
                   />
                 </div>
                 <div className="flex flex-col mt-4 text-black">
-                  <h1 className="font-semibold">{tm.name}</h1>
+                  <h1 className="font-semibold md:text-lg">{tm.name}</h1>
                   <p className="">{tm.position}</p>
                   <SocialLinks
                     portfolio={tm.socials.portfolio}

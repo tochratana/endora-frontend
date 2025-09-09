@@ -104,21 +104,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     // Control where NextAuth redirects after sign in/out
-    async redirect({ url, baseUrl }) {
-      // Allow relative callback paths
-      try {
-        if (url.startsWith("/")) return `${baseUrl}${url}`;
-
-        const urlObj = new URL(url);
-        // If the callback is same-origin, allow it
-        if (urlObj.origin === baseUrl) return url;
-      } catch {
-        // fallthrough
-      }
-
-      // Default: send users to dashboard after successful sign in
+    async redirect({ baseUrl }) {
       return `${baseUrl}/dashboard`;
-    },
+    }
+
   },
 
   debug: process.env.NODE_ENV === "development",

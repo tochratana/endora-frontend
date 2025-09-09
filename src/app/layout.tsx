@@ -9,9 +9,19 @@ import ClientProviders from "@/components/ClientProviders";
 
 // TODO metadata
 export const metadata = {
-  title: "endura - make your backend without coding",
+  title: "Endora - Backend Made Simple | Instant APIs, Auth, and Database",
   description:
-    " endura is a no-code backend platform that allows you to create and manage your backend services without writing any code. It provides a user-friendly interface to design APIs, manage databases, and deploy your applications effortlessly.",
+    "Transform your ideas into powerful backend services in minutes. Endora provides instant RESTful APIs, authentication, real-time databases, and storage solutions - all without writing a single line of code.",
+  keywords: [
+    "backend as a service",
+    "instant api",
+    "no-code backend",
+    "api platform",
+    "database management",
+    "authentication service",
+    "serverless platform",
+    "real-time database",
+  ],
   icons: {
     icon: "/EndoraTransparent.png",
     shortcut: "/EndoraTransparent.png",

@@ -5,6 +5,7 @@ import { useState } from "react";
 import Button from "../button/Button";
 import { InstallPWA } from "../InstallPWA";
 import { signIn } from "next-auth/react";
+import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,14 +15,14 @@ export default function Header() {
       className="sticky top-0 z-50 w-full
                  bg-white/90 text-gray-900 shadow-md backdrop-blur
                  supports-[backdrop-filter]:bg-white/80
-                 dark:bg-[#060317]/95 dark:text-white
-                 dark:supports-[backdrop-filter]:bg-[#060317]/80"
+                 dark:bg-slate-900/95 dark:text-white
+                 dark:supports-[backdrop-filter]:bg-slate-900/80"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-1">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-2">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 ">
             <Image
-              src="/Logo-v4.png"
+              src="/logo-v4.png"
               alt="Logo"
               width={60}
               height={60}
@@ -31,23 +32,46 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
-            <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">About</Link>
-            <Link href="https://docusaurus.io/" className="hover:text-indigo-600 dark:hover:text-indigo-400" target="blank">Document</Link>
-            <Link href="/service" className="hover:text-indigo-600 dark:hover:text-indigo-400">Service</Link>
-            <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</Link>
+            <Link
+              href="/about"
+              className="hover:text-primary-600 dark:hover:text-primary-400"
+            >
+              About
+            </Link>
+            <Link
+              href="https://docusaurus.io/"
+              className="hover:text-primary-600 dark:hover:text-primary-400"
+              target="blank"
+            >
+              Document
+            </Link>
+            <Link
+              href="/service"
+              className="hover:text-primary-600 dark:hover:text-primary-400"
+            >
+              Service
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-primary-600 dark:hover:text-primary-400"
+            >
+              Contact
+            </Link>
           </nav>
         </div>
 
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden md:flex items-center space-x-4">
+          <AnimatedThemeToggler className="hover:cursor-pointer" />
           <Button
-            onClick={() => signIn("keycloak")} aria-label="Sign in"
-            className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
+            onClick={() => signIn("keycloak", { callbackUrl: "/dashboard" })}
+            aria-label="Sign in"
+            className="bg-primary-500 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-600 transition"
           >
             Sign Up
           </Button>
           {/* <Link
             href="/auth/signin"
-            className="bg-indigo-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-indigo-500 transition"
+            className="bg-primary-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-500 transition"
           >
             Sign Up
           </Link> */}
@@ -74,38 +98,38 @@ export default function Header() {
         >
           <Link
             href="/about"
-            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+            className="block hover:text-primary-600 dark:hover:text-primary-400"
           >
             About
           </Link>
           <Link
             href="https://docusaurus.io/"
-            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+            className="block hover:text-primary-600 dark:hover:text-primary-400"
             target="blank"
           >
             Document
           </Link>
           <Link
             href="/service"
-            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+            className="block hover:text-primary-600 dark:hover:text-primary-400"
           >
             Service
           </Link>
           <Link
             href="/contact"
-            className="block hover:text-indigo-600 dark:hover:text-indigo-400"
+            className="block hover:text-primary-600 dark:hover:text-primary-400"
           >
             Contact
           </Link>
           <Link
             href="/signup"
-            className="block bg-indigo-600 px-4 py-2 rounded-lg text-center font-semibold text-white hover:bg-indigo-500"
+            className="block bg-primary-600 px-4 py-2 rounded-lg text-center font-semibold text-white hover:bg-primary-500"
           >
             Sign Up
           </Link>
           <Link
             href="/download"
-            className="block border border-indigo-400 px-4 py-2 rounded-lg text-center font-semibold hover:bg-indigo-600 hover:text-white"
+            className="block border border-primary-400 px-4 py-2 rounded-lg text-center font-semibold hover:bg-primary-600 hover:text-white"
           >
             Get App
           </Link>

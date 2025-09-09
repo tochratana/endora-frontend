@@ -21,7 +21,7 @@ export function StatsCard({ icon, value, label }: StatsCardProps) {
     //     </div>
     //   </div>
     // </Card>
-    <Card className="bg-slate-900 border-slate-800 shadow-lg p-6">
+    <Card className="bg-white dark:bg-slate-900 dark:border-slate-800 shadow-lg p-6">
       <div className="flex flex-col  gap-3">
         {" "}
         {/* Changed to flex-col and items-center */}
@@ -31,7 +31,7 @@ export function StatsCard({ icon, value, label }: StatsCardProps) {
         <div className="">
           {" "}
           {/* Added text-center for centered alignment */}
-          <div className="text-3xl font-bold text-white">{value}</div>
+          <div className="text-3xl font-bold text-gray-900 dark:text-white">{value}</div>
           <div className="text-gray-400 text-sm">{label}</div>
         </div>
       </div>

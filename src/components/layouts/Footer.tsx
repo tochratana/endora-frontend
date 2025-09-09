@@ -7,24 +7,23 @@ import {
   FaYoutube,
   FaLinkedin,
 } from "react-icons/fa6";
-import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 
 export default function Footer() {
   return (
     <footer
-      className="bg-gray-50 text-gray-900 py-12
-                 dark:bg-[#060317] dark:text-white"
+      className="bg-gray-50 text-gray-600 py-12
+                 dark:bg-slate-900 dark:text-gray-400"
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Top: Logo + Columns + Org */}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-12 items-start">
           {/* Left: Brand + Socials */}
-          <div className="flex flex-col items-center md:items-start space-y-4">
+          <div className="flex flex-col items-center  space-y-4">
             <Image
-              src="/EndoraTransparent.png"
+              src="/logo-v4.png"
               alt="Endora Logo"
-              width={110}
-              height={110}
+              width={100}
+              height={100}
               className="rounded-full"
               priority
             />
@@ -32,30 +31,34 @@ export default function Footer() {
               <Link
                 href="https://twitter.com"
                 target="_blank"
+                rel="noopener noreferrer"
                 aria-label="X / Twitter"
               >
-                <FaXTwitter className="hover:opacity-100 transition-opacity" />
+                <FaXTwitter className="hover:opacity-100 transition-opacity text-primary-500" />
               </Link>
               <Link
                 href="https://instagram.com"
                 target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
               >
-                <FaInstagram className="hover:opacity-100 transition-opacity" />
+                <FaInstagram className="hover:opacity-100 transition-opacity text-primary-500" />
               </Link>
               <Link
                 href="https://youtube.com"
                 target="_blank"
+                rel="noopener noreferrer"
                 aria-label="YouTube"
               >
-                <FaYoutube className="hover:opacity-100 transition-opacity" />
+                <FaYoutube className="hover:opacity-100 transition-opacity text-primary-500" />
               </Link>
               <Link
                 href="https://linkedin.com"
                 target="_blank"
+                rel="noopener noreferrer"
                 aria-label="LinkedIn"
               >
-                <FaLinkedin className="hover:opacity-100 transition-opacity" />
+                <FaLinkedin className="hover:opacity-100 transition-opacity text-primary-500" />
               </Link>
             </div>
           </div>
@@ -63,7 +66,7 @@ export default function Footer() {
           {/* Middle: 4 columns */}
           <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
             <div>
-              <h3 className="font-bold mb-4">Feature</h3>
+              <h3 className="font-bold mb-4 text-primary-500">Feature</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Instant RESTful API</Link>
@@ -81,7 +84,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Project</h3>
+              <h3 className="font-bold mb-4 text-primary-500">Project</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Workspace</Link>
@@ -105,7 +108,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Resources</h3>
+              <h3 className="font-bold mb-4 text-primary-500">Resources</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Homepage</Link>
@@ -126,7 +129,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Solution</h3>
+              <h3 className="font-bold mb-4 text-primary-500">Solution</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">For Developer</Link>
@@ -149,20 +152,18 @@ export default function Footer() {
 
           {/* Right: Organization */}
           <div className="text-center md:text-right">
-            <h3 className="font-bold mb-4">Our Organization</h3>
+            <h3 className="font-bold mb-4 text-primary-500 text-center">
+              Organize By
+            </h3>
             <div className="flex md:justify-end justify-center">
-              {/* <Image
-                src="/istadlogo-v2.png"
-                alt="iSTAD Logo"
-                width={150}
-                height={150}
-              /> */}
               <Link
                 href="https://www.cstad.edu.kh/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center space-x-2"
               >
                 <Image
-                  src="/istadlogo-v2.png"
+                  src="/istad-logo.png"
                   alt="iSTAD Logo"
                   width={150}
                   height={150}
@@ -176,11 +177,43 @@ export default function Footer() {
         <hr className="border-t border-gray-300 dark:border-gray-700/70 mt-10" />
 
         {/* Bottom bar */}
-        <div className="mt-6 flex items-center justify-between">
-          <p className="text-sm opacity-90">© Endora istad</p>
-
-          {/* Theme toggle (animated) */}
-          <AnimatedThemeToggler />
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+          <div className="mb-4 sm:mb-0">
+            <p className="text-center sm:text-left">
+              © {new Date().getFullYear()} Endora. Built with ❤️ by{" "}
+              <Link
+                href="https://www.cstad.edu.kh/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary-500 transition-colors"
+              >
+                ISTAD{" "}
+              </Link>
+              Students.
+            </p>
+          </div>
+          <div className="flex items-center space-x-6">
+            <Link
+              href="/privacy"
+              className="hover:text-primary-500 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-primary-500 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <a
+              href="https://www.cstad.edu.kh/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-500 transition-colors"
+            >
+              ISTAD
+            </a>
+          </div>
         </div>
       </div>
     </footer>

@@ -3,6 +3,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Footer from "./Footer";
+import NotificationBar from "../NotificationBar";
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
@@ -19,6 +20,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <NotificationBar />
       <Header />
       {children}
       <Footer />

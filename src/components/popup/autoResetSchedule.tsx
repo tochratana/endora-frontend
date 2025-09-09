@@ -44,7 +44,7 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/80" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -58,12 +58,12 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
               leaveFrom="opacity-100 scale-100 translate-y-0"
               leaveTo="opacity-0 scale-95 translate-y-2"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-slate-900 p-6 text-left align-middle shadow-xl transition-all border border-slate-700">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-6 text-left align-middle shadow-xl transition-all border dark:border-slate-700">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-slate-400" />
-                    <Dialog.Title className="text-lg font-medium text-white">Schedule Auto Reset</Dialog.Title>
+                    <Calendar className="h-5 w-5 text-gray-600 dark:text-slate-400" />
+                    <Dialog.Title className="text-lg font-medium dark:text-white text-gray-600">Schedule Auto Reset</Dialog.Title>
                   </div>
                   <button
                     onClick={onClose}
@@ -75,14 +75,14 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
 
                 {/* Reset Method Section */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-medium text-slate-300 mb-3">Reset Method</h3>
+                  <h3 className="text-sm font-medium text-gray-600 dark:text-slate-300 mb-3">Reset Method</h3>
 
                   <Listbox value={selectedReset} onChange={setSelectedReset}>
                     <div className="relative">
-                      <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-slate-800 border border-slate-700 py-3 pl-4 pr-10 text-left text-slate-300 hover:bg-slate-750 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
+                      <Listbox.Button className="relative w-full cursor-pointer rounded-lg dark:bg-slate-800 border dark:border-slate-700 py-3 pl-4 pr-10 text-left text-gray-600 dark:text-slate-300 hover:bg-slate-750 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
                         <span className="block truncate">{selectedReset?.name || "Select Schedule Reset"}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                          <ChevronDown className="h-4 w-4 text-slate-400 transition-transform duration-200" />
+                          <ChevronDown className="h-4 w-4 text-gray-600 dark:text-slate-400 transition-transform duration-200" />
                         </span>
                       </Listbox.Button>
 
@@ -95,13 +95,13 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
                         leaveFrom="opacity-100 scale-100 translate-y-0"
                         leaveTo="opacity-0 scale-95 translate-y-1"
                       >
-                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-slate-800 border border-slate-700 py-1 shadow-lg focus:outline-none">
+                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700 py-1 shadow-lg focus:outline-none">
                           {resetOptions.map((option) => (
                             <Listbox.Option
                               key={option.id}
                               className={({ active }) =>
                                 `relative cursor-pointer select-none py-2 px-4 transition-colors duration-150 ${
-                                  active ? "bg-purple-600 text-white" : "text-slate-300"
+                                  active ? "bg-purple-600 text-white" : "dark:text-slate-300 text-gray-600"
                                 }`
                               }
                               value={option}
@@ -122,9 +122,9 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
                 {/* Warning Message */}
                 <div className="mb-6 rounded-lg border border-red-600/50 bg-red-900/20 p-4">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <AlertTriangle className="h-5 w-5 dark:text-red-400 text-red-700 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm text-red-300">
+                      <p className="text-sm dark:text-red-300 text-red-600">
                         <span className="font-medium">Important:</span> This will restore your original dataset and
                         remove any data added through API calls. Perfect for keeping your test environment fresh.
                       </p>
@@ -137,7 +137,7 @@ export function ScheduleAutoResetModal({ isOpen, onClose }: ScheduleAutoResetMod
                   <Button
                     variant="outline"
                     onClick={onClose}
-                    className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white bg-transparent transition-all duration-200"
+                    className="dark:border-slate-600 text-slate-600 dark:text-slate-300  dark:hover:bg-slate-800 dark:hover:text-white bg-transparent transition-all duration-200"
                   >
                     Cancel
                   </Button>

@@ -14,19 +14,19 @@ export function ScheduleReset({
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white mb-2">Reset Schedule</h2>
-        <p className="text-slate-400">Manage and view your reset schedule for this data source.</p>
+        <p className="text-gray-500">Manage and view your reset schedule for this data source.</p>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 space-y-3">
-        <div className="flex items-center gap-2 text-slate-300">
+      <div className="dark:bg-slate-800 rounded-lg p-4 border dark:border-slate-700 space-y-3">
+        <div className="flex items-center gap-2 dark:text-slate-300 text-gray-400">
           <Clock className="w-4 h-4" />
           <span>{rowCount} rows</span>
         </div>
-        <div className="flex items-center gap-2 text-slate-300">
+        <div className="flex items-center gap-2 dark:text-slate-300 text-gray-400">
           <Clock className="w-4 h-4" />
           <span>Last updated: {lastUpdated}</span>
         </div>
-        <div className="flex items-center gap-2 text-slate-300">
+        <div className="flex items-center gap-2 dark:text-slate-300 text-gray-400">
           <Clock className="w-4 h-4" />
           <span>Data Source: {dataSourceName}</span>
         </div>
