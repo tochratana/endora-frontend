@@ -3,7 +3,7 @@
 export default function OurMission() {
   return (
     <section className="w-full py-10">
-      <div className="grid md:grid-cols-9 grid-cols-4 min-h-[400px] items-center max-w-6xl m-auto">
+      <div className="grid md:grid-cols-9 grid-cols-4 min-h-[250px] items-center max-w-6xl m-auto">
         <div className="md:col-span-4 col-span-9 md:mt-0 mt-5 px-5 md:order-1 order-2 md:justify-self-end">
           {/* <Image
             src={mission}

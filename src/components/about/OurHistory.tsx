@@ -3,7 +3,7 @@
 export default function OurHistory() {
   return (
     <section className="w-full py-10">
-      <div className="max-w-6xl m-auto grid md:grid-cols-8 grid-cols-4 min-h-[400px] items-center">
+      <div className="max-w-6xl m-auto grid md:grid-cols-8 grid-cols-4 items-center">
         <div className="md:col-span-4 col-span-8 px-4">
           <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">Our History</h1>
           <p className="text-gray-800 dark:text-white text-lg">In many projects, teams spend countless hours setting up backend code, writing repetitive CRUD operations, and managing database connections before they can even begin building actual features. We wanted to eliminate this barrier.</p>

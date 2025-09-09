@@ -33,12 +33,12 @@ export default function Header() {
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
             <Link
-              href="/about"
+              href="/service"
               className="hover:text-primary-600 dark:hover:text-primary-400"
             >
-              About
+              Service
             </Link>
-            <Link
+             <Link
               href="https://docusaurus.io/"
               className="hover:text-primary-600 dark:hover:text-primary-400"
               target="blank"
@@ -46,16 +46,10 @@ export default function Header() {
               Document
             </Link>
             <Link
-              href="/service"
+              href="/about"
               className="hover:text-primary-600 dark:hover:text-primary-400"
             >
-              Service
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              Contact
+              About
             </Link>
           </nav>
         </div>
@@ -114,12 +108,6 @@ export default function Header() {
             className="block hover:text-primary-600 dark:hover:text-primary-400"
           >
             Service
-          </Link>
-          <Link
-            href="/contact"
-            className="block hover:text-primary-600 dark:hover:text-primary-400"
-          >
-            Contact
           </Link>
           <Link
             href="/signup"
