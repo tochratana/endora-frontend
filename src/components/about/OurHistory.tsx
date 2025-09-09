@@ -1,24 +1,65 @@
-// import Image from "next/image"
+"use client";
+
+import Image from "next/image";
+import { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function OurHistory() {
+  useEffect(() => {
+    AOS.init({
+      duration: 600,
+      once: false,
+      mirror: true,
+      easing: "ease-out",
+      offset: 50,
+    });
+  }, []);
+
   return (
     <section className="w-full py-10">
-      <div className="max-w-6xl m-auto grid md:grid-cols-8 grid-cols-4 min-h-[400px] items-center">
-        <div className="md:col-span-4 col-span-8 px-4">
-          <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">Our History</h1>
-          <p className="text-gray-800 dark:text-white text-lg">In many projects, teams spend countless hours setting up backend code, writing repetitive CRUD operations, and managing database connections before they can even begin building actual features. We wanted to eliminate this barrier.</p>
+      <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 min-h-[400px]">
+        {/* Text: 5/8 on md, 4/8 on lg+ */}
+        <div
+          data-aos="fade-right"
+          data-aos-delay="120"
+          data-aos-offset="50"
+          className="col-span-4 md:col-span-5 lg:col-span-4 px-4"
+        >
+          <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">
+            Our History
+          </h1>
+          <p className="text-gray-600 dark:text-white text-lg">
+            Teams spend weeks wiring backends—CRUD, databases, and auth—before
+            they can ship features. We set out to remove that friction.
+          </p>
           <br />
-          <p className="text-gray-800 dark:text-white text-lg">What started as a small tool to automatically create APIs from database schemas quickly grew into a full-featured platform. Over time, we added a visual schema builder, data import/export options, authentication support, and interactive testing through Swagger UI.</p>
+          <p className="text-gray-600 dark:text-white text-lg">
+            What began as a simple tool to generate APIs from a schema has grown
+            into a full platform with a visual schema builder, data
+            import/export, authentication, and Swagger-based testing.
+          </p>
         </div>
-        <div className="md:col-span-4 col-span-8 md:mt-0 mt-5 px-5 md:justify-self-end">
-          {/* <Image
-            src={history}
-            alt="history image"
-            width={0} height={0}
-            className="w-full h-fit object-contain rounded"
-            /> */}
+
+        {/* Image: 3/8 on md, 4/8 on lg+ with max-width constraint */}
+        <div className="col-span-4 md:col-span-3 lg:col-span-4 md:mt-0 mt-5 px-5 flex justify-center">
+          <div
+            className="w-full max-w-sm md:max-w-xs lg:max-w-lg"
+            data-aos="fade-left"
+            data-aos-delay="120"
+            data-aos-offset="50"
+          >
+            <Image
+              src="/group.png"
+              alt="history image"
+              width={700}
+              height={520}
+              className="w-full h-auto object-contain rounded"
+              sizes="(min-width: 1024px) 500px, (min-width: 768px) 300px, 100vw"
+            />
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

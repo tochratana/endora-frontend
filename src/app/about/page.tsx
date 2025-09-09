@@ -15,6 +15,7 @@ export default function page() {
       <OurMentor />
       <OurTeam />
       <WhyUs />
+      {/* <ContactForm/> */}
       <ContactForm/>
     </section>
   );

@@ -19,9 +19,9 @@ export const teamMembers: TeamMember[] = [
     name: "Kay Keo",
     position: "Mentor",
     socials: {
-      github: " saef",
-      linkedin: "dsf",
-      portfolio: "eaf",
+      github: "https://github.com/kaykeo",
+      linkedin: "https://www.linkedin.com/in/kaykeo",
+      portfolio: "https://kaykeo.dev",
     },
     image: "/images/cherkeo.png",
   },
@@ -30,9 +30,9 @@ export const teamMembers: TeamMember[] = [
     name: "Srong Sokcheat",
     position: "Mentor",
     socials: {
-      github: "fsa",
-      linkedin: "  ds",
-      portfolio: "fea",
+      github: "https://github.com/srongsokcheat",
+      linkedin: "https://www.linkedin.com/in/srongsokcheat",
+      portfolio: "https://sokcheat.dev",
     },
     image: "/images/chercheat.png",
   },
@@ -41,9 +41,9 @@ export const teamMembers: TeamMember[] = [
     name: "Heng Liza",
     position: "Team Leader",
     socials: {
-      github: "",
-      linkedin: "",
-      portfolio: "wds",
+      github: "https://github.com/Icesuza",
+      linkedin: "https://www.linkedin.com/in/heng-liza-071531383/",
+      portfolio: "https://hengliza.dev",
     },
     background: "/team-background/blob9.svg",
     image: "/images/heng-liza.png",
@@ -53,9 +53,9 @@ export const teamMembers: TeamMember[] = [
     name: "Lim Ansoleaphea",
     position: "Team member",
     socials: {
-      github: "",
-      linkedin: "sw",
-      portfolio: "",
+      github: "https://github.com/Leaphea-Lim",
+      linkedin: "https://www.linkedin.com/in/limansoleaphea",
+      portfolio: "#",
     },
     background: "/team-background/blob2.svg",
     image: "/images/lim-ansoleaphea.png",
@@ -66,8 +66,8 @@ export const teamMembers: TeamMember[] = [
     position: "Team member",
     socials: {
       github: "https://github.com/RinSanom",
-      linkedin: "ds",
-      portfolio: "",
+      linkedin: "https://www.linkedin.com/in/rinsanom",
+      portfolio: "#",
     },
     background: "/team-background/blob5.svg",
     image: "/images/rin-sanom.png",
@@ -77,9 +77,9 @@ export const teamMembers: TeamMember[] = [
     name: "Toch Ratana",
     position: "Team member",
     socials: {
-      github: "dd",
-      linkedin: "",
-      portfolio: "",
+      github: "https://github.com/tochratana",
+      linkedin: "https://www.linkedin.com/in/ratana-touch",
+      portfolio: "#",
     },
     background: "/team-background/blob7.svg",
     image: "/images/toch-ratana.png",
@@ -103,10 +103,10 @@ export const teamMembers: TeamMember[] = [
     socials: {
       github: "https://github.com/TaingAnKorm",
       linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
-      portfolio: ""
+      portfolio: "#"
     },
-    background:"/team-background/blob6.svg",
-    image: "/images/kea-daron.png"
+    background: "/team-background/blob6.svg",
+    image: "/images/korm-taingan.png"
   },
   {
     id: 9,
@@ -114,7 +114,7 @@ export const teamMembers: TeamMember[] = [
     position: "Team member",
     socials: {
       github: "https://github.com/kea-daron",
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/kea-daron-315ba436b/",
       portfolio: "https://my-folio-pearl.vercel.app/",
     },
     background: "/team-background/blob8.svg",
@@ -127,7 +127,7 @@ export const teamMembers: TeamMember[] = [
     socials: {
       github: "https://github.com/KormTaiyi",
       linkedin: "https://www.linkedin.com/in/korm-taiyi-906407327/",
-      portfolio: "",
+      portfolio: "#",
     },
     background: "/team-background/blob.svg",
     image: "/images/korm-taiyi.png",
