@@ -16,9 +16,9 @@ export default function Footer() {
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Top: Logo + Columns + Org */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-6 items-start">
           {/* Left: Brand + Socials */}
-          <div className="flex flex-col items-center  space-y-4">
+          <div className="flex flex-col items-center space-y-4">
             <Image
               src="/logo-v4.png"
               alt="Endora Logo"
@@ -34,7 +34,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label="X / Twitter"
               >
-                <FaXTwitter className="hover:opacity-100 transition-opacity text-primary-500" />
+                <FaXTwitter className="hover:opacity-100 transition-opacity text-indigo-500" />
               </Link>
               <Link
                 href="https://instagram.com"
@@ -42,7 +42,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label="Instagram"
               >
-                <FaInstagram className="hover:opacity-100 transition-opacity text-primary-500" />
+                <FaInstagram className="hover:opacity-100 transition-opacity text-indigo-500" />
               </Link>
               <Link
                 href="https://youtube.com"
@@ -50,7 +50,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label="YouTube"
               >
-                <FaYoutube className="hover:opacity-100 transition-opacity text-primary-500" />
+                <FaYoutube className="hover:opacity-100 transition-opacity text-indigo-500" />
               </Link>
               <Link
                 href="https://linkedin.com"
@@ -58,15 +58,15 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
               >
-                <FaLinkedin className="hover:opacity-100 transition-opacity text-primary-500" />
+                <FaLinkedin className="hover:opacity-100 transition-opacity text-indigo-500" />
               </Link>
             </div>
           </div>
 
           {/* Middle: 4 columns */}
-          <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
+          <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center md:text-left">
             <div>
-              <h3 className="font-bold mb-4 text-primary-500">Feature</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">Feature</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Instant RESTful API</Link>
@@ -84,13 +84,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-primary-500">Project</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">Project</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Workspace</Link>
-                </li>
-                <li>
-                  <Link href="#">Dashboard</Link>
                 </li>
                 <li>
                   <Link href="#">Schemas</Link>
@@ -99,28 +96,19 @@ export default function Footer() {
                   <Link href="#">Public API</Link>
                 </li>
                 <li>
-                  <Link href="#">Data Source</Link>
-                </li>
-                <li>
                   <Link href="#">API Docs</Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-primary-500">Resources</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">Resources</h3>
               <ul className="space-y-2 opacity-90">
-                <li>
-                  <Link href="#">Homepage</Link>
-                </li>
                 <li>
                   <Link href="#">Service</Link>
                 </li>
                 <li>
                   <Link href="#">About</Link>
-                </li>
-                <li>
-                  <Link href="#">Contact</Link>
                 </li>
                 <li>
                   <Link href="#">Documentation</Link>
@@ -129,19 +117,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-primary-500">Solution</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">Solution</h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">For Developer</Link>
-                </li>
-                <li>
-                  <Link href="#">For Startups</Link>
-                </li>
-                <li>
-                  <Link href="#">Beginners</Link>
-                </li>
-                <li>
-                  <Link href="#">For Enterprises</Link>
                 </li>
                 <li>
                   <Link href="#">No Code Users</Link>
@@ -151,11 +130,11 @@ export default function Footer() {
           </div>
 
           {/* Right: Organization */}
-          <div className="text-center md:text-right">
-            <h3 className="font-bold mb-4 text-primary-500 text-center">
-              Organize By
+          <div className="text-start">
+            <h3 className="font-bold mb-4 text-xl text-indigo-500">
+              Organized and sponsor by
             </h3>
-            <div className="flex md:justify-end justify-center">
+            <div className="flex justify-start">
               <Link
                 href="https://www.cstad.edu.kh/"
                 target="_blank"

@@ -97,7 +97,7 @@ export const InstallPWA = () => {
 
   return (
     <button
-      className="border border-indigo-400 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition"
+      className="border border-indigo-400 px-4 py-[10px] rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition"
       onClick={onClick}
     >
       <span>Get App</span>
