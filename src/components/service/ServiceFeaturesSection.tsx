@@ -25,7 +25,7 @@ export default function ServiceFeaturesSection() {
     },
     {
       icon: <FiZap className="w-8 h-8" />,
-      title: "Endpoint Generataion",
+      title: "Endpoint Generation",
       description:
         "Customize your workspace with a personal dashboard that provides at-a-glance insights.",
     },
@@ -38,7 +38,7 @@ export default function ServiceFeaturesSection() {
   ];
 
   return (
-    <section className="py-24 bg-gray-50 dark:bg-slate-800">
+    <section className="py-24 bg-gray-50 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -48,7 +48,7 @@ export default function ServiceFeaturesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-600 dark:text-gray-300 mb-6">
             <span className="bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
               Endora
             </span>{" "}
@@ -69,17 +69,19 @@ export default function ServiceFeaturesSection() {
               whileHover={{ y: -5 }}
             >
               {/* Icon Container */}
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="text-primary-500">{service.icon}</div>
+              <div className="w-16 h-16 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-teal-800/30 dark:to-cyan-800/30 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-primary-100 dark:border-teal-600/30">
+                <div className="text-primary-600 dark:text-teal-400">
+                  {service.icon}
+                </div>
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300 mb-4 leading-tight">
                 {service.title}
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                 {service.description}
               </p>
             </motion.div>

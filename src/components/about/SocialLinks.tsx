@@ -17,16 +17,16 @@ export default function SocialLinks({
   iconClassName,
 }: SocialLinksProps) {
   return (
-    <ul className={`flex gap-1 justify-center mt-2 ${className ?? ""}`}>
+    <ul className={`flex gap-3 justify-center mt-2 ${className ?? ""}`}>
       {portfolio && (
         <li>
           <Link
             href={portfolio}
-            target="_blank"
+            target={portfolio.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
-            className={`text-[var(--color-primary)] ${iconClassName ?? ""}`}
+            className={`text-gray-600 hover:text-teal-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >
-            <Globe />
+            <Globe className="w-5 h-5" />
           </Link>
         </li>
       )}
@@ -34,11 +34,11 @@ export default function SocialLinks({
         <li>
           <Link
             href={github}
-            target="_blank"
+            target={github.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
-            className={`text-[var(--color-primary)] ${iconClassName ?? ""}`}
+            className={`text-gray-600 hover:text-purple-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >
-            <Github />
+            <Github className="w-5 h-5" />
           </Link>
         </li>
       )}
@@ -46,11 +46,11 @@ export default function SocialLinks({
         <li>
           <Link
             href={linkedin}
-            target="_blank"
+            target={linkedin.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
-            className={`text-[var(--color-primary)] ${iconClassName ?? ""}`}
+            className={`text-gray-600 hover:text-teal-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >
-            <Linkedin />
+            <Linkedin className="w-5 h-5" />
           </Link>
         </li>
       )}
