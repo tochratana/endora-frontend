@@ -39,7 +39,7 @@ export default function Header() {
               Service
             </Link>
             <a
-              href="https://endora-docs-4b3fdkfis-icesuzas-projects.vercel.app"
+              href="https://endora-docs.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-primary-600 dark:hover:text-primary-400"
@@ -92,7 +92,7 @@ export default function Header() {
             About
           </Link>
           <a
-            href="https://endora-docs-4b3fdkfis-icesuzas-projects.vercel.app"
+            href="https://endora-docs.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-primary-600 dark:hover:text-primary-400"
