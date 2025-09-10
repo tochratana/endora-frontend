@@ -38,13 +38,14 @@ export default function Header() {
             >
               Service
             </Link>
-            <Link
-              href="https://docusaurus.io/"
+            <a
+              href="https://endora-docs-4b3fdkfis-icesuzas-projects.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-primary-600 dark:hover:text-primary-400"
-              target="blank"
             >
               Document
-            </Link>
+            </a>
             <Link
               href="/about"
               className="hover:text-primary-600 dark:hover:text-primary-400"
@@ -59,16 +60,10 @@ export default function Header() {
           <Button
             onClick={() => signIn("keycloak", { callbackUrl: "/dashboard" })}
             aria-label="Sign in"
-            className="bg-primary-500 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-600 transition"
+            className="bg-primary-500 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-600 transition focus:outline-none"
           >
             Sign Up
           </Button>
-          {/* <Link
-            href="/auth/signin"
-            className="bg-primary-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-500 transition"
-          >
-            Sign Up
-          </Link> */}
           <InstallPWA />
         </div>
 
@@ -96,13 +91,14 @@ export default function Header() {
           >
             About
           </Link>
-          <Link
-            href="https://docusaurus.io/"
-            className="block hover:text-primary-600 dark:hover:text-primary-400"
-            target="blank"
+          <a
+            href="https://endora-docs-4b3fdkfis-icesuzas-projects.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
           >
             Document
-          </Link>
+          </a>
           <Link
             href="/service"
             className="block hover:text-primary-600 dark:hover:text-primary-400"

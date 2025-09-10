@@ -2,7 +2,6 @@ import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
-import { InstallPWA } from "@/components/InstallPWA";
 import Shell from "@/components/layouts/Shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientProviders from "@/components/ClientProviders";

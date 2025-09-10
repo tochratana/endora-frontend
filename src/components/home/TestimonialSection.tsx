@@ -89,9 +89,9 @@ export default function TestimonialSection() {
       content:
         "The design-first workflow keeps my team aligned from day one. We can share interactive prototypes with stakeholders and gather feedback before writing any code. It's eliminated so many revision cycles.",
       author: {
-        name: "Korm TangAn",
+        name: "Korm Taingan",
         role: "Data Analyst",
-        avatar: "/images/korm-tangan.jpg",
+        avatar: "/images/korm-taingan.png",
       },
     },
     {
