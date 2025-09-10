@@ -8,14 +8,16 @@ import WhyUs from "@/components/about/WhyUs";
 
 export default function page() {
   return (
-    <section>
+    <main className="w-full  overflow-x-hidden">
       <HeroSection />
-      <OurHistory />
-      <OurMission />
-      <OurMentor />
-      <OurTeam />
-      <WhyUs />
-      <ContactForm/>
-    </section>
+      <div className="w-full dark:bg-slate-900 overflow-x-hidden">
+        <OurHistory />
+        <OurMission />
+        <OurMentor />
+        <OurTeam />
+        <WhyUs />
+        <ContactForm />
+      </div>
+    </main>
   );
 }

@@ -23,7 +23,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/keo-kay-abb369187",
       portfolio: "/about",
     },
-    image: "/images/cherkeo.png",
+    image: "/images/teacher-keo.png",
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/srorng-sokcheat-09b542341",
       portfolio: "/about",
     },
-    image: "/images/chercheat.png",
+    image: "/images/teacher-cheat-half.png",
   },
   {
     id: 3,
@@ -97,7 +97,7 @@ export const teamMembers: TeamMember[] = [
       portfolio: "/about",
     },
     background: "/team-background/blob6.svg",
-    image: "/images/korm-taingan.jpg",
+    image: "/images/korm-taingan.png",
   },
   {
     id: 8,
