@@ -20,7 +20,7 @@ export default function Footer() {
           {/* Left: Brand + Socials */}
           <div className="flex flex-col items-center space-y-4">
             <Image
-              src="/logo-v4.png"
+              src="/logo.png"
               alt="Endora Logo"
               width={100}
               height={100}
@@ -66,7 +66,9 @@ export default function Footer() {
           {/* Middle: 4 columns */}
           <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center md:text-left">
             <div>
-              <h3 className="font-bold mb-4 text-xl text-indigo-500">Feature</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">
+                Feature
+              </h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Instant RESTful API</Link>
@@ -84,7 +86,9 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-xl text-indigo-500">Project</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">
+                Project
+              </h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Workspace</Link>
@@ -102,7 +106,9 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-xl text-indigo-500">Resources</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">
+                Resources
+              </h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">Service</Link>
@@ -117,7 +123,9 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4 text-xl text-indigo-500">Solution</h3>
+              <h3 className="font-bold mb-4 text-xl text-indigo-500">
+                Solution
+              </h3>
               <ul className="space-y-2 opacity-90">
                 <li>
                   <Link href="#">For Developer</Link>
