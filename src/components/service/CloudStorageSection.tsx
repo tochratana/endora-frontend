@@ -1,27 +1,46 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { FiDatabase } from "react-icons/fi";
+import { FiDatabase, FiServer, FiCode, FiLayers } from "react-icons/fi";
 
 export default function CloudStorageSection() {
   const storageFeatures = [
     {
-      icon: <FiDatabase className="w-6 h-6" />,
+      icon: <FiServer className="w-6 h-6" />,
       title: "Data sources",
     },
     {
-      icon: <FiDatabase className="w-6 h-6" />,
+      icon: <FiCode className="w-6 h-6" />,
       title: "API Endpoints",
     },
     {
-      icon: <FiDatabase className="w-6 h-6" />,
-      title: "Schema Database",
+      icon: <FiLayers className="w-6 h-6" />,
+      title: "Schema",
     },
   ];
 
   return (
-    <section className="py-24 bg-gray-50 dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 bg-white dark:bg-gray-900 overflow-hidden">
+      {/* Modern Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
+
+      {/* Floating Orbs Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 dark:from-blue-400/10 dark:to-purple-400/10 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-pink-400/20 dark:from-indigo-400/10 dark:to-pink-400/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 dark:from-cyan-400/5 dark:to-blue-400/5 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "4s" }}
+        ></div>
+      </div>
+
+      {/* Subtle Pattern Overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDU5LCAxMzAsIDI0NiwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] dark:bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
+
+      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <motion.div
@@ -37,7 +56,7 @@ export default function CloudStorageSection() {
             </h2>
 
             {/* Main Heading */}
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-600 dark:text-gray-300 leading-tight">
               Our Cloud Storage Delivers Cost effective, Scalable Storage
             </h3>
 
@@ -60,10 +79,12 @@ export default function CloudStorageSection() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-lg flex items-center justify-center border border-primary-400/30">
-                    <div className="text-primary-400">{feature.icon}</div>
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-teal-800/30 dark:to-cyan-800/30 rounded-lg flex items-center justify-center border border-primary-100 dark:border-teal-600/30">
+                    <div className="text-primary-600 dark:text-teal-400">
+                      {feature.icon}
+                    </div>
                   </div>
-                  <span className="text-gray-900 dark:text-white font-medium text-lg">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium text-lg">
                     {feature.title}
                   </span>
                 </motion.div>
@@ -87,7 +108,7 @@ export default function CloudStorageSection() {
                   width="400"
                   height="300"
                   viewBox="0 0 400 300"
-                  className="w-full max-w-md"
+                  className="w-full max-w-xl"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >

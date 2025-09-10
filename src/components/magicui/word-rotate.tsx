@@ -59,13 +59,12 @@ export function WordRotate({
   console.log("WordRotate: Rendering word:", currentWord, "at index:", index);
 
   return (
-    <div className="overflow-hidden py-2 min-h-[60px] flex items-center justify-center w-full text-start">
-      <div className="flex items-center gap-2">
-        {/* <span>Say Goodbye To</span> */}
+    <div className="overflow-hidden py-2 min-h-[60px] flex items-center justify-center w-full">
+      <div className="flex items-center justify-center w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentWord}-${index}`}
-            className={cn("text-center", className)}
+            className={cn("text-center w-full", className)}
             {...motionProps}
           >
             {currentWord}

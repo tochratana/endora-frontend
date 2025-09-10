@@ -1,36 +1,44 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { FiDatabase, FiLock } from "react-icons/fi";
+import {
+  FiDatabase,
+  FiLock,
+  FiEdit3,
+  FiFileText,
+  FiTool,
+  FiZap,
+  FiCheckCircle,
+} from "react-icons/fi";
 
 export default function APIBuildSection() {
   const apiFeatures = [
     {
-      icon: <FiDatabase className="w-8 h-8" />,
+      icon: <FiEdit3 className="w-8 h-8" />,
       title: "API Design",
       description:
         "Simplify your API design workflow, design and test your APIs, while generating JSON/XML schemas with a simple click.",
     },
     {
-      icon: <FiDatabase className="w-8 h-8" />,
+      icon: <FiFileText className="w-8 h-8" />,
       title: "API Documentation",
       description:
         "Share your visually stunning API docs, coupled with 'try it out' option and example code. Customize domains, headers, and layouts to match your brand and enhance user experience.",
     },
     {
-      icon: <FiDatabase className="w-8 h-8" />,
+      icon: <FiTool className="w-8 h-8" />,
       title: "API Debugging",
       description:
         "Automatically validate response results and generate API documentation upon debugging completion.",
     },
     {
-      icon: <FiLock className="w-8 h-8" />,
+      icon: <FiZap className="w-8 h-8" />,
       title: "Smart Mock",
       description:
         "Our smart mocking feature automatically generates data based on field names, while advanced mocking returns specified data tailored to requests.",
     },
     {
-      icon: <FiLock className="w-8 h-8" />,
+      icon: <FiCheckCircle className="w-8 h-8" />,
       title: "Automated Testing",
       description:
         "Generate test cases directly by adding your API endpoints, visually define assertions, and create test scenarios with branch support.",
@@ -38,7 +46,7 @@ export default function APIBuildSection() {
   ];
 
   return (
-    <section className="py-24 bg-white dark:bg-gray-900">
+    <section className="py-24 bg-white dark:bg-slate-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -74,8 +82,8 @@ export default function APIBuildSection() {
 
               {/* Icon */}
               <div className="relative mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <div className="text-indigo-600 dark:text-indigo-400">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-teal-800/30 dark:to-cyan-800/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-primary-100 dark:border-teal-600/30">
+                  <div className="text-primary-600 dark:text-teal-400">
                     {feature.icon}
                   </div>
                 </div>
@@ -83,7 +91,7 @@ export default function APIBuildSection() {
 
               {/* Content */}
               <div className="relative">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
+                <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-300 mb-4 group-hover:text-primary-500 dark:group-hover:text-secondary-500 transition-colors duration-300">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -111,8 +119,8 @@ export default function APIBuildSection() {
 
                   {/* Icon */}
                   <div className="relative mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <div className="text-indigo-600 dark:text-indigo-400">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-teal-800/30 dark:to-cyan-800/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-primary-100 dark:border-teal-600/30">
+                      <div className="text-primary-600 dark:text-teal-400">
                         {feature.icon}
                       </div>
                     </div>
@@ -120,7 +128,7 @@ export default function APIBuildSection() {
 
                   {/* Content */}
                   <div className="relative">
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
+                    <h3 className="text-2xl font-bold text-gray-600 dark:text-gray-300 mb-4 group-hover:text-primary-500 dark:group-hover:text-secondary-500 transition-colors duration-300">
                       {feature.title}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed">

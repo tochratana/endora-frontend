@@ -89,7 +89,7 @@ export default function TestimonialSection() {
       content:
         "The design-first workflow keeps my team aligned from day one. We can share interactive prototypes with stakeholders and gather feedback before writing any code. It's eliminated so many revision cycles.",
       author: {
-        name: "Korm TangAn",
+        name: "Korm TaingAn",
         role: "Data Analyst",
         avatar: "/images/korm-tangan.jpg",
       },
@@ -132,7 +132,7 @@ export default function TestimonialSection() {
   };
 
   return (
-    <section className="py-24 bg-white dark:bg-slate-800 overflow-hidden border-b border-gray-200 dark:border-slate-700">
+    <section className="pt-16 pb-16 bg-white dark:bg-slate-800/80 overflow-hidden border-b border-gray-200 dark:border-slate-700">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -142,46 +142,26 @@ export default function TestimonialSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-6xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-4">
-              20000000+
+            <h2 className="text-7xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-4">
+              200K+
             </h2>
-            <p className="text-3xl font-semibold text-gray-900 dark:text-white mb-6">
+            <p className="text-3xl font-semibold text-gray-600 dark:text-gray-300 mb-6">
               Reviews from Users
             </p>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
               Discover what developers around the world are saying about our API
               platform
             </p>
           </motion.div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-8 mb-8">
             <button
               className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-slate-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
               onClick={scrollPrev}
             >
               <FiChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {testimonials.slice(0, 4).map(testimonial => (
-                  <div
-                    key={testimonial.id}
-                    className="relative w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 overflow-hidden"
-                  >
-                    <Image
-                      src={testimonial.author.avatar}
-                      alt={testimonial.author.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white text-sm font-semibold border-2 border-white dark:border-slate-800">
-                  +1
-                </div>
-              </div>
-            </div>
             <button
               className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-slate-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
               onClick={scrollNext}
@@ -192,7 +172,7 @@ export default function TestimonialSection() {
         </div>
 
         {/* Testimonials Carousel */}
-        <div className="embla" ref={emblaRef}>
+        <div className="embla mb-16" ref={emblaRef}>
           <div className="embla__container flex">
             {testimonials.map((testimonial, index) => (
               <motion.div
@@ -202,8 +182,9 @@ export default function TestimonialSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
               >
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 group h-full flex flex-col relative overflow-hidden">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300 group h-full flex flex-col relative overflow-hidden">
                   {/* Gradient Border Effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-400/20 to-secondary-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
 
@@ -257,13 +238,13 @@ export default function TestimonialSection() {
 
         {/* CTA Section */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-0"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <p className="text-lg bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent font-medium mb-6">
+          <p className="text-2xl bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent font-medium mb-6">
             Join 100+ developers already building with our platform
           </p>
           <button className="bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2">
