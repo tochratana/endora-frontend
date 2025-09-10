@@ -8,7 +8,7 @@ import WhyUs from "@/components/about/WhyUs";
 
 export default function page() {
   return (
-    <main className="w-full overflow-x-hidden">
+    <main className="w-full  overflow-x-hidden">
       <HeroSection />
       <div className="w-full dark:bg-slate-900 overflow-x-hidden">
         <OurHistory />

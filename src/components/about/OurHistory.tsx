@@ -19,7 +19,7 @@ export default function OurHistory() {
   return (
     
     <section className="w-full py-1">
-      <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 min-h-[400px]">
+      <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 ">
         {/* Text: 5/8 on md, 4/8 on lg+ */}
         <div
           data-aos="fade-right"

@@ -75,36 +75,36 @@ export default function ContactForm() {
             data-aos="fade-left"
             data-aos-delay="120"
             data-aos-offset="50"
-            className="border border-gray-400 dark:border-gray-600 md:p-8 p-4 grid grid-cols-4 gap-4 rounded-2xl bg-gray-100 dark:bg-gray-900"
+            className="border border-gray-100 dark:border-gray-600 md:p-8 p-4 grid grid-cols-4 gap-4 rounded-2xl bg-gray-100 dark:bg-gray-900"
           >
             <input
               type="text"
               placeholder="First name"
               required
-              className="col-span-2 border border-gray-400 dark:border-gray-600 p-3 rounded-md text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="col-span-2 border border-gray-100 dark:border-gray-600 p-3 rounded-md text-gray-600 dark:text-gray-600 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-600"
             />
             <input
               type="text"
               placeholder="Last name"
               required
-              className="col-span-2 border border-gray-400 dark:border-gray-600 p-3 rounded-md text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="col-span-2 border border-gray-100 dark:border-gray-600 p-3 rounded-md text-gray-600 dark:text-gray-600 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-600"
             />
             <input
               type="email"
               placeholder="Email address"
               required
-              className="col-span-4 border border-gray-400 dark:border-gray-600 p-3 rounded-md text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="col-span-4 border border-gray-100 dark:border-gray-600 p-3 rounded-md text-gray-600 dark:text-gray-600 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-600"
             />
             <input
               type="tel"
               placeholder="Phone number"
               required
-              className="col-span-4 border border-gray-400 dark:border-gray-600 p-3 rounded-md text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="col-span-4 border border-gray-100 dark:border-gray-600 p-3 rounded-md text-gray-600 dark:text-gray-600 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-600"
             />
             <textarea
               placeholder="Tell us about your project, needs, or questions..."
               required
-              className="col-span-4 border border-gray-400 dark:border-gray-600 p-3 rounded-md md:min-h-[150px] h-[100px] text-gray-400 dark:text-gray-200 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors resize-none placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="col-span-4 border border-gray-100 dark:border-gray-600 p-3 rounded-md md:min-h-[150px] h-[100px] text-gray-600 dark:text-gray-600 bg-white dark:bg-gray-800 focus:border-teal-500 focus:outline-none transition-colors resize-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
             />
             <button
               type="submit"

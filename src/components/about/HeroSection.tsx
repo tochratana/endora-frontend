@@ -4,7 +4,7 @@ import Button from "../ui/button";
 
 export default function HeroSection() {
   return (
-    <section className=" min-h-[calc(100vh-64px)] max-w-6xl mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
+    <section className=" pt-[100px] pb-[20px] max-w-6xl mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         {/* Gradient Background */}
@@ -13,7 +13,7 @@ export default function HeroSection() {
 
         {/* Floating Orbs - Enhanced for light mode */}
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-teal-400/40 to-purple-400/40 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-r from-purple-400/40 to-teal-400/40 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-2/4 right-3/4 w-24 h-24 bg-gradient-to-r from-purple-400/40 to-teal-400/40 rounded-full blur-xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-gradient-to-r from-purple-400/35 to-teal-400/35 rounded-full blur-lg animate-pulse delay-500"></div>
 
         {/* Additional subtle orbs for more visibility */}
@@ -76,7 +76,7 @@ export default function HeroSection() {
 
       {/* Bottom Fade */}
       {/* <div className="absolute bottom-[-70] left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-60"></div> */}
-      <div className=" absolute bottom-[-70] left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-30"></div>
+      {/* <div className=" absolute bottom-[-70] left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-30"></div> */}
     </section>
   );
 }
