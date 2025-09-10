@@ -21,20 +21,25 @@ export default function FrameworkSection() {
   const [hoveredFramework, setHoveredFramework] = useState<string | null>(null);
 
   return (
-    <section className="relative bg-white dark:bg-gray-900 min-h-screen overflow-hidden">
-      {/* Background Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-gray-100 to-white dark:from-gray-900 dark:via-gray-800 dark:to-black opacity-90" />
+    <section className="relative bg-white dark:bg-gray-900 overflow-hidden pt-8 pb-16">
+      {/* Modern Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
 
-      {/* Animated Grid Pattern Background */}
-      <AnimatedGridPattern
-        numSquares={30}
-        maxOpacity={0.1}
-        duration={3}
-        repeatDelay={1}
-        className="absolute inset-0 h-full w-full fill-gray-200/30 stroke-gray-200/30 dark:fill-white/10 dark:stroke-white/10 z-0"
-      />
+      {/* Floating Orbs Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "4s" }}
+        ></div>
+      </div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,_rgba(0,0,0,0.05)_1px,_transparent_0)] dark:bg-[radial-gradient(circle_at_1px_1px,_rgba(255,255,255,0.05)_1px,_transparent_0)] bg-[length:50px_50px]" />
+      {/* Subtle Pattern Overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDU5LCAxMzAsIDI0NiwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] dark:bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
 
       {/* Content */}
       <div className="relative z-20 p-8">
@@ -48,7 +53,7 @@ export default function FrameworkSection() {
               to build your projects with the tools you love. Whether
               you&apos;re a fan of
               {hoveredFramework && (
-                <span className="text-primary-600 dark:text-primary-400 ml-2 transition-opacity duration-300">
+                <span className="text-primary-600 dark:text-secondary-400 ml-2 transition-all duration-300 text-2xl font-bold">
                   {hoveredFramework}
                 </span>
               )}
@@ -60,11 +65,11 @@ export default function FrameworkSection() {
             {frameworks.map(({ name, iconClass }) => (
               <div
                 key={name}
-                className="aspect-square bg-gray-100/80 hover:bg-gray-200/80 dark:bg-gray-800/80 dark:hover:bg-gray-700/80 flex items-center justify-center group relative transition-all duration-300"
+                className="aspect-square bg-gray-50/80 hover:bg-gray-100/80 dark:bg-gray-800/80 dark:hover:bg-gray-700/80 flex items-center justify-center group relative transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50"
                 onMouseEnter={() => setHoveredFramework(name)}
                 onMouseLeave={() => setHoveredFramework(null)}
               >
-                <div className="w-12 h-12 opacity-70 group-hover:opacity-100 transition-all duration-300">
+                <div className="w-12 h-12 opacity-80 group-hover:opacity-100 transition-all duration-300">
                   <i className={`${iconClass} text-5xl`}></i>
                 </div>
               </div>
