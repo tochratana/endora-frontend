@@ -135,40 +135,4 @@ export const teamMembers: TeamMember[] = [
     background: "/team-background/blob4.svg",
     image: "/images/phoem-oudom.png",
   },
-  {
-    id: 8,
-    name: "Korm TaingAn",
-    position: "Team member",
-    socials: {
-      github: "https://github.com/TaingAnKorm",
-      linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
-      portfolio: "#",
-    },
-    background: "/team-background/blob6.svg",
-    image: "/images/korm-taingan.png",
-  },
-  {
-    id: 9,
-    name: "Kea Daron",
-    position: "Team member",
-    socials: {
-      github: "https://github.com/kea-daron",
-      linkedin: "https://www.linkedin.com/in/kea-daron-315ba436b/",
-      portfolio: "https://my-folio-pearl.vercel.app/",
-    },
-    background: "/team-background/blob9.svg",
-    image: "/images/kea-daron.png",
-  },
-  {
-    id: 10,
-    name: "Korm Taiyi",
-    position: "Team member",
-    socials: {
-      github: "https://github.com/KormTaiyi",
-      linkedin: "https://www.linkedin.com/in/korm-taiyi-906407327/",
-      portfolio: "#",
-    },
-    background: "/team-background/blob.svg",
-    image: "/images/korm-taiyi.png",
-  },
 ];
