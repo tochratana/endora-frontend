@@ -2,7 +2,6 @@ import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
-import { InstallPWA } from "@/components/InstallPWA";
 import Shell from "@/components/layouts/Shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientProviders from "@/components/ClientProviders";
@@ -23,10 +22,11 @@ export const metadata = {
     "real-time database",
   ],
   icons: {
-    icon: "/EndoraTransparent.png",
-    shortcut: "/EndoraTransparent.png",
-    apple: "/EndoraTransparent.png",
+    icon: "/favicon.ico",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
+  manifest: "/manifest.json",
 };
 
 const lexend = Lexend({
@@ -63,10 +63,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="NextPWA" />
+        <meta name="apple-mobile-web-app-title" content="Endora" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/icon-192x192.png" />
-        {/* <link rel="apple-touch-icon" href="/icon-192x192.png" /> */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"

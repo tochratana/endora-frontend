@@ -33,10 +33,15 @@ export interface Project {
 }
 
 export interface ProjectResponse {
-  projects: Project[];
-  total: number;
-  skip: number;
-  limit: number;
+  message: string;
+  data: ProjectSummary[];
+}
+
+export interface ProjectSummary {
+  projectUuid: string;
+  projectName: string;
+  description: string;
+  dbSchema: string;
 }
 
 export interface CreateProjectRequest {

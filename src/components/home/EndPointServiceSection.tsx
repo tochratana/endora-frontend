@@ -4,15 +4,15 @@ import LottieAnimation from "../ui/LottieAnimation";
 
 export default function EndPointServiceSection() {
   return (
-    <section className="">
-      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center md:gap-12">
+    <section className="py-8 sm:-mt-16 sm:py-0">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-4 md:grid-cols-2 md:items-center md:gap-8">
           <div className="order-1 md:order-2">
             <div className="max-w-lg md:max-w-none">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent sm:text-4xl lg:text-5xl">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent sm:text-3xl md:text-4xl lg:text-5xl">
                 Endpoint Generation
               </h2>
-              <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
                 Generate and manage your API endpoints effortlessly with our
                 advanced Endpoint Generation Service. Streamline your
                 development workflow with automated endpoint creation and
@@ -21,7 +21,10 @@ export default function EndPointServiceSection() {
             </div>
           </div>
           <div className="order-2 md:order-1 flex justify-center">
-            <LottieAnimation path="/home/cloud1.json" />
+            <LottieAnimation
+              path="/home/cloud1.json"
+              className="w-80 h-80 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] max-w-full sm:scale-150 sm:-ml-16"
+            />
           </div>
         </div>
       </div>

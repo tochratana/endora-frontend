@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Search } from "lucide-react";
 import NewProjectButton from "./topupPage/newProjectButton";
-import { useGetProjectsQuery } from "@/service/apiSlide/projectApi";
+import { useGetProjectsQuery } from "@/service/project/projectApi";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -15,7 +15,20 @@ export default function DashboardPage() {
   // Use real project data or fallback to empty array
   const projects = data || [];
 
-  console.log(projects);
+  console.log("getting project : ", projects);
+
+  if (projects === null) {
+    return (
+      <div className="min-h-screen text-zinc-900 dark:text-zinc-200 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 dark:border-emerald-500 mx-auto mb-4"></div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Loading projects...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -97,8 +110,7 @@ export default function DashboardPage() {
                       {project.description}
                     </p>
                     <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                      Created:{" "}
-                      {new Date(project.createdAt).toLocaleDateString()}
+                      Schema: {project.dbSchema}
                     </p>
                   </div>
                   <div className="rounded-[8px] border border-teal-600/30 bg-teal-500/5 p-2 dark:border-emerald-600/30 dark:bg-emerald-500/5">

@@ -22,14 +22,19 @@ const NotificationBar: React.FC = () => {
       },
       {
         id: 2,
-        message: "🚀 អាហារូបករណ៍ ៥០% ផ្នែកព័ត៌មានវិទ្យា Foundation ជំនាន់ទី ៥",
+        message: "🔥 អាហារូបករណ៍ ៥០% ផ្នែកព័ត៌មានវិទ្យា Foundation ជំនាន់ទី ៥",
         href: "https://t.me/+lGjy2_FsUrE2NGE1",
       },
       {
         id: 3,
         message:
-          "😲 អាហារូបករណ៍រហូតដល់ ១០០% ថ្នាកបរិញ្ញាបត្រ បរិញ្ញាបត្ររងផ្នែកព័ត៌មានវិទ្យា",
-        href: "https://cstad.edu.kh/register",
+          "🔥 អាហារូបករណ៍រហូតដល់ ១០០% ថ្នាកបរិញ្ញាបត្រ បរិញ្ញាបត្ររងផ្នែកព័ត៌មានវិទ្យា",
+        href: "https://www.cstad.edu.kh/register",
+      },
+      {
+        id: 4,
+        message: "🔥 អាហារូបករណ៍ ៥០% ផ្នែកព័ត៌មានវិទ្យា ITP ជំនាន់ទី ១",
+        href: "https://t.me/+Q0FcA7elvOMzY2U1",
       },
     ],
     []
