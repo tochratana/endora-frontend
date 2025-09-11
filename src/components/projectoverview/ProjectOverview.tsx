@@ -2,7 +2,7 @@
 
 import { Archive, Database, User, ZapIcon } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useGetProjectByUuidQuery } from "@/service/apiSlide/projectApi";
+import { useGetProjectByUuidQuery } from "@/service/project/projectApi";
 
 interface ProjectOverviewProps {
   projectUuid?: string;
