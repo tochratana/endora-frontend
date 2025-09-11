@@ -1,4 +1,3 @@
-// import HeroSection from "@/components/about/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import OurServices from "@/components/home/OurServices";
 import FrameworkSection from "@/components/home/FramworkSpp";

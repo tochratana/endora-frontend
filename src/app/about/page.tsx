@@ -1,5 +1,5 @@
+import ContactForm from "@/components/about/ContactForm";
 import HeroSection from "@/components/about/HeroSection";
-import JoinTeam from "@/components/about/JoinTeam";
 import OurHistory from "@/components/about/OurHistory";
 import OurMentor from "@/components/about/OurMentor";
 import OurMission from "@/components/about/OurMission";
@@ -8,14 +8,16 @@ import WhyUs from "@/components/about/WhyUs";
 
 export default function page() {
   return (
-    <section>
+    <main className="w-full  overflow-x-hidden">
       <HeroSection />
-      <OurHistory />
-      <OurMission />
-      <OurMentor />
-      <OurTeam />
-      <WhyUs />
-      <JoinTeam />
-    </section>
+      <div className="w-full dark:bg-slate-900 overflow-x-hidden">
+        <OurHistory />
+        <OurMission />
+        <OurMentor />
+        <OurTeam />
+        <WhyUs />
+        <ContactForm />
+      </div>
+    </main>
   );
 }

@@ -30,6 +30,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       outline:
         "border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-900 focus:ring-gray-500",
       ghost: "hover:bg-gray-100 text-gray-700 hover:text-gray-900",
+      secondaryTeal: 
+      "bg-teal-500",
     };
 
     const sizes = {
