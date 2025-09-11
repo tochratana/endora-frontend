@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCreateProjectMutation } from "@/service/apiSlide/projectApi";
+import { useCreateProjectMutation } from "@/service/project/projectApi";
 
 type Props = {
   onDone?: () => void;

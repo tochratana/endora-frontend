@@ -100,6 +100,7 @@ export async function GET(req: NextRequest) {
     }
 
     const projects = await response.json();
+    console.log("Fetched projects:", projects);
     return NextResponse.json(projects);
   } catch (error) {
     console.error("Error fetching projects:", error);
