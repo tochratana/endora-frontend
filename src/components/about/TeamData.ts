@@ -105,8 +105,6 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
       portfolio: "#",
     },
-    // background: "/team-background/blob2.svg",
-    // image: "/images/korm-taingan.png"
     background: "/team-background/blob6.svg",
     image: "/images/korm-taingan.png",
   },

@@ -49,7 +49,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-8">
           {/* Step 1 */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+            <div className="w-11 h-11 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
               1
             </div>
             <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
@@ -143,32 +143,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Arrow Connector - Hidden on mobile */}
-      <div className="hidden sm:block text-gray-400 dark:text-gray-500">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17 8l4 4m0 0l-4 4m4-4H3"
-          />
-        </svg>
-      </div>
-
-      {/* Step 3 */}
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
-          3
-        </div>
-        <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
-          Start Building
-        </span>
-      </div>
+   
     </section>
   );
 }
