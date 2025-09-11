@@ -27,14 +27,14 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 2,
-    name: "Srong Sokcheat",
+    name: "Srorng Sokcheat",
     position: "Mentor",
     socials: {
       github: "https://github.com/srongsokcheat",
       linkedin: "https://www.linkedin.com/in/srongsokcheat",
       portfolio: "https://sokcheat.dev",
     },
-    image: "/images/teacher-cheat-half.png",
+    image: "/images/teacher-cheat.png",
   },
   {
     id: 3,
@@ -98,15 +98,17 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 8,
-    name: "Korm Taingan",
+    name: "Korm TaingAn",
     position: "Team member",
     socials: {
       github: "https://github.com/TaingAnKorm",
       linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
-      portfolio: "#"
+      portfolio: "#",
     },
-    background: "/team-background/blob2.svg",
-    image: "/images/korm-taingan.png"
+    // background: "/team-background/blob2.svg",
+    // image: "/images/korm-taingan.png"
+    background: "/team-background/blob6.svg",
+    image: "/images/korm-taingan.png",
   },
   {
     id: 9,

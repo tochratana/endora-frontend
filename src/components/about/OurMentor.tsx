@@ -42,7 +42,7 @@ export default function OurMentor() {
             .map((tm, index) => (
               <div
                 key={tm.id}
-                className={`flex md:flex-row flex-col md:text-left items-center md:gap-6 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
+                className={`flex md:flex-row flex-col md:text-left items-center md:gap-0 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
               >
                 <div
                   data-aos="zoom-in"

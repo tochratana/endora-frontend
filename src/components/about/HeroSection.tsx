@@ -24,21 +24,21 @@ export default function HeroSection() {
       <div className="relative z-10 w-full max-w-4xl mx-auto space-y-8 flex flex-col items-center">
         {/* Title with ShinyText */}
         <div className="w-full space-y-4 flex flex-col items-center">
-          <ShinyText className="md:text-7xl text-6xl font-bold text-center">
+          <ShinyText className="md:text-[5.5rem] text-6xl font-bold text-center">
             Welcome to Endora
           </ShinyText>
 
           {/* Subtitle */}
           <div className="flex items-center justify-center pt-4 gap-2 text-sm text-gray-500 dark:text-gray-400">
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
-            <span className="font-medium">Simplify Your Backend</span>
+            <span className="font-medium text-base">Simplify Your Backend</span>
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
           </div>
         </div>
 
         {/* Description */}
         <div className="w-full flex justify-center">
-          <p className="max-w-2xl md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed text-center">
+          <p className="max-w-2xl md:text-xl text-lg text-gray-700 dark:text-gray-300 leading-relaxed text-center">
             Endora is a lightweight Backend-as-a-Service (BaaS) platform that
             simplifies backend development by generating REST APIs from schemas
             or data sources.
@@ -57,10 +57,11 @@ export default function HeroSection() {
             </span>
           </div>
 
-          {/* Arrow Connector - Hidden on mobile */}
-          <div className="hidden sm:block text-gray-400 dark:text-gray-500">
+          {/* Arrow Connector - Horizontal on desktop, vertical on mobile */}
+          <div className="text-gray-400 dark:text-gray-500">
+            {/* Desktop arrow (horizontal) */}
             <svg
-              className="w-6 h-6"
+              className="hidden sm:block w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -72,10 +73,25 @@ export default function HeroSection() {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
+            {/* Mobile arrow (vertical/down) */}
+            <svg
+              className="block sm:hidden w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 17l4 4m0 0l4-4m-4 4V3"
+              />
+            </svg>
           </div>
+
           {/* Step 2 */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+            <div className="w-11 h-11 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
               2
             </div>
             <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
@@ -83,10 +99,11 @@ export default function HeroSection() {
             </span>
           </div>
 
-          {/* Arrow Connector - Hidden on mobile */}
-          <div className="hidden sm:block text-gray-400 dark:text-gray-500">
+          {/* Arrow Connector - Horizontal on desktop, vertical on mobile */}
+          <div className="text-gray-400 dark:text-gray-500">
+            {/* Desktop arrow (horizontal) */}
             <svg
-              className="w-6 h-6"
+              className="hidden sm:block w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -98,11 +115,25 @@ export default function HeroSection() {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
+            {/* Mobile arrow (vertical/down) */}
+            <svg
+              className="block sm:hidden w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 17l4 4m0 0l4-4m-4 4V3"
+              />
+            </svg>
           </div>
 
           {/* Step 3 */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+            <div className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
               3
             </div>
             <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
@@ -110,6 +141,33 @@ export default function HeroSection() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Arrow Connector - Hidden on mobile */}
+      <div className="hidden sm:block text-gray-400 dark:text-gray-500">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </div>
+
+      {/* Step 3 */}
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+          3
+        </div>
+        <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
+          Start Building
+        </span>
       </div>
     </section>
   );
