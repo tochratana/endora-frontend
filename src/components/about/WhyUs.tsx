@@ -46,7 +46,7 @@ export default function WhyUs() {
   ];
 
   return (
-    <section className="w-full py-16 px-4">
+    <section className="w-full pt-32 px-4">
       <div className="max-w-6xl mx-auto grid md:grid-cols-9 grid-cols-4 gap-6 md:gap-8 items-center">
         {/* Left side: Title + Image */}
         <div
@@ -96,10 +96,10 @@ export default function WhyUs() {
 
               {/* Content */}
               <div className="relative">
-                <h3 className="text-gray-800 dark:text-white font-semibold mt-2 mb-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
+                <h3 className="text-gray-800 dark:text-gray-300 font-semibold mt-2 mb-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-gray-900 dark:text-white md:text-base text-sm leading-relaxed">
+                <p className="text-gray-900 dark:text-gray-300 md:text-base text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

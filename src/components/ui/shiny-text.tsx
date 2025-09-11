@@ -48,12 +48,12 @@ export function ShinyText({ children, className, delay = 0 }: ShinyTextProps) {
           className="inline-block relative"
           whileHover={{
             scale: 1.2,
-            color: "var(--color-primary-500)", // ✅ fixed to your palette
+            color: "var(--color-secondary-500)",
             textShadow: `
-             0 0 10px var(--color-secondary-100), 
+             0 0 10px var(--color-primary-100), 
              // 0 0 20px var(--color-secondary-200), 
              // 0 0 30px var(--color-secondary-300), 
-             0 0 40px var(--color-secondary-400)
+             0 0 40px var(--color-primary-400)
             `,
             transition: { duration: 0.2 },
           }}
@@ -61,12 +61,12 @@ export function ShinyText({ children, className, delay = 0 }: ShinyTextProps) {
             background: `
               linear-gradient(
                 45deg,
-                var(--color-secondary-700),
-                var(--color-secondary-500),
-                var(--color-secondary-300),
-                var(--color-secondary-100),
-                var(--color-secondary-500),
-                var(--color-secondary-700)
+                var(--color-primary-700),
+                var(--color-primary-500),
+                var(--color-primary-300),
+                var(--color-primary-100),
+                var(--color-primary-500),
+                var(--color-primary-700)
               )
             `,
             backgroundSize: "300% 300%",

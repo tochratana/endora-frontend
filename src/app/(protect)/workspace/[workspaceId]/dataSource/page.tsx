@@ -199,7 +199,7 @@ export default function Page({ params }: PageProps) {
           />
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-800">
+        <div className="bg-white dark:bg-slate-900 rounded-lg border-1 border-gray-200 dark:border-slate-800">
           <TabNavigation
             tabs={tabs}
             activeTab={activeTab}

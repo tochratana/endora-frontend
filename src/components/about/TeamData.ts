@@ -67,7 +67,7 @@ export const teamMembers: TeamMember[] = [
     socials: {
       github: "https://github.com/RinSanom",
       linkedin: "https://www.linkedin.com/in/rinsanom",
-      portfolio: "#",
+      portfolio: "https://rin-sanom.vercel.app/",
     },
     background: "/team-background/blob5.svg",
     image: "/images/rin-sanom.png",
@@ -81,7 +81,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/ratana-touch",
       portfolio: "#",
     },
-    background: "/team-background/blob7.svg",
+    background: "/team-background/blob9.svg",
     image: "/images/toch-ratana.png",
   },
   {
@@ -93,7 +93,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/oudomm",
       portfolio: "https://www.oudom.dev",
     },
-    background: "/team-background/blob1.svg",
+    background: "/team-background/blob4.svg",
     image: "/images/phoem-oudom.png",
   },
   {
@@ -105,7 +105,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/taing-an-005343325/",
       portfolio: "#"
     },
-    background: "/team-background/blob6.svg",
+    background: "/team-background/blob2.svg",
     image: "/images/korm-taingan.png"
   },
   {
@@ -117,7 +117,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/kea-daron-315ba436b/",
       portfolio: "https://my-folio-pearl.vercel.app/",
     },
-    background: "/team-background/blob8.svg",
+    background: "/team-background/blob9.svg",
     image: "/images/kea-daron.png",
   },
   {

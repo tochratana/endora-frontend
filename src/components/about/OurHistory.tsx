@@ -18,7 +18,7 @@ export default function OurHistory() {
 
   return (
     
-    <section className="w-full py-1">
+    <section>
       <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 ">
         {/* Text: 5/8 on md, 4/8 on lg+ */}
         <div
@@ -30,12 +30,12 @@ export default function OurHistory() {
           <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">
             Our History
           </h1>
-          <p className="text-gray-600 dark:text-white text-lg">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             Teams spend weeks wiring backends—CRUD, databases, and auth—before
             they can ship features. We set out to remove that friction.
           </p>
           <br />
-          <p className="text-gray-600 dark:text-white text-lg">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             What began as a simple tool to generate APIs from a schema has grown
             into a full platform with a visual schema builder, data
             import/export, authentication, and Swagger-based testing.
@@ -51,7 +51,7 @@ export default function OurHistory() {
             data-aos-offset="50"
           >
             <Image
-              src="/group.png"
+              src="/teams-nofloor.svg"
               alt="history image"
               width={700}
               height={520}

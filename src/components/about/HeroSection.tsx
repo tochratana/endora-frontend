@@ -1,14 +1,13 @@
-import Link from "next/link";
+// import Link from "next/link";
 import { ShinyText } from "../ui/shiny-text";
-import Button from "../ui/button";
+// import Button from "../ui/button";
 
 export default function HeroSection() {
   return (
-    <section className=" pt-[100px] pb-[20px] max-w-6xl mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
+    <section className="relative min-h-screen mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         {/* Gradient Background */}
-        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/30 to-purple-50/40 dark:from-teal-950/20 dark:via-purple-950/10 dark:to-teal-950/20"></div> */}
         <div className="absolute inset-0 dark:bg-slate-900"></div>
 
         {/* Floating Orbs - Enhanced for light mode */}
@@ -25,12 +24,12 @@ export default function HeroSection() {
       <div className="relative z-10 w-full max-w-4xl mx-auto space-y-8 flex flex-col items-center">
         {/* Title with ShinyText */}
         <div className="w-full space-y-4 flex flex-col items-center">
-          <ShinyText className="md:text-7xl text-6xl font-semibold text-[var(--color-secondary-500)] text-center">
+          <ShinyText className="md:text-7xl text-6xl font-bold text-center">
             Welcome to Endora
           </ShinyText>
 
           {/* Subtitle */}
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-center pt-4 gap-2 text-sm text-gray-500 dark:text-gray-400">
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
             <span className="font-medium">Simplify Your Backend</span>
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
@@ -46,19 +45,22 @@ export default function HeroSection() {
           </p>
         </div>
 
-        {/* CTA Section */}
-        <Button
-          // variant="secondaryTeal"
-          className="flex justify-center"
-        >
-          <Link
-            href="/"
-            className="group inline-flex items-center px-6 py-2 text-white text-[18px]  font-bold hover:opacity-90 transition-all duration-300   hover:scale-105 active:scale-95"
-            // variants="secondary"
-          >
-            Start your project
+        {/* Step-by-Step Process */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-8">
+          {/* Step 1 */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+              1
+            </div>
+            <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
+              Create Schema
+            </span>
+          </div>
+
+          {/* Arrow Connector - Hidden on mobile */}
+          <div className="hidden sm:block text-gray-400 dark:text-gray-500">
             <svg
-              className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -70,13 +72,45 @@ export default function HeroSection() {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
-          </Link>
-        </Button>
-      </div>
+          </div>
+          {/* Step 2 */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+              2
+            </div>
+            <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
+              Generate API
+            </span>
+          </div>
 
-      {/* Bottom Fade */}
-      {/* <div className="absolute bottom-[-70] left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-60"></div> */}
-      {/* <div className=" absolute bottom-[-70] left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-30"></div> */}
+          {/* Arrow Connector - Hidden on mobile */}
+          <div className="hidden sm:block text-gray-400 dark:text-gray-500">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </div>
+
+          {/* Step 3 */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+              3
+            </div>
+            <span className="text-gray-700 dark:text-gray-300 font-medium text-xl">
+              Start Building
+            </span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

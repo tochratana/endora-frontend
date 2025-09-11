@@ -61,6 +61,7 @@ export function DataTable({
 
   const [autoResetOpen, setAutoResetOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     setProducts(initialProducts);
@@ -108,27 +109,31 @@ export function DataTable({
 
     const idCol: ColumnDef<SampleProduct> = {
       accessorKey: "id",
-      header: () => <span className="text-slate-300 font-medium">id</span>,
+      header: () => <span className="text-slate-300 font-mediu">id</span>,
       cell: ({ getValue }) => (
-        <span className="text-slate-200 font-mono">{String(getValue())}</span>
+        <span className="dark:text-gray-200 text-gray-600">
+          {String(getValue())}
+        </span>
       ),
     };
 
     const nameCol: ColumnDef<SampleProduct> = {
       accessorKey: "name",
-      header: () => <span className="text-slate-300 font-medium">name</span>,
+      header: () => <span className="text-slate-300">name</span>,
       cell: ({ getValue }) => (
-        <span className="text-white">{String(getValue() ?? "")}</span>
+        <span className="dark:text-gray-200 text-gray-600">
+          {String(getValue() ?? "")}
+        </span>
       ),
     };
 
     const priceCol: ColumnDef<SampleProduct> = {
       accessorKey: "price",
-      header: () => <span className="text-slate-300 font-medium">price</span>,
+      header: () => <span className="text-slate-300">price</span>,
       cell: ({ getValue }) => {
         const v = Number(getValue());
         return (
-          <span className="text-white font-mono">
+          <span className="dark:text-gray-200 text-gray-600">
             {`$${Number.isFinite(v) ? v.toFixed(2) : "0.00"}`}
           </span>
         );
@@ -137,11 +142,9 @@ export function DataTable({
 
     const dateCol: ColumnDef<SampleProduct> = {
       accessorKey: "created_date",
-      header: () => (
-        <span className="text-slate-300 font-medium">created_date</span>
-      ),
+      header: () => <span className="text-slate-300">created_date</span>,
       cell: ({ getValue }) => (
-        <span className="text-slate-300 font-mono">
+        <span className="dark:text-gray-200 text-gray-600">
           {String(getValue() ?? "")}
         </span>
       ),
@@ -224,6 +227,18 @@ export function DataTable({
     setRowSelection({});
   };
 
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+
+    // Reset to initial products
+    setProducts(initialProducts);
+    setRowSelection({});
+    onLog?.("REFRESH", "Table Refreshed", "Reloaded product list");
+
+    // Stop spinning after 1 second
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
+
   return (
     <div className="space-y-4">
       {/* Collection Header Row */}
@@ -294,7 +309,7 @@ export function DataTable({
 
       {/* Table */}
       <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse text-gray-800 dark:text-white">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700">
               {table.getFlatHeaders().map((header, i) => (
@@ -343,11 +358,11 @@ export function DataTable({
                         ? "border-r border-slate-200 dark:border-slate-700 text-gray-900 "
                         : "") +
                       (["id", "price", "created_date"].includes(cell.column.id)
-                        ? "font-lexend "
+                        ? "font-lexend  "
                         : "") +
                       (cell.column.id === "name"
-                        ? "text-slate-900 dark:text-white "
-                        : "text-slate-600 dark:text-slate-300 ") +
+                        ? "text-gray-800 dark:text-white  "
+                        : "text-gray-600 dark:text-gray-300 ") +
                       (cell.column.id === "_actions" ? "text-center " : "")
                     }
                   >
@@ -359,7 +374,7 @@ export function DataTable({
 
             {/* Add form row */}
             {showAddForm && (
-              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-750">
+              <tr className="border-b border-slate-200 dark:border-slate-700  dark:bg-slate-750">
                 <td className="p-3 border-r border-slate-200 dark:border-slate-700"></td>
                 <td className="p-3 text-slate-700 dark:text-slate-400 border-r border-slate-200 dark:border-slate-700 font-mono">
                   auto
@@ -446,8 +461,14 @@ export function DataTable({
         </div>
         <div className="flex items-center gap-4">
           <span>records {products.length}</span>
-          <button className="flex items-center gap-1 hover:text-white transition-colors">
-            <RefreshCcw size={14} />
+          <button
+            onClick={handleRefresh}
+            className="flex items-center gap-1 hover:text-slate-800 dark:hover:text-white transition-colors"
+          >
+            <RefreshCcw
+              size={14}
+              className={isRefreshing ? "animate-spin" : ""}
+            />
             Refresh
           </button>
         </div>
