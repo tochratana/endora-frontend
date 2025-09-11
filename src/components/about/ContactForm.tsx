@@ -17,13 +17,12 @@ export default function ContactForm() {
   }, []);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-  e.preventDefault();
-  console.log("Form submitted");
-};
-
+    e.preventDefault();
+    console.log("Form submitted");
+  };
 
   return (
-    <section className="w-full py-16 px-4">
+    <section className="w-full py-16 px-4 -mt-12 md:mt-0">
       <div className="max-w-6xl mx-auto grid md:grid-cols-8 grid-cols-4 gap-8">
         {/* Left side: Contact info */}
         <div
@@ -43,8 +42,9 @@ export default function ContactForm() {
           {/* Contact Info */}
           <ul className="flex flex-col gap-3 text-[var(--color-primary)] font-semibold">
             <a
-            href="#"
-            className="flex items-center gap-2 group hover:text-teal-500 transition-colors">
+              href="#"
+              className="flex items-center gap-2 group hover:text-teal-500 transition-colors"
+            >
               <MapPin className="transition-all duration-300 group-hover:text-teal-500 group-hover:animate-pulse" />
               ISTAD, Phnom Penh, Cambodia
             </a>

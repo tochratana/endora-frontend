@@ -17,7 +17,7 @@ export default function OurMentor() {
     });
   }, []);
   return (
-    <section className="w-full py-10 px-2">
+    <section className="w-full pt-12 px-2">
       <div className="max-w-6xl m-auto">
         <h1
           data-aos="zoom-in"
@@ -31,7 +31,7 @@ export default function OurMentor() {
           data-aos="zoom-in"
           data-aos-delay="120"
           data-aos-offset="50"
-          className="text-gray-600 dark:text-white text-center mb-12 md:text-xl text-lg max-w-3xl mx-auto"
+          className="text-gray-600 dark:text-gray-300 text-center mb-12 md:text-xl text-lg max-w-3xl mx-auto"
         >
           Behind every great achievement is great guidance — ours comes from an
           exceptional mentor.
@@ -42,7 +42,7 @@ export default function OurMentor() {
             .map((tm, index) => (
               <div
                 key={tm.id}
-                className={`flex md:flex-row flex-col md:text-left items-center md:gap-6 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
+                className={`flex md:flex-row flex-col md:text-left items-center md:gap-0 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
               >
                 <div
                   data-aos="zoom-in"

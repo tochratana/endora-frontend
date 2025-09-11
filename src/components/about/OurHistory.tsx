@@ -17,8 +17,7 @@ export default function OurHistory() {
   }, []);
 
   return (
-    
-    <section className="w-full py-1">
+    <section className="w-full py-1 mt-16 md:mt-0">
       <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 ">
         {/* Text: 5/8 on md, 4/8 on lg+ */}
         <div
@@ -43,7 +42,7 @@ export default function OurHistory() {
         </div>
 
         {/* Image: 3/8 on md, 4/8 on lg+ with max-width constraint */}
-        <div className="col-span-4 md:col-span-3 lg:col-span-4 md:mt-0 mt-5 px-5 flex justify-center">
+        <div className="col-span-4 md:col-span-3 lg:col-span-4 md:mt-0 -mt-8 px-2 flex justify-end">
           <div
             className="w-full max-w-sm md:max-w-xs lg:max-w-lg"
             data-aos="fade-left"
