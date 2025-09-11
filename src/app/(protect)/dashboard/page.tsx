@@ -15,9 +15,9 @@ export default function DashboardPage() {
   // Use real project data or fallback to empty array
   const projects = data || [];
 
-  console.log("getting project : " , projects);
+  console.log("getting project : ", projects);
 
-    if (projects === null) {
+  if (projects === null) {
     return (
       <div className="min-h-screen text-zinc-900 dark:text-zinc-200 flex items-center justify-center">
         <div className="text-center">

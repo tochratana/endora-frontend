@@ -1,12 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Project, CreateProjectRequest, ProjectResponse, ProjectSummary } from "@/types/product";
+import {
+  Project,
+  CreateProjectRequest,
+  ProjectResponse,
+  ProjectSummary,
+} from "@/types/product";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
     prepareHeaders: headers => {
-     headers.set("Content-Type", "application/json");
+      headers.set("Content-Type", "application/json");
 
       return headers;
     },
@@ -19,7 +24,6 @@ export const projectApi = createApi({
       transformResponse: (response: ProjectResponse) => response.data,
     }),
 
-
     createProject: builder.mutation<Project, CreateProjectRequest>({
       query: projectData => ({
         url: "projects",
@@ -31,7 +35,4 @@ export const projectApi = createApi({
   }),
 });
 
-export const {
-  useGetProjectsQuery,
-  useCreateProjectMutation,
-} = projectApi;
+export const { useGetProjectsQuery, useCreateProjectMutation } = projectApi;
