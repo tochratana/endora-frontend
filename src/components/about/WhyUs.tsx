@@ -53,17 +53,17 @@ export default function WhyUs() {
           data-aos="fade-right"
           data-aos-delay="120"
           data-aos-offset="50"
-          className="md:col-span-3 col-span-4 flex flex-col items-center gap-6"
+          className="md:col-span-3 col-span-4 flex flex-col items-center justify-center gap-6 mx-auto -mt-8 md:mt-0"
         >
-          <h1 className="md:text-5xl text-4xl font-semibold text-center text-[var(--color-secondary)]">
+          <h1 className="md:text-5xl text-4xl font-semibold text-center text-[var(--color-secondary)] ml-12 md:ml-0">
             Why Us?
           </h1>
           <Image
-            src="/whyus.png"
+            src="/whyus.svg"
             alt="Illustration"
             width={500}
             height={500}
-            className="w-full h-auto object-contain rounded"
+            className="w-5/6 md:w-11/12 h-auto object-contain rounded ml-10 md:mx-auto"
           />
         </div>
 
@@ -72,7 +72,7 @@ export default function WhyUs() {
           data-aos="fade-left"
           data-aos-delay="120"
           data-aos-offset="50"
-          className="col-span-6 grid grid-cols-8 gap-6 text-center md:px-5"
+          className="col-span-6 grid grid-cols-8 gap-6 text-center md:ml-8"
         >
           {features.map((feature, index) => (
             <motion.div

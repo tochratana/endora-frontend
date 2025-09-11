@@ -34,7 +34,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/srorng-sokcheat-09b542341",
       portfolio: "/about",
     },
-    image: "/images/teacher-cheat-half.png",
+    image: "/images/teacher-cheat.png",
   },
   {
     id: 3,
@@ -89,7 +89,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 7,
-    name: "Korm Taingan",
+    name: "Korm TaingAnn",
     position: "Team member",
     socials: {
       github: "https://github.com/TaingAnKorm",

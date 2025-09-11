@@ -24,6 +24,11 @@ export const projectApi = createApi({
       transformResponse: (response: ProjectResponse) => response.data,
     }),
 
+    getProjectByUuid: builder.query<Project, string>({
+      query: uuid => `/projects/${uuid}`,
+      providesTags: ["Project"],
+    }),
+
     createProject: builder.mutation<Project, CreateProjectRequest>({
       query: projectData => ({
         url: "projects",
@@ -35,4 +40,8 @@ export const projectApi = createApi({
   }),
 });
 
-export const { useGetProjectsQuery, useCreateProjectMutation } = projectApi;
+export const {
+  useGetProjectsQuery,
+  useGetProjectByUuidQuery,
+  useCreateProjectMutation,
+} = projectApi;
