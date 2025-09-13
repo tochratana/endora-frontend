@@ -7,7 +7,7 @@ type Props = {
   onDone?: () => void;
 };
 
-export default function TopupForm({ onDone }: Props) {
+export default function ProjectCreationForm({ onDone }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [clientAuthEnabled, setClientAuthEnabled] = useState(false);
@@ -47,7 +47,9 @@ export default function TopupForm({ onDone }: Props) {
       return;
     }
     // Just a demo – replace with your actual verify logic
-    alert(`Verifying project: ${name} - ${description} - Client Auth: ${clientAuthEnabled}`);
+    alert(
+      `Verifying project: ${name} - ${description} - Client Auth: ${clientAuthEnabled}`
+    );
   }
 
   return (
@@ -86,7 +88,8 @@ export default function TopupForm({ onDone }: Props) {
           Enable Client Authentication
         </label>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          When enabled, clients will need to authenticate before accessing this project
+          When enabled, clients will need to authenticate before accessing this
+          project
         </p>
       </div>
 
