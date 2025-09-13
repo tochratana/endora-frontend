@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     // Make request to backend API
     const response = await fetch(
-      `${process.env.API_BASE}/table?projectUuid=${projectUuid}`,
+      `${process.env.API_BASE}/projects/${projectUuid}/schema/tables`,
       {
         method: "GET",
         headers: {
