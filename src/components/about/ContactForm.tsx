@@ -88,10 +88,10 @@ export default function ContactForm() {
             <li className="flex items-center gap-2 group">
               <Mail className="transition-all duration-300 group-hover:text-teal-500 group-hover:animate-pulse" />
               <a
-                href="mailto:endora@gmail.com"
+                href="mailto:endora.istad@gmail.com"
                 className="hover:text-teal-500 transition-colors"
               >
-                endora@gmail.com
+                endora.istad@gmail.com
               </a>
             </li>
           </ul>

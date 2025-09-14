@@ -89,7 +89,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 7,
-    name: "Korm Taingan",
+    name: "Korm TaingAnn",
     position: "Team member",
     socials: {
       github: "https://github.com/TaingAnKorm",
