@@ -24,7 +24,7 @@ export default function UserHeader() {
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center justify-center">
             <Image
-              src="/logo-v3.png"
+              src="/logo.png"
               width={35}
               height={38}
               alt="logo"
