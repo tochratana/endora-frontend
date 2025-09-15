@@ -19,18 +19,18 @@ export interface CreateSchemaRequest {
 }
 
 export interface Schema {
-  id: string;
-  schemaName: string;
-  schema: SchemaDefinition;
+  schemaDocId: string;
   projectUuid: string;
-  createdAt: string;
+  schemaName: string;
+  columns: Record<string, string>;
+  relationships: [];
   updatedAt: string;
 }
 
 export const schemaApi = createApi({
   reducerPath: "schemaApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/",
+    baseUrl: "/api",
     prepareHeaders: headers => {
       headers.set("Content-Type", "application/json");
       return headers;
@@ -42,16 +42,30 @@ export const schemaApi = createApi({
       query: ({ schemaName, schema, projectUuid }) => ({
         url: `table?projectUuid=${projectUuid}`,
         method: "POST",
-        body: { schemaName, schema },
+        body: {
+          schemaName,
+          schema,
+          publicList: true,
+          publicRead: true,
+        },
       }),
       invalidatesTags: ["Schema"],
     }),
 
     getSchemas: builder.query<Schema[], string>({
-      query: projectUuid => `table/project/${projectUuid}`,
+      query: projectUuid => `/table/project/${projectUuid}`,
+      transformResponse: (response: { data: Schema[] }) => response.data,
+      providesTags: ["Schema"],
+    }),
+    getSchemaById: builder.query<Schema, string>({
+      query: schemaDocId => `schemas/${schemaDocId}`,
       providesTags: ["Schema"],
     }),
   }),
 });
 
-export const { useCreateSchemaMutation, useGetSchemasQuery } = schemaApi;
+export const {
+  useCreateSchemaMutation,
+  useGetSchemaByIdQuery,
+  useGetSchemasQuery,
+} = schemaApi;

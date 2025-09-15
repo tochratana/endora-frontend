@@ -93,11 +93,12 @@ export function SchemaSidebar({
       <div className="flex-1 p-2 space-y-1">
         {!isLoading && !error && filteredSchemas.length > 0 ? (
           filteredSchemas.map(schema => {
-            const isActive = activeTable === schema.id;
+            const key = schema.schemaDocId || schema.schemaName;
+            const isActive = activeTable === key;
             return (
               <button
-                key={schema.id}
-                onClick={() => onTableSelect(schema.id)}
+                key={key}
+                onClick={() => onTableSelect(key)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
                   isActive
