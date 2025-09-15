@@ -50,7 +50,7 @@ export default function SchemaVisualizerPage({ params }: PageProps) {
     }
 
     return schemas.map((schema, index) => {
-      const columns = parseSchemaToColumns(schema.schema);
+      const columns = parseSchemaToColumns(schema.columns);
       const xPos = (index % 3) * 350 + 50; // Arrange in grid
       const yPos = Math.floor(index / 3) * 300 + 50;
 

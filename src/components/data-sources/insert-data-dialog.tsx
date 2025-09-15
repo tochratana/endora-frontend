@@ -43,8 +43,8 @@ export function InsertDataDialog({
   const currentSchema = schemas?.find(schema => schema.id === selectedSchema);
 
   // Parse schema columns for form fields
-  const schemaColumns = currentSchema?.schema
-    ? Object.entries(currentSchema.schema)
+  const schemaColumns = currentSchema?.columns
+    ? Object.entries(currentSchema.columns)
         .map(([name, definition]) => ({
           name,
           definition: definition as string,

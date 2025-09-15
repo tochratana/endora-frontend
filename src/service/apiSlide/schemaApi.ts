@@ -19,7 +19,7 @@ export interface CreateSchemaRequest {
 }
 
 export interface Schema {
-  schemaDocId: string;
+  id: string;
   projectUuid: string;
   schemaName: string;
   columns: Record<string, string>;
@@ -58,7 +58,7 @@ export const schemaApi = createApi({
       providesTags: ["Schema"],
     }),
     getSchemaById: builder.query<Schema, string>({
-      query: schemaDocId => `schemas/${schemaDocId}`,
+      query: id => `schemas/${id}`,
       providesTags: ["Schema"],
     }),
   }),
