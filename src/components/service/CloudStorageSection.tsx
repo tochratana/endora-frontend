@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { FiDatabase, FiServer, FiCode, FiLayers } from "react-icons/fi";
+import { FiServer, FiCode, FiLayers } from "react-icons/fi";
 
 export default function CloudStorageSection() {
   const storageFeatures = [

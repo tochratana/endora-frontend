@@ -19,10 +19,10 @@ export default function Header() {
                  dark:supports-[backdrop-filter]:bg-slate-900/80"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-2">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 ">
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo-v4.png"
+              src="/logo.png"
               alt="Logo"
               width={60}
               height={60}
@@ -33,29 +33,24 @@ export default function Header() {
 
           <nav className="hidden md:flex space-x-8 font-medium mx-5">
             <Link
-              href="/about"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              About
-            </Link>
-            <Link
-              href="https://docusaurus.io/"
-              className="hover:text-primary-600 dark:hover:text-primary-400"
-              target="blank"
-            >
-              Document
-            </Link>
-            <Link
               href="/service"
               className="hover:text-primary-600 dark:hover:text-primary-400"
             >
               Service
             </Link>
-            <Link
-              href="/contact"
+            <a
+              href="https://endora-docs.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-primary-600 dark:hover:text-primary-400"
             >
-              Contact
+              Document
+            </a>
+            <Link
+              href="/about"
+              className="hover:text-primary-600 dark:hover:text-primary-400"
+            >
+              About
             </Link>
           </nav>
         </div>
@@ -65,16 +60,10 @@ export default function Header() {
           <Button
             onClick={() => signIn("keycloak", { callbackUrl: "/dashboard" })}
             aria-label="Sign in"
-            className="bg-primary-500 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-600 transition"
+            className="bg-primary-500 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-600 transition focus:outline-none"
           >
             Sign Up
           </Button>
-          {/* <Link
-            href="/auth/signin"
-            className="bg-primary-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-primary-500 transition"
-          >
-            Sign Up
-          </Link> */}
           <InstallPWA />
         </div>
 
@@ -102,24 +91,19 @@ export default function Header() {
           >
             About
           </Link>
-          <Link
-            href="https://docusaurus.io/"
-            className="block hover:text-primary-600 dark:hover:text-primary-400"
-            target="blank"
+          <a
+            href="https://endora-docs.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary-600 dark:hover:text-primary-400"
           >
             Document
-          </Link>
+          </a>
           <Link
             href="/service"
             className="block hover:text-primary-600 dark:hover:text-primary-400"
           >
             Service
-          </Link>
-          <Link
-            href="/contact"
-            className="block hover:text-primary-600 dark:hover:text-primary-400"
-          >
-            Contact
           </Link>
           <Link
             href="/signup"

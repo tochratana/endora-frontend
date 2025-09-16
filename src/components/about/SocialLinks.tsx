@@ -22,7 +22,7 @@ export default function SocialLinks({
         <li>
           <Link
             href={portfolio}
-            target="_blank"
+            target={portfolio.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
             className={`text-gray-600 hover:text-teal-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >
@@ -34,7 +34,7 @@ export default function SocialLinks({
         <li>
           <Link
             href={github}
-            target="_blank"
+            target={github.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
             className={`text-gray-600 hover:text-purple-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >
@@ -46,7 +46,7 @@ export default function SocialLinks({
         <li>
           <Link
             href={linkedin}
-            target="_blank"
+            target={linkedin.startsWith("http") ? "_blank" : ""}
             rel="noopener noreferrer"
             className={`text-gray-600 hover:text-teal-400 hover:scale-110 transition-all duration-200 ${iconClassName ?? ""}`}
           >

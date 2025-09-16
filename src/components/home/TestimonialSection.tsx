@@ -91,7 +91,7 @@ export default function TestimonialSection() {
       author: {
         name: "Korm TaingAn",
         role: "Data Analyst",
-        avatar: "/images/korm-tangan.jpg",
+        avatar: "/images/korm-taingan.png",
       },
     },
     {

@@ -1,5 +1,5 @@
 import { authApi } from "@/app/store/api/authApi";
-import { projectApi } from "@/service/apiSlide/projectApi";
+import { projectApi } from "@/service/project/projectApi";
 import { schemaApi } from "@/service/apiSlide/schemaApi";
 import { dataSourceApi } from "@/service/apiSlide/dataSourceApi";
 import { configureStore } from "@reduxjs/toolkit";

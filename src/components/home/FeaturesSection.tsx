@@ -2,17 +2,17 @@
 
 import React from "react";
 import {
-  FiDatabase,
-  FiDownload,
-  FiCheckCircle,
-  FiGrid,
-  FiFile,
   FiGlobe,
   FiServer,
   FiHardDrive,
   FiCode,
   FiShield,
   FiSettings,
+  FiDatabase,
+  FiDownload,
+  FiCheckCircle,
+  FiGrid,
+  FiFile,
 } from "react-icons/fi";
 
 export default function FeaturesSection() {

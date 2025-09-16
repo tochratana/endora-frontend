@@ -4,7 +4,9 @@ import KeycloakProvider from "next-auth/providers/keycloak";
 import type { JWT } from "next-auth/jwt";
 
 const issuer = process.env.KEYCLOAK_ISSUER;
-if (!issuer) throw new Error("KEYCLOAK_ISSUER is required");
+if (!issuer && process.env.NODE_ENV !== "production") {
+  throw new Error("KEYCLOAK_ISSUER is required");
+}
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
@@ -106,8 +108,7 @@ export const authOptions: NextAuthOptions = {
     // Control where NextAuth redirects after sign in/out
     async redirect({ baseUrl }) {
       return `${baseUrl}/dashboard`;
-    }
-
+    },
   },
 
   debug: process.env.NODE_ENV === "development",

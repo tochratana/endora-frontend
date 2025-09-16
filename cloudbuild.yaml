@@ -1,0 +1,29 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--build-arg"
+      - "KEYCLOAK_ISSUER=$_KEYCLOAK_ISSUER"
+      - "--build-arg"
+      - "KEYCLOAK_CLIENT_ID=$_KEYCLOAK_CLIENT_ID"
+      - "--build-arg"
+      - "KEYCLOAK_CLIENT_SECRET=$_KEYCLOAK_CLIENT_SECRET"
+      - "--build-arg"
+      - "NEXTAUTH_SECRET=$_NEXTAUTH_SECRET"
+      - "--build-arg"
+      - "NEXTAUTH_URL=$_NEXTAUTH_URL"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/api-engine-ui"
+      - "."
+
+images:
+  - "gcr.io/$PROJECT_ID/api-engine-ui"
+
+# Substitutions will be provided during build
+# Use: gcloud builds submit --config cloudbuild.yaml --substitutions=_KEYCLOAK_ISSUER=...,_KEYCLOAK_CLIENT_ID=...,etc
+substitutions:
+  _KEYCLOAK_ISSUER: ""
+  _KEYCLOAK_CLIENT_ID: ""
+  _KEYCLOAK_CLIENT_SECRET: ""
+  _NEXTAUTH_SECRET: ""
+  _NEXTAUTH_URL: ""
