@@ -26,7 +26,7 @@ export const projectApi = createApi({
 
     getProjectByUuid: builder.query<Project, string>({
       query: uuid => `/projects/${uuid}`,
-      providesTags: ["Project"],
+      providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
     }),
 
     createProject: builder.mutation<Project, CreateProjectRequest>({

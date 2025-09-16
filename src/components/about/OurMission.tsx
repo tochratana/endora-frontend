@@ -27,7 +27,7 @@ export default function OurMission() {
             className="w-full max-w-xs md:max-w-[200px] lg:max-w-md"
           >
             <Image
-              src="/mission.png"
+              src="/mission.svg"
               alt="mission image"
               width={700}
               height={520}
