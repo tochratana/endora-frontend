@@ -19,6 +19,7 @@ export interface CreateSchemaRequest {
 }
 
 export interface Schema {
+  schemaDocId: string;
   id: string;
   projectUuid: string;
   schemaName: string;

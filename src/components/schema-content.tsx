@@ -59,7 +59,9 @@ export function SchemaContent({
   } = useGetSchemasQuery(projectUuid);
 
   // find active schema
-  const activeSchema = schemas?.find(schema => schema.id === activeTable);
+  const activeSchema = schemas?.find(
+    schema => schema.schemaDocId === activeTable
+  );
 
   const columns = useMemo(() => {
     if (!activeSchema?.columns) return [];
@@ -136,11 +138,10 @@ export function SchemaContent({
                 {activeSchema.schemaName}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Schema ID: {activeSchema.id}
+                Schema ID: {activeSchema.schemaDocId}
               </p>
               <p className="text-sm text-muted-foreground">
-                Last updated:{" "}
-                {new Date(activeSchema.updatedAt).toLocaleDateString()}
+                Last updated: {new Date(activeSchema.updatedAt).toLocaleDateString()}
               </p>
             </div>
 
