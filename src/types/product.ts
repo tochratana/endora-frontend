@@ -47,4 +47,5 @@ export interface ProjectSummary {
 export interface CreateProjectRequest {
   projectName: string;
   description: string;
+  clientAuthEnabled: boolean;
 }

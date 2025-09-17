@@ -4,7 +4,7 @@ import LottieAnimation from "../ui/LottieAnimation";
 
 export default function EndPointServiceSection() {
   return (
-    <section className="py-8 sm:-mt-16 sm:py-0">
+    <section className="py-0 sm:-mt-32 sm:py-0">
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:gap-4 md:grid-cols-2 md:items-center md:gap-8">
           <div className="order-1 md:order-2">

@@ -6,7 +6,7 @@ import APIDocServiceSection from "./APIDocServiceSection";
 
 export default function OurServices() {
   return (
-    <section className="pt-16 sm:pt-20 pb-8 sm:pb-12 bg-white dark:bg-slate-800/80">
+    <section className="pt-16 sm:pt-20 pb-0 bg-white dark:bg-slate-800/80">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-4">

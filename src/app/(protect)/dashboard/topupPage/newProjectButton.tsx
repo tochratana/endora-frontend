@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import TopupForm from "./topupFrom";
+import ProjectCreationForm from "./ProjectCreationForm";
 
 export default function NewProjectButton() {
   const [open, setOpen] = useState(false);
@@ -44,13 +44,15 @@ export default function NewProjectButton() {
             className="relative z-[61] w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800/80 dark:bg-[#0F0F1A]"
           >
             <div className="mb-4">
-              <h2 className="text-xl font-semibold tracking-tight">New Project</h2>
+              <h2 className="text-xl font-semibold tracking-tight">
+                New Project
+              </h2>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Set up a new project or add credits to your workspace.
               </p>
             </div>
 
-            <TopupForm onDone={() => setOpen(false)} />
+            <ProjectCreationForm onDone={() => setOpen(false)} />
           </div>
         </div>
       )}

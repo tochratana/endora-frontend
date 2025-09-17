@@ -1,5 +1,5 @@
 // app/topup/page.tsx
-import TopupForm from "./topupFrom";
+import ProjectCreationForm from "./ProjectCreationForm";
 
 export const metadata = {
   title: "Topup - Endora",
@@ -15,7 +15,7 @@ export default function TopupPage() {
           Set up a new project or add credits to your workspace.
         </p>
         <div className="rounded-xl border border-zinc-200 p-6 dark:border-zinc-800/80 dark:bg-[#0F0F1A]">
-          <TopupForm />
+          <ProjectCreationForm />
         </div>
       </div>
     </div>
