@@ -115,48 +115,41 @@ export function CreateSchemaDialog({
 
         // Handle different data types
         switch (column.type.toLowerCase()) {
-          case "varchar":
-            sqlDefinition = "VARCHAR(255)";
+          case "uuid":
+            sqlDefinition = "uuid";
             break;
           case "text":
-            sqlDefinition = "TEXT";
+            sqlDefinition = "text";
             break;
           case "int":
-            sqlDefinition = column.isPrimary ? "SERIAL PRIMARY KEY" : "INT";
+          case "integer":
+            sqlDefinition = "integer";
+            break;
+          case "bigint":
+            sqlDefinition = "bigint";
             break;
           case "boolean":
-            sqlDefinition = "BOOLEAN";
+            sqlDefinition = "boolean";
             break;
           case "timestamp":
-            sqlDefinition = "TIMESTAMP";
+            sqlDefinition = "timestamp";
+            break;
+          case "timestamptz":
+            sqlDefinition = "timestamptz";
             break;
           case "date":
-            sqlDefinition = "DATE";
+            sqlDefinition = "date";
             break;
-          case "decimal":
-            sqlDefinition = "DECIMAL(10,2)";
-            break;
-          case "float":
-            sqlDefinition = "FLOAT";
+          case "jsonb":
+            sqlDefinition = "jsonb";
             break;
           default:
-            sqlDefinition = column.type.toUpperCase();
-        }
-
-        // Add PRIMARY KEY for non-int types
-        if (column.isPrimary && column.type.toLowerCase() !== "int") {
-          sqlDefinition += " PRIMARY KEY";
-        }
-
-        // Add NOT NULL if default is not NULL and not primary key
-        if (column.defaultValue !== "NULL" && !column.isPrimary) {
-          sqlDefinition += " NOT NULL";
+            throw new Error(`Unsupported column type: ${column.type}`);
         }
 
         schema[column.name] = sqlDefinition;
       }
     });
-
     return schema;
   };
 
@@ -220,13 +213,6 @@ export function CreateSchemaDialog({
         name: "id",
         type: "int",
         defaultValue: "NULL",
-        isPrimary: true,
-      },
-      {
-        id: "2",
-        name: "created_date",
-        type: "timestamp",
-        defaultValue: "NULL",
         isPrimary: false,
       },
     ]);
@@ -248,31 +234,29 @@ export function CreateSchemaDialog({
         </DialogHeader>
         <hr className="border-gray-200 dark:border-gray-700" />
 
-          {/* Error Display */}
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
-              <p className="text-sm text-red-600 dark:text-red-400">
-                Error creating schema:{" "}
-                {error && "data" in error
-                  ? String(error.data)
-                  : "Unknown error"}
-              </p>
-            </div>
-          )}
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
+            <p className="text-sm text-red-600 dark:text-red-400">
+              Error creating schema:{" "}
+              {error && "data" in error ? String(error.data) : "Unknown error"}
+            </p>
+          </div>
+        )}
 
-          {/* Schema Name and Description */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="schema-name" className="text-sm font-medium">
-                Name
-              </Label>
-              <Input
-                id="schema-name"
-                value={schemaName}
-                onChange={e => setSchemaName(e.target.value)}
-                className="bg-transparent border-gray-200 dark:border-gray-700"
-              />
-            </div>
+        {/* Schema Name and Description */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="schema-name" className="text-sm font-medium">
+              Name
+            </Label>
+            <Input
+              id="schema-name"
+              value={schemaName}
+              onChange={e => setSchemaName(e.target.value)}
+              className="bg-transparent border-gray-200 dark:border-gray-700"
+            />
+          </div>
 
           {/* Columns Section */}
           <div className="space-y-4">
@@ -360,14 +344,16 @@ export function CreateSchemaDialog({
                         <SelectValue placeholder="Choose a data type" />
                       </SelectTrigger>
                       <SelectContent className="bg-white dark:bg-gray-950 dark:text-gray-100">
-                        <SelectItem value="int">int</SelectItem>
-                        <SelectItem value="varchar">varchar</SelectItem>
+                        <SelectItem value="uuid">uuid</SelectItem>
                         <SelectItem value="text">text</SelectItem>
+                        <SelectItem value="integer">integer</SelectItem>
+                        <SelectItem value="int">int</SelectItem>
+                        <SelectItem value="bigint">bigint</SelectItem>
                         <SelectItem value="boolean">boolean</SelectItem>
+                        <SelectItem value="timestamptz">timestamptz</SelectItem>
                         <SelectItem value="timestamp">timestamp</SelectItem>
                         <SelectItem value="date">date</SelectItem>
-                        <SelectItem value="decimal">decimal</SelectItem>
-                        <SelectItem value="float">float</SelectItem>
+                        <SelectItem value="jsonb">jsonb</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
