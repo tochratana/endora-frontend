@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,10 +35,14 @@ export function TableFooter({
         <span>records {total}</span>
         <button
           onClick={onRefresh}
+          disabled={isRefreshing} // prevent double clicks
           className="flex items-center gap-1 hover:text-slate-800 dark:hover:text-white transition-colors"
         >
-          <RefreshCcw size={14} className={isRefreshing ? "animate-spin" : ""} />
-          Refresh
+          <RefreshCcw
+            size={14}
+            className={isRefreshing ? "animate-spin" : ""}
+          />
+          {isRefreshing ? "Refreshing..." : "Refresh"}
         </button>
       </div>
     </div>

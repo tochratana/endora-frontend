@@ -57,6 +57,15 @@ export const schemaApi = createApi({
       transformResponse: (response: { data: Schema[] }) => response.data,
       providesTags: ["Schema"],
     }),
+    // getSchemas: builder.query<Schema[], string>({
+    //   query: projectUuid => `/table/project/${projectUuid}`,
+    //   transformResponse: (response: any) => {
+    //     console.log("📡 Raw schema API response:", response);
+    //     return Array.isArray(response) ? response : response.data;
+    //   },
+    //   providesTags: ["Schema"],
+    // }),
+
     getSchemaById: builder.query<Schema, string>({
       query: schemaDocId => `schemas/${schemaDocId}`,
       providesTags: ["Schema"],

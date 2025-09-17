@@ -88,7 +88,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface DataSourceRecord {
   id: string | number;
-  [key: string]: unknown;
+  [key: string]: unknown; // dynamic fields
   created_at: string;
   updated_at?: string;
   created_by?: string;
