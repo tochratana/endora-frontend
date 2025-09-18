@@ -23,17 +23,19 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
+// ✅ align with your backend
 interface Schema {
   schemaDocId: string;
   projectUuid: string;
   schemaName: string;
-  columns?: Record<string, string>;
+  columns?: Record<string, string>; // optional, sometimes missing
   relationships: [];
   updatedAt: string;
 }
 
 const nodeTypes = { dbNode: DatabaseSchemaDemo };
 
+// ✅ safe parser
 const parseSchemaToColumns = (columns?: Record<string, string>) => {
   if (!columns) return [];
   return Object.entries(columns).map(([title, definition]) => {
@@ -43,6 +45,7 @@ const parseSchemaToColumns = (columns?: Record<string, string>) => {
 };
 
 export default function SchemaVisualizerPage() {
+  // 👇 supports /workspace/[workspaceId] and /table/project/[projectUuid]
   const params = useParams<{ workspaceId?: string; projectUuid?: string }>();
   const projectUuid = params?.projectUuid ?? params?.workspaceId;
 
@@ -54,7 +57,7 @@ export default function SchemaVisualizerPage() {
     skip: !projectUuid,
   });
 
-
+  // ✅ build nodes
   const nodes = useMemo(() => {
     if (!schemas || schemas.length === 0) return [];
 
@@ -81,6 +84,7 @@ export default function SchemaVisualizerPage() {
     []
   );
 
+  // ✅ handle states
   if (!projectUuid) {
     return (
       <p className="text-center text-red-500">No project UUID found in URL</p>
@@ -124,6 +128,7 @@ export default function SchemaVisualizerPage() {
     );
   }
 
+  // ✅ render
   return (
     <div className="flex flex-col w-full h-screen">
       {/* Header */}

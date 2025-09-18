@@ -14,7 +14,7 @@ export interface SchemaDefinition {
 
 export interface CreateSchemaRequest {
   schemaName: string;
-  schema: SchemaDefinition;
+  schema: Record<string, string>;
   projectUuid: string;
 }
 
@@ -24,6 +24,7 @@ export interface Schema {
   projectUuid: string;
   schemaName: string;
   columns: Record<string, string>;
+  schema: Record<string, string>; 
   relationships: [];
   updatedAt: string;
 }
@@ -40,14 +41,14 @@ export const schemaApi = createApi({
   tagTypes: ["Schema"],
   endpoints: builder => ({
     createSchema: builder.mutation<Schema, CreateSchemaRequest>({
-      query: ({ schemaName, schema, projectUuid }) => ({
-        url: `table?projectUuid=${projectUuid}`,
+      query: ({ schemaName, schema, projectUuid}) => ({
+        url: `/table/project/${projectUuid}`,
         method: "POST",
         body: {
           schemaName,
-          schema,
           publicList: true,
           publicRead: true,
+          schema,
         },
       }),
       invalidatesTags: ["Schema"],

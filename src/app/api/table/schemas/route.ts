@@ -1,41 +1,52 @@
+
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function GET(req: NextRequest) {
+interface Context {
+  params: {
+    projectUuid: string;
+  };
+}
+
+export async function POST(req: NextRequest, context: Context) {
   const secret = process.env.NEXTAUTH_SECRET;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const jwt = await getToken({ req: req as any, secret });
+  const jwt = await getToken({ req, secret });
 
   if (!jwt?.accessToken) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse("Unauthorized - No access token", { status: 401 });
   }
 
   try {
-    const { searchParams } = new URL(req.url);
-    const projectUuid = searchParams.get("projectUuid");
+    const { projectUuid } = context.params;
 
     if (!projectUuid) {
       return NextResponse.json(
-        { error: "projectUuid query parameter is required" },
+        { error: "projectUuid is required in the path" },
         { status: 400 }
       );
     }
 
-    console.log("Fetching schemas for project:", projectUuid);
+    const body = await req.json();
+    const { schemaName, schema, publicList, publicRead } = body;
 
-    // Make request to backend API
+    const payload = {
+      schemaName,
+      schema,
+      publicList,
+      publicRead,
+    };
+
     const response = await fetch(
       `${process.env.API_BASE}/projects/${projectUuid}/schema/tables`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${jwt.accessToken}`,
         },
-        cache: "no-store",
+        body: JSON.stringify(payload),
       }
     );
-
-    console.log("Backend response status:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -43,10 +54,10 @@ export async function GET(req: NextRequest) {
       return new NextResponse(errorText, { status: response.status });
     }
 
-    const schemas = await response.json();
-    return NextResponse.json(schemas);
+    const result = await response.json();
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error("Error fetching schemas:", error);
+    console.error("Error creating schema:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
