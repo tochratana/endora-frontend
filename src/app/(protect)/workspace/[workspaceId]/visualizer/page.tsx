@@ -1,13 +1,15 @@
 "use client";
-
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { toast, Toaster } from "sonner";
 import ReactFlow, {
   Background,
   ReactFlowProvider,
   addEdge,
   Connection,
   Edge,
+  useNodesState,
+  useEdgesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -21,21 +23,35 @@ import {
 import DatabaseSchemaDemo from "@/components/database-schema-demo";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
+import {
+  useGetSchemasQuery,
+  useCreateSchemaRelationshipMutation,
+} from "@/service/apiSlide/schemaApi";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// ✅ align with your backend
+interface Relationship {
+  foreignKeyColumn: string;
+  referencedTable: string;
+  referencedColumn: string;
+  relationshipType: string;
+  onDelete: string;
+  onUpdate: string;
+}
+
 interface Schema {
   schemaDocId: string;
   projectUuid: string;
   schemaName: string;
-  columns?: Record<string, string>; // optional, sometimes missing
-  relationships: [];
+  columns?: Record<string, string>;
+  relationships: Relationship[];
   updatedAt: string;
 }
+type BackendError = FetchBaseQueryError & {
+  data?: { message?: string };
+};
 
 const nodeTypes = { dbNode: DatabaseSchemaDemo };
 
-// ✅ safe parser
 const parseSchemaToColumns = (columns?: Record<string, string>) => {
   if (!columns) return [];
   return Object.entries(columns).map(([title, definition]) => {
@@ -44,8 +60,20 @@ const parseSchemaToColumns = (columns?: Record<string, string>) => {
   });
 };
 
+const getRelationshipLabel = (type: string): string => {
+  switch (type.toLowerCase()) {
+    case "one-to-one":
+      return "One to One";
+    case "one-to-many":
+      return "One to Many";
+    case "many-to-many":
+      return "Many to Many";
+    default:
+      return type;
+  }
+};
+
 export default function SchemaVisualizerPage() {
-  // 👇 supports /workspace/[workspaceId] and /table/project/[projectUuid]
   const params = useParams<{ workspaceId?: string; projectUuid?: string }>();
   const projectUuid = params?.projectUuid ?? params?.workspaceId;
 
@@ -57,13 +85,79 @@ export default function SchemaVisualizerPage() {
     skip: !projectUuid,
   });
 
-  // ✅ build nodes
-  const nodes = useMemo(() => {
-    if (!schemas || schemas.length === 0) return [];
+  const [createRelationship] = useCreateSchemaRelationshipMutation();
 
-    return schemas.map((schema: Schema, index: number) => {
-      const columns = parseSchemaToColumns(schema.columns);
-      return {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [canConnect, setCanConnect] = useState(false);
+  const [selectedRelationship, setSelectedRelationship] = useState<
+    string | null
+  >(null);
+
+  const onConnect = useCallback(
+    async (params: Connection) => {
+      if (!selectedRelationship) {
+        toast.error("Please select a relationship type before connecting.");
+        return;
+      }
+
+      setEdges(eds => addEdge({ ...params, animated: true }, eds));
+
+      if (projectUuid && schemas) {
+        const sourceSchema = schemas.find(s => s.schemaDocId === params.source);
+        const targetSchema = schemas.find(s => s.schemaDocId === params.target);
+
+        if (sourceSchema && targetSchema) {
+          const foreignKeyColumn = `${targetSchema.schemaName.toLowerCase()}_id`;
+
+          try {
+            await createRelationship({
+              projectUuid,
+              schemaName: sourceSchema.schemaName,
+              foreignKeyColumn,
+              referencedTable: targetSchema.schemaName.toLowerCase(),
+              referencedColumn: "id",
+              relationshipType: selectedRelationship,
+              onDelete: "RESTRICT",
+              onUpdate: "CASCADE",
+            }).unwrap();
+
+            toast.success(
+              `Relationship created: added column ${foreignKeyColumn} in ${sourceSchema.schemaName} → ${targetSchema.schemaName}.id`
+            );
+          } catch (err) {
+            const error = err as BackendError;
+            const raw =
+              typeof error.data === "object" && error.data?.message
+                ? error.data.message
+                : "";
+
+            let userMessage = "Could not create relationship.";
+            if (raw.includes("bad SQL grammar")) {
+              userMessage =
+                "The database rejected this relationship. Please check that the new foreign key column can be created.";
+            } else if (raw.includes("Invalid table name")) {
+              userMessage =
+                "The table name is invalid. Please check your schema names.";
+            }
+
+            toast.error(userMessage);
+            setEdges(eds =>
+              eds.filter(
+                e => e.source !== params.source || e.target !== params.target
+              )
+            );
+          }
+        }
+      }
+    },
+    [selectedRelationship, createRelationship, projectUuid, schemas, setEdges]
+  );
+
+  // Build initial nodes/edges from schemas
+  useEffect(() => {
+    if (schemas) {
+      const initialNodes = schemas.map((schema: Schema, index: number) => ({
         id: schema.schemaDocId,
         type: "dbNode",
         position: {
@@ -72,19 +166,33 @@ export default function SchemaVisualizerPage() {
         },
         data: {
           label: schema.schemaName,
-          schema: columns,
+          schema: parseSchemaToColumns(schema.columns),
         },
-      };
-    });
-  }, [schemas]);
+      }));
+      setNodes(initialNodes);
 
-  const [edges, setEdges] = useState<Edge[]>([]);
-  const onConnect = useCallback(
-    (params: Connection) => setEdges(eds => addEdge(params, eds)),
-    []
-  );
+      const initialEdges: Edge[] = [];
+      const schemaMap = new Map<string, Schema>();
+      schemas.forEach((s: Schema) => schemaMap.set(s.schemaName, s));
 
-  // ✅ handle states
+      schemas.forEach((s: Schema) => {
+        s.relationships.forEach((r: Relationship) => {
+          const targetSchema = schemaMap.get(r.referencedTable);
+          if (targetSchema) {
+            initialEdges.push({
+              id: `e-${s.schemaDocId}-${targetSchema.schemaDocId}-${r.foreignKeyColumn}`,
+              source: s.schemaDocId,
+              target: targetSchema.schemaDocId,
+              label: getRelationshipLabel(r.relationshipType),
+              animated: true,
+            });
+          }
+        });
+      });
+      setEdges(initialEdges);
+    }
+  }, [schemas, setNodes, setEdges]);
+
   if (!projectUuid) {
     return (
       <p className="text-center text-red-500">No project UUID found in URL</p>
@@ -94,128 +202,95 @@ export default function SchemaVisualizerPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading schemas…</p>
-        </div>
+        <p>Loading schemas…</p>
       </div>
     );
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <p className="text-red-500 mb-2">Failed to load schemas</p>
-          <p className="text-sm text-muted-foreground">
-            {"data" in error ? String(error.data) : "Unknown error"}
-          </p>
-        </div>
-      </div>
-    );
+    return <p className="text-red-500">Failed to load schemas</p>;
   }
 
-  if (nodes.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-2">No schemas found</p>
-          <p className="text-sm text-muted-foreground">
-            Create some schemas first to visualize them here
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // ✅ render
   return (
     <div className="flex flex-col w-full h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card/50 dark:bg-slate-950">
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-foreground">
-            Schema Visualizer
-          </h2>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 border-2 bg-teal-500/45 rounded-sm px-2 py-1 hover:bg-indigo-800/50 hover:text-white">
-                Connect{" "}
-                <ChevronDown className="flex items-center text-xs rounded-xs px-1 pt-0.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side="bottom"
-              align="start"
-              className="flex items-center bg-white dark:bg-gray-800 dark:text-gray-100"
+      <div className="flex justify-between items-center px-6 py-6 border-b border-border bg-card/50 dark:bg-slate-950">
+        <h2 className="text-lg font-semibold">Schema Visualizer</h2>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 border-2 bg-teal-500/45 rounded-sm px-2 py-1 hover:bg-indigo-800/50 hover:text-white">
+              {" "}
+              Connect{" "}
+              <ChevronDown className="flex items-center text-xs rounded-xs px-1 pt-0.5" />{" "}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => {
+                setSelectedRelationship("one-to-one");
+                setCanConnect(true);
+              }}
             >
-              <DropdownMenuItem className="block">
-                <Image
-                  src="/one_to_one.png"
-                  width={100}
-                  height={100}
-                  alt="One to One"
-                  unoptimized
-                />
-                <div className="w-full text-center">
-                  <span className="text-sm text-gray-400">One to One</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="block">
-                <Image
-                  src="/one_to_many.png"
-                  width={100}
-                  height={100}
-                  alt="One to Many"
-                  unoptimized
-                />
-                <div className="w-full text-center">
-                  <span className="text-sm text-gray-400">One to Many</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="block">
-                <Image
-                  src="/many_to_one.png"
-                  width={100}
-                  height={100}
-                  alt="Many to One"
-                  unoptimized
-                />
-                <div className="w-full text-center">
-                  <span className="text-sm text-gray-400">Many to One</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="block">
-                <Image
-                  src="/many_to_many.png"
-                  width={100}
-                  height={100}
-                  alt="Many to Many"
-                  unoptimized
-                />
-                <div className="w-full text-center">
-                  <span className="text-sm text-gray-400">Many to Many</span>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              <Image
+                src="/one_to_one.png"
+                width={80}
+                height={80}
+                alt="One to One"
+              />
+              <span className="ml-2">One to One</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => {
+                setSelectedRelationship("one-to-many");
+                setCanConnect(true);
+              }}
+            >
+              <Image
+                src="/one_to_many.png"
+                width={80}
+                height={80}
+                alt="One to Many"
+              />
+              <span className="ml-2">One to Many</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setSelectedRelationship("many-to-many");
+                setCanConnect(true);
+              }}
+            >
+              <Image
+                src="/many_to_many.png"
+                width={80}
+                height={80}
+                alt="One to Many"
+              />
+              <span className="ml-2">Many to Many</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Canvas */}
       <div className="flex-1 relative">
         <ReactFlowProvider>
           <ReactFlow
+            nodeTypes={nodeTypes}
+            fitView
             nodes={nodes}
             edges={edges}
-            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             onConnect={onConnect}
-            fitView
+            nodesConnectable={canConnect}
+            edgesUpdatable={false}
           >
-            <Background className="dark:bg-slate-950" />
+            <Background />
           </ReactFlow>
         </ReactFlowProvider>
       </div>
+      <Toaster richColors position="top-right" />
     </div>
   );
 }
