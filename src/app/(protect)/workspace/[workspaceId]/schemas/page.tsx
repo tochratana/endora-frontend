@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, use } from "react";
-import { SchemaSidebar } from "@/components/schema-sidebar";
-import { SchemaContent } from "@/components/schema-content";
+import { SchemaSidebar } from "@/components/ui/schema-sidebar";
+import { SchemaContent } from "@/components/ui/schema-content";
 
 interface PageProps {
   params: Promise<{

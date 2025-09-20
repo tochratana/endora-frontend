@@ -6,6 +6,7 @@ import { teamMembers } from "./TeamData";
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
 export default function OurMentor() {
   useEffect(() => {
     AOS.init({
@@ -16,6 +17,7 @@ export default function OurMentor() {
       offset: 50,
     });
   }, []);
+
   return (
     <section className="w-full pt-12 px-2">
       <div className="max-w-6xl m-auto">
@@ -42,23 +44,23 @@ export default function OurMentor() {
             .map((tm, index) => (
               <div
                 key={tm.id}
-                className={`flex md:flex-row flex-col md:text-left items-center md:gap-0 gap-2 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
+                className={`flex md:flex-row flex-col md:text-left items-center md:gap-8 gap-6 max-w-4xl mx-auto ${index % 2 === 1 ? "md:flex-row-reverse flex-col md:text-right" : ""}`}
               >
                 <div
                   data-aos="zoom-in"
                   data-aos-delay="120"
                   data-aos-offset="50"
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 md:mx-8 mx-0"
                 >
                   <Image
                     src={tm.image}
                     alt={tm.name}
-                    width={350}
-                    height={350}
-                    className="rounded-lg object-cover"
+                    width={200}
+                    height={200}
+                    className="rounded-full object-cover"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 md:mx-8">
                   <h2 className="text-[var(--color-primary)] md:text-2xl text-xl font-semibold mb-2">
                     {tm.name}
                   </h2>
@@ -66,7 +68,7 @@ export default function OurMentor() {
                     {tm.position}
                   </p>
                   <div
-                    className={`md:flex justify-${index % 2 === 1 ? "end" : "start"}`}
+                    className={`md:flex ${index % 2 === 1 ? "justify-end" : "justify-start"} justify-center`}
                   >
                     <SocialLinks
                       portfolio={tm.socials.portfolio}

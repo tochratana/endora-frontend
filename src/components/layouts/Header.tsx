@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import Button from "../button/Button";
-import { InstallPWA } from "../InstallPWA";
+import { InstallPWA } from "../ui/InstallPWA";
 import { signIn } from "next-auth/react";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 

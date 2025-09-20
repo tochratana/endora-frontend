@@ -8,6 +8,9 @@ interface PageProps {
 
 export default async function page({ params }: PageProps) {
   const { workspaceId } = await params;
+
+  
+
   return (
     <section>
       <ProjectOverview projectUuid={workspaceId} />

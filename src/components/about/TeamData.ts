@@ -23,7 +23,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/keo-kay-abb369187",
       portfolio: "/about",
     },
-    image: "/images/teacher-keo.png",
+    image: "/images/cherkav-have-bg.png",
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/srorng-sokcheat-09b542341",
       portfolio: "/about",
     },
-    image: "/images/teacher-cheat.png",
+    image: "/images/chercheat-have-bg.png",
   },
   {
     id: 3,
