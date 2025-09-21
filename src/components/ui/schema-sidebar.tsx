@@ -1,15 +1,17 @@
+// src/components/schema/SchemaSidebar.tsx
 "use client";
 
 import { useState } from "react";
 import Input from "@/components/ui/input";
+// removed NextLink
 import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CreateSchemaDialog } from "@/components/ui/create-schema-dialog";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface SchemaSidebarProps {
-  activeTable: string;
-  onTableSelect: (tableId: string) => void;
+  activeTable: string;                // pass the selected schemaName here
+  onTableSelect: (tableId: string) => void; // will receive schemaName
   projectUuid: string;
 }
 
@@ -19,29 +21,23 @@ export function SchemaSidebar({
   projectUuid,
 }: SchemaSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Fetch schemas from API
   const { data: schemas, error, isLoading } = useGetSchemasQuery(projectUuid);
 
-  // Filter schemas based on search query
   const filteredSchemas =
-    schemas?.filter(schema =>
-      schema.schemaName.toLowerCase().includes(searchQuery.toLowerCase())
+    schemas?.filter((s) =>
+      s.schemaName.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleSaveSchema = (schema: unknown) => {
     console.log("Schema saved:", schema);
-    // Handle the saved schema data here
   };
 
   return (
     <div className="w-64 bg-slate-900 border-r border-sidebar-border flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border">
-        <h1 className="text-lg font-semibold text-sidebar-foreground">
-          Schema
-        </h1>
+        <h1 className="text-lg font-semibold text-sidebar-foreground">Schema</h1>
       </div>
 
       {/* New Schema Button */}
@@ -65,24 +61,22 @@ export function SchemaSidebar({
       {/* Search */}
       <div className="p-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search schema"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 py-2 bg-slate-800 border-slate-600 focus:ring-sidebar-ring transition-all duration-200"
           />
         </div>
       </div>
 
-      {/* Loading State */}
+      {/* Loading/Error */}
       {isLoading && (
         <div className="p-2 text-center text-sm text-muted-foreground">
           Loading schemas...
         </div>
       )}
-
-      {/* Error State */}
       {error && (
         <div className="p-2 text-center text-sm text-red-500">
           Failed to load schemas
@@ -92,13 +86,14 @@ export function SchemaSidebar({
       {/* Schemas List */}
       <div className="flex-1 p-2 space-y-1">
         {!isLoading && !error && filteredSchemas.length > 0 ? (
-          filteredSchemas.map(schema => {
-            const key = schema.id || schema.schemaName;
+          filteredSchemas.map((schema) => {
+            const key = schema.schemaName;            // use schemaName as key/selector
             const isActive = activeTable === key;
+
             return (
               <button
                 key={key}
-                onClick={() => onTableSelect(key)}
+                onClick={() => onTableSelect(schema.schemaName)}  // just pass name
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
                   isActive
@@ -113,9 +108,7 @@ export function SchemaSidebar({
                   )}
                 />
                 <span className="flex-1">{schema.schemaName}</span>
-                {isActive && (
-                  <div className="w-2 h-2 rounded-full bg-sidebar-primary" />
-                )}
+                {isActive && <div className="w-2 h-2 rounded-full bg-sidebar-primary" />}
               </button>
             );
           })

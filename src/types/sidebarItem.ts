@@ -17,7 +17,7 @@ export function getSidebarItems(workspaceId: string): SidebarItem[] {
   return [
     { icon: Home,     label: "Project Overview",      href: `${base}/projectOverview` },
     { icon: Grid3X3,  label: "Table Editor",          href: `${base}/schemas` },
-    { icon: Grid3X3,  label: "Database Connection",   href: `${base}/schemas` },
+    { icon: Grid3X3,  label: "Database Connection",   href: `${base}/databaseConnection` },
     { icon: Database, label: "Table Visualizer",      href: `${base}/visualizer` },
     { icon: Globe,    label: "Public API",            href: `${base}/api` },
     { icon: FileText, label: "Data Source",           href: `${base}/dataSource` },

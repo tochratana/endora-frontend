@@ -1,18 +1,16 @@
+// src/components/schema/SchemaContent.tsx
 "use client";
 
 import { useState, useMemo } from "react";
-import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Database, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Button from "../button/Button";
-import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
+import { useGetSchemaByNameQuery } from "@/service/apiSlide/schemaApi";
 
 interface SchemaContentProps {
-  activeTable: string;
+  activeTable: string;   // schemaName
   projectUuid: string;
 }
 
-// Helper function to get color based on data type
 const getTypeColor = (type: string) => {
   const lowerType = type.toLowerCase();
   if (lowerType.includes("serial") || lowerType.includes("int")) {
@@ -33,33 +31,30 @@ const getTypeColor = (type: string) => {
   return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
 };
 
-// Helper function to parse schema definition
-const parseSchemaColumns = (schema: Record<string, string>) => {
-  return Object.entries(schema).map(([name, definition]) => ({
+const parseSchemaColumns = (schema: Record<string, string>) =>
+  Object.entries(schema).map(([name, definition]) => ({
     name,
     type: definition,
     color: getTypeColor(definition),
-    isPrimary: definition.includes("PRIMARY KEY"),
+    isPrimary: definition.toUpperCase().includes("PRIMARY KEY"),
   }));
-};
 
-export function SchemaContent({
-  activeTable,
-  projectUuid,
-}: SchemaContentProps) {
+export function SchemaContent({ activeTable, projectUuid }: SchemaContentProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [endpointsGenerated, setEndpointsGenerated] = useState(false);
 
-  // Fetch schemas from API
+  // Fetch the active schema by NAME
   const {
-    data: schemas,
-    error,
+    data: activeSchema,
     isLoading,
+    error,
     refetch,
-  } = useGetSchemasQuery(projectUuid);
+  } = useGetSchemaByNameQuery(
+    { projectUuid, schemaName: activeTable },
+    { skip: !activeTable } // nothing selected yet
+  );
 
-  // find active schema
-  const activeSchema = schemas?.find(schema => schema.id === activeTable);
+  console.log("Active Schema:", activeSchema);
 
   const columns = useMemo(() => {
     if (!activeSchema?.columns) return [];
@@ -78,10 +73,10 @@ export function SchemaContent({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950">
+    <div className="flex flex-col h-full bg-card">
       <div className="px-6 py-4">
         <button
-          className="flex items-center gap-2 border-2 border-indigo-900 rounded-sm px-2 py-1 hover:bg-indigo-800 hover:text-white"
+          className="flex items-center gap-2 border-2 border-primary rounded-sm px-2 py-1 hover:bg-primary hover:text-primary-foreground"
           onClick={handleGenerateEndpoints}
           disabled={endpointsGenerated}
         >
@@ -112,13 +107,11 @@ export function SchemaContent({
             <div className="text-center">
               <p className="text-red-500 mb-2">Failed to load schema</p>
               <p className="text-sm text-muted-foreground">
-                {error && "data" in error
-                  ? String(error.data)
-                  : "Unknown error"}
+                {("data" in (error as any) && (error as any).data) ? String((error as any).data) : "Unknown error"}
               </p>
             </div>
           </div>
-        ) : !activeSchema ? (
+        ) : !activeTable ? (
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <Database className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
@@ -126,6 +119,12 @@ export function SchemaContent({
               <p className="text-sm text-muted-foreground mt-2">
                 Select a schema from the sidebar to view its structure
               </p>
+            </div>
+          </div>
+        ) : !activeSchema ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <p className="text-muted-foreground">Schema not found</p>
             </div>
           </div>
         ) : (
@@ -140,7 +139,7 @@ export function SchemaContent({
               </p>
               <p className="text-sm text-muted-foreground">
                 Last updated:{" "}
-                {new Date(activeSchema.updatedAt).toLocaleDateString()}
+                {new Date(activeSchema.updatedAt).toLocaleString()}
               </p>
             </div>
 
@@ -154,41 +153,27 @@ export function SchemaContent({
 
             {/* Column rows */}
             <div className="space-y-3">
-              {columns.map(column => (
+              {columns.map((column) => (
                 <div
                   key={column.name}
                   className="grid grid-cols-4 gap-4 items-center py-2 hover:bg-muted/30 rounded-lg px-2 transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">
-                      {column.name}
-                    </span>
+                    <span className="font-medium text-foreground">{column.name}</span>
                     {column.isPrimary && (
-                      <Badge
-                        variant="secondary"
-                        className="text-white text-xs rounded-xs px-1 py-0.5"
-                      >
+                      <span className="inline-flex items-center rounded-xs bg-primary text-primary-foreground text-xs px-1 py-0.5">
                         PK
-                      </Badge>
+                      </span>
                     )}
                   </div>
                   <div>
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        "text-xs rounded-xs font-mono",
-                        column.color
-                      )}
-                    >
-                      {column.type.split(" ")[0]}{" "}
-                      {/* Show just the base type */}
-                    </Badge>
+                    <span className={cn("inline-flex items-center text-xs rounded-xs font-mono px-2 py-0.5", column.color)}>
+                      {column.type.split(" ")[0]}
+                    </span>
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {column.isPrimary ? "PRIMARY KEY" : ""}
-                    {column.type.includes("NOT NULL") && !column.isPrimary
-                      ? "NOT NULL"
-                      : ""}
+                    {column.type.includes("NOT NULL") && !column.isPrimary ? "NOT NULL" : ""}
                   </div>
                   <div className="text-sm font-mono text-muted-foreground">
                     {column.type}
@@ -200,15 +185,13 @@ export function SchemaContent({
         )}
       </div>
 
-      <div className="px-6 py-4 border-t border-border bg-gray-100 dark:bg-slate-950 flex justify-center">
+      <div className="px-6 py-4 border-t border-border bg-muted flex justify-center">
         <button
           className="flex items-center gap-2 text-gray-600 bg-transparent"
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
-          <RefreshCw
-            className={cn("h-4 w-4", isRefreshing && "animate-spin")}
-          />
+          <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
           {isRefreshing ? "Refreshing..." : "Refresh"}
         </button>
       </div>
