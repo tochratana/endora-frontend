@@ -1,3 +1,4 @@
+// /api/table/[schemaName]/project/[projectUuid]/user/[userUuid]/data
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
@@ -9,14 +10,18 @@ interface RouteParams {
   }>;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+// const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = process.env.API_BASE;
 
-// POST /api/table/[schemaName]/project/[projectUuid]/user/[userUuid]/data
+// POST
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const token = await getToken({ req: request });
     if (!token) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
     const { schemaName, projectUuid, userUuid } = await params;
@@ -24,7 +29,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     if (!schemaName || !projectUuid || !userUuid) {
       return NextResponse.json(
-        { error: "Missing required parameters: schemaName, projectUuid, or userUuid" },
+        {
+          error:
+            "Missing required parameters: schemaName, projectUuid, or userUuid",
+        },
         { status: 400 }
       );
     }
@@ -32,7 +40,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     try {
       // Real backend request
       const response = await fetch(
-        `${API_BASE}/table/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
+        //   `${API_BASE}/table/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
+        `${API_BASE}/projects/${projectUuid}/rest/${schemaName}`,
         {
           method: "POST",
           headers: {
@@ -71,7 +80,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
   } catch (error) {
     console.error("Error inserting data:", error);
-    return NextResponse.json({ error: "Failed to insert data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to insert data" },
+      { status: 500 }
+    );
   }
 }
 
@@ -80,7 +92,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const token = await getToken({ req: request });
     if (!token) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
     const { schemaName, projectUuid, userUuid } = await params;
@@ -90,8 +105,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     try {
       // Real backend request
+      // const url = `${API_BASE}/projects/${projectUuid}/rest/${schemaName}?page=${page}&limit=${limit}`;
+      // console.log(`[ GET ] Fetching from backend: ${url}`);
+
       const response = await fetch(
-        `${API_BASE}/table/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
+        `${API_BASE}/projects/${projectUuid}/rest/mirror/${schemaName}?page=${page}&limit=${limit}`,
+
         {
           method: "GET",
           headers: {
@@ -106,6 +125,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }
 
       const result = await response.json();
+      console.log("[ GET ] Fetched real data:", result);
+
       return NextResponse.json(result);
     } catch (err) {
       console.error("Backend fetch failed, using fallback:", err);
@@ -136,6 +157,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Failed to fetch data" },
+      { status: 500 }
+    );
   }
 }

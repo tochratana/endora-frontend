@@ -1,99 +1,14 @@
-// import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-// import { getSession } from "next-auth/react";
-
-// export interface DataSourceRecord {
-//   id: string;
-//   [key: string]: unknown; // Dynamic fields based on schema
-//   created_at: string;
-//   updated_at: string;
-//   created_by: string;
-//   schema_name: string;
-//   project_uuid: string;
-// }
-
-// export interface DataSourceResponse {
-//   data: DataSourceRecord[];
-//   pagination: {
-//     page: number;
-//     limit: number;
-//     total: number;
-//     totalPages: number;
-//   };
-//   schema: string;
-//   project: string;
-// }
-
-// export interface InsertDataRequest {
-//   schemaName: string;
-//   projectUuid: string;
-//   userUuid: string;
-//   data: Record<string, unknown>;
-// }
-
-// export interface InsertDataResponse {
-//   success: boolean;
-//   message: string;
-//   data: DataSourceRecord;
-// }
-
-// export interface GetDataParams {
-//   schemaName: string;
-//   projectUuid: string;
-//   userUuid: string;
-//   page?: number;
-//   limit?: number;
-// }
-
-// export const dataSourceApi = createApi({
-//   reducerPath: "dataSourceApi",
-//   baseQuery: fetchBaseQuery({
-//     baseUrl: "/api/table",
-//     prepareHeaders: async headers => {
-//       const session = await getSession();
-//       if (session?.user) {
-//         headers.set("authorization", `Bearer ${session.user.email}`);
-//       }
-//       return headers;
-//     },
-//   }),
-//   tagTypes: ["DataSource"],
-//   endpoints: builder => ({
-//     // Insert data into a schema
-//     insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
-//       query: ({ schemaName, projectUuid, userUuid, data }) => ({
-//         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
-//         method: "POST",
-//         body: data,
-//       }),
-//       invalidatesTags: (result, error, { schemaName, projectUuid }) => [
-//         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-//       ],
-//     }),
-
-//     // Get data from a schema
-//     getData: builder.query<DataSourceResponse, GetDataParams>({
-//       query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
-//         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
-//         method: "GET",
-//       }),
-//       providesTags: (result, error, { schemaName, projectUuid }) => [
-//         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-//       ],
-//     }),
-//   }),
-// });
-
-// export const { useInsertDataMutation, useGetDataQuery } = dataSourceApi;
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getSession } from "next-auth/react";
 
 export interface DataSourceRecord {
-  id: string | number;
-  [key: string]: unknown; // dynamic fields
+  id: string;
+  [key: string]: unknown; // Dynamic fields based on schema
   created_at: string;
-  updated_at?: string;
-  created_by?: string;
-  schema_name?: string;
-  project_uuid?: string;
+  updated_at: string;
+  created_by: string;
+  schema_name: string;
+  project_uuid: string;
 }
 
 export interface DataSourceResponse {
@@ -130,17 +45,42 @@ export interface GetDataParams {
   sort?: string;
 }
 
-// 💡 NOTE: Use Next.js API route, not backend directly
+//add new interface for the projects stats API response
+export interface ProjectStatsResponse {
+  totalRecord: number;
+  lastUpdatedAt: string;
+}
+
 export const dataSourceApi = createApi({
   reducerPath: "dataSourceApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/table", // <-- local Next.js API route
+    baseUrl: "/api/table",
+    prepareHeaders: async headers => {
+      const session = await getSession();
+      if (session?.user) {
+        headers.set("authorization", `Bearer ${session.user.email}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ["DataSource"],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
+    // Insert data into a schema
+    // insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
+    //   query: ({ schemaName, projectUuid, userUuid, data }) => ({
+    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+    //   ],
+    // }),
+
     // Insert record
     insertSchemaRow: builder.mutation<InsertDataResponse, InsertDataRequest>({
       query: ({ schemaName, projectUuid, userUuid, data }) => ({
+        //  this will hit our new route.ts (which proxies backend)
         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
         method: "POST",
         body: data,
@@ -150,13 +90,34 @@ export const dataSourceApi = createApi({
       ],
     }),
 
+    // Get data from a schema
+    // getData: builder.query<DataSourceResponse, GetDataParams>({
+    //   query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
+    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
+    //     method: "GET",
+    //   }),
+    //   providesTags: (result, error, { schemaName, projectUuid }) => [
+    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+    //   ],
+    // }),
     // Fetch records
     getSchemaRows: builder.query<DataSourceResponse, GetDataParams>({
-      query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10, sort }) => {
-        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+      query: ({
+        schemaName,
+        projectUuid,
+        userUuid,
+        page = 1,
+        limit = 10,
+        sort,
+      }) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
         if (sort) params.append("sort", sort);
 
         return {
+          //  matches our GET in route.ts
           url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?${params.toString()}`,
           method: "GET",
         };
@@ -165,10 +126,16 @@ export const dataSourceApi = createApi({
         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
       ],
     }),
+
+    // Endpoint to get project-wide stats
+    getProjectStats: builder.query<ProjectStatsResponse, string>({
+      query: projectUuid => `/project/${projectUuid}/stats`,
+    }),
   }),
 });
 
 export const {
   useInsertSchemaRowMutation,
   useGetSchemaRowsQuery,
+  useGetProjectStatsQuery, //new export the hook
 } = dataSourceApi;

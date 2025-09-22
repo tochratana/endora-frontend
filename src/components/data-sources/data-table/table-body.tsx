@@ -4,17 +4,34 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ColumnDef,
   RowSelectionState,
+  CellContext,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, Edit } from "lucide-react";
+import { Plus, Trash2, Edit, Check, X } from "lucide-react";
 import { AddRowForm } from "./add-row-form";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 import type { DataSourceRecord } from "@/service/apiSlide/dataSourceApi";
 import type { Schema } from "@/service/apiSlide/schemaApi";
+
+// Utility: map SQL types → color-coded badge classes
+const getTypeColor = (type: string) => {
+  const lower = type.toLowerCase();
+  if (lower.includes("serial") || lower.includes("int"))
+    return "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300";
+  if (lower.includes("varchar") || lower.includes("text"))
+    return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
+  if (lower.includes("numeric") || lower.includes("decimal"))
+    return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+  if (lower.includes("timestamp") || lower.includes("date"))
+    return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
+  if (lower.includes("boolean"))
+    return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+  return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
+};
 
 export function TableBody({
   rows,
@@ -35,10 +52,12 @@ export function TableBody({
   onAddRow: (data: Record<string, unknown>) => void;
   onDeleteRow: (id: string | number) => void;
 }) {
+  // Local UI state for editing and adding rows
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingRow, setEditingRow] = useState<string | number | null>(null);
-  const [editData, setEditData] = useState<Record<string, any>>({});
+  const [editData, setEditData] = useState<Record<string, unknown>>({});
 
+  // Row edit handlers
   const handleEditRow = (row: DataSourceRecord) => {
     setEditingRow(row.id);
     setEditData(row);
@@ -46,7 +65,7 @@ export function TableBody({
 
   const handleSaveEdit = () => {
     if (editingRow && editData) {
-      // TODO: connect to update API
+      // TODO: hook up API call for update
       console.log("Saving edited data:", editData);
       setEditingRow(null);
       setEditData({});
@@ -58,33 +77,15 @@ export function TableBody({
     setEditData({});
   };
 
-
-  const handleSaveNewRow = () => {
-  if (Object.keys(editData).length === 0) {
-    setShowAddForm(false);
-    return;
-  }
-
-  const newRow = {
-    id: crypto.randomUUID(),
-    ...editData,
-    created_at: new Date().toISOString(),
-  };
-
-  onAddRow(newRow);   // ✅ bubble up to DataTable
-  setEditData({});
-  setShowAddForm(false);
-};
-
-const handleCancelNewRow = () => {
-  setEditData({});
-  setShowAddForm(false);
-};
-
-
-
-  // 🔑 Keep your original styled columns
+  /**
+   * --- Table columns ---
+   * Dynamically built from schema, but always ensure:
+   *  1. Checkbox select column is first
+   *  2. "id" column is forced to appear before other schema fields
+   *  3. Actions (edit/delete) column is last
+   */
   const columns = useMemo<ColumnDef<DataSourceRecord>[]>(() => {
+    // 1. Row select checkbox column
     const selectCol: ColumnDef<DataSourceRecord> = {
       id: "_select",
       header: ({ table }) => (
@@ -92,7 +93,6 @@ const handleCancelNewRow = () => {
           aria-label="Select all"
           checked={table.getIsAllRowsSelected()}
           onCheckedChange={v => table.toggleAllRowsSelected(!!v)}
-          className="translate-y-[1px]"
         />
       ),
       cell: ({ row }) => (
@@ -103,48 +103,103 @@ const handleCancelNewRow = () => {
         />
       ),
       size: 48,
-      enableSorting: false,
-      enableHiding: false,
     };
 
-    // Dynamically build schema columns but render like your original UI
-    const schemaCols: ColumnDef<DataSourceRecord>[] = Object.keys(
-      schema?.columns ?? {}
-    ).map(colName => ({
-      accessorKey: colName,
-      header: () => <span className="text-slate-300">{colName}</span>,
-      cell: ({ getValue, row }) => {
-        if (editingRow === row.original.id) {
-          return (
-            <input
-              type="text"
-              value={editData[colName] ?? ""}
-              onChange={e =>
-                setEditData(prev => ({ ...prev, [colName]: e.target.value }))
-              }
-              className="w-full bg-transparent border border-slate-400 rounded px-2 py-1 text-sm"
-            />
-          );
-        }
+    // 2. Schema-driven columns
+    const schemaCols: ColumnDef<DataSourceRecord>[] = [];
 
-        // ✅ Preserve your original formatting
-        if (colName === "price") {
-          const v = Number(getValue());
-          return (
-            <span className="dark:text-gray-200 text-gray-600">
-              {`$${Number.isFinite(v) ? v.toFixed(2) : "0.00"}`}
+    // force "id" column first if present
+    if (schema?.columns?.id) {
+      schemaCols.push({
+        accessorKey: "id",
+        header: () => (
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-700 dark:text-slate-200">
+              id
             </span>
-          );
-        }
-
-        return (
-          <span className="dark:text-gray-200 text-gray-600">
+            <Badge
+              variant="secondary"
+              className={`text-xs rounded-xs font-mono ${getTypeColor(
+                schema.columns["id"]
+              )}`}
+            >
+              {schema.columns["id"].split(" ")[0]}
+            </Badge>
+          </div>
+        ),
+        cell: ({ getValue }) => (
+          <span className="font-mono text-gray-500 dark:text-gray-400">
             {String(getValue() ?? "")}
           </span>
-        );
-      },
-    }));
+        ),
+      });
+    }
 
+    // render all other schema columns
+    Object.keys(schema?.columns ?? {})
+      .filter(c => c !== "id")
+      .forEach(colName => {
+        schemaCols.push({
+          accessorKey: colName,
+          header: () => (
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-slate-700 dark:text-slate-200">
+                {colName}
+              </span>
+              {schema?.columns?.[colName] && (
+                <Badge
+                  variant="secondary"
+                  className={`text-xs rounded-xs font-mono ${getTypeColor(
+                    schema.columns[colName]
+                  )}`}
+                >
+                  {schema.columns[colName].split(" ")[0]}
+                </Badge>
+              )}
+            </div>
+          ),
+          cell: (ctx: CellContext<DataSourceRecord, unknown>) => {
+            const value = ctx.getValue();
+            const row = ctx.row;
+
+            // If row is currently in edit mode → render editable input
+            if (editingRow === row.original.id) {
+              return (
+                <input
+                  type="number"
+                  value={editData[colName] as string | number ?? ""}
+                  onChange={e =>
+                    setEditData(prev => ({
+                      ...prev,
+                      [colName]: e.target.value,
+                    }))
+                  }
+                  step="0.01"
+                  className="w-full bg-transparent border border-slate-400 rounded px-2 py-1 text-sm"
+                />
+              );
+            }
+
+            // Special formatting for price column (this one can not increase as decimal yet)
+            if (colName === "price") {
+              const v = Number(value);
+              return (
+                <span className="dark:text-gray-200 text-gray-600">
+                  {`$${Number.isFinite(v) ? v.toFixed(2) : "0.00"}`}
+                </span>
+              );
+            }
+
+            return (
+              <span className="dark:text-gray-200 text-gray-600">
+                {String(value ?? "")}
+              </span>
+            );
+          },
+        });
+      });
+
+    // 3. Actions column (edit/delete)
     const actionsCol: ColumnDef<DataSourceRecord> = {
       id: "_actions",
       header: () => null,
@@ -153,31 +208,31 @@ const handleCancelNewRow = () => {
           {editingRow === row.original.id ? (
             <>
               <button
-                className="text-slate-500 hover:text-green-400 p-1 rounded transition-colors"
+                className="text-slate-500 hover:text-green-400 p-1 rounded"
                 title="Save"
                 onClick={handleSaveEdit}
               >
-                ✓
+                <Check size={14} />
               </button>
               <button
-                className="text-slate-500 hover:text-gray-400 p-1 rounded transition-colors"
+                className="text-slate-500 hover:text-gray-400 p-1 rounded"
                 title="Cancel"
                 onClick={handleCancelEdit}
               >
-                ✕
+                <X size={14} />
               </button>
             </>
           ) : (
             <>
               <button
-                className="text-slate-500 hover:text-blue-400 p-1 rounded transition-colors"
+                className="text-slate-500 hover:text-blue-400 p-1 rounded"
                 title="Edit"
                 onClick={() => handleEditRow(row.original)}
               >
                 <Edit size={14} />
               </button>
               <button
-                className="text-slate-500 hover:text-red-400 p-1 rounded transition-colors"
+                className="text-slate-500 hover:text-red-400 p-1 rounded"
                 title="Delete"
                 onClick={() => onDeleteRow(row.original.id)}
               >
@@ -188,13 +243,12 @@ const handleCancelNewRow = () => {
         </div>
       ),
       size: 80,
-      enableSorting: false,
-      enableHiding: false,
     };
 
     return [selectCol, ...schemaCols, actionsCol];
   }, [schema, editingRow, editData, onDeleteRow]);
 
+  // React Table setup
   const table = useReactTable({
     data: rows ?? [],
     columns,
@@ -205,6 +259,7 @@ const handleCancelNewRow = () => {
     enableRowSelection: true,
   });
 
+  // Sync selected row IDs back to parent component
   useEffect(() => {
     const ids = table.getSelectedRowModel().rows.map(r => r.original.id);
     onSelectedIdsChange(ids);
@@ -227,6 +282,7 @@ const handleCancelNewRow = () => {
                 }
               >
                 {header.id === "_actions" ? (
+                  // Right-side "Add row" button
                   <button
                     onClick={() => setShowAddForm(true)}
                     className="float-right text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 p-1 rounded transition-colors"
@@ -246,112 +302,36 @@ const handleCancelNewRow = () => {
         </thead>
 
         <tbody>
-          {/* Add Row Form - positioned right after header for better UX */}
-          {/* {showAddForm && (
-            <tr className="border-b border-slate-200 dark:border-slate-700 bg-blue-50 dark:bg-blue-900/20">
-              {table.getFlatHeaders().map((header, i) => (
-                <td
-                  key={header.id}
-                  className={
-                    "p-3 " +
-                    (i === 0 || i === table.getFlatHeaders().length - 1
-                      ? "w-12 "
-                      : "") +
-                    "border-r border-slate-200 dark:border-slate-600"
-                  }
-                >
-                  {header.id === "_select" ? (
-                    // Empty cell for checkbox column
-                    <div className="w-6 h-6"></div>
-                  ) : header.id === "_actions" ? (
-                    // Action buttons
-                    <div className="flex items-center justify-center gap-1">
-                      <button
-                        // onClick={handleSaveNewRow}
-                        className="text-green-500 hover:text-green-300 p-1 rounded transition-colors"
-                        title="Save"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        // onClick={handleCancelNewRow}
-                        className="text-red-500 hover:text-red-300 p-1 rounded transition-colors"
-                        title="Cancel"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ) : (
-                    // Input fields for schema columns
-                    <input
-                      type={header.id === "price" ? "number" : "text"}
-                      placeholder={`Enter ${header.id}...`}
-                      value={editData[header.id] ?? ""}
-                      onChange={e =>
-                        setEditData(prev => ({
-                          ...prev,
-                          [header.id]: e.target.value,
-                        }))
-                      }
-                      className="w-full bg-transparent border border-slate-400 rounded px-2 py-1 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
-                      autoFocus={i === 1} // Focus first input field
-                    />
-                  )}
-                </td>
-              ))}
-            </tr>
-          )} */}
-
-          {showAddForm && (
-  <AddRowForm
-    schema={schema}
-    onSave={(row) => {
-      onAddRow(row);      // ✅ bubble up
-      setShowAddForm(false);
-    }}
-    onCancel={() => setShowAddForm(false)}
-  />
-)}
-
-
-          {/* Regular table rows */}
+          {/* Real API rows */}
           {table.getRowModel().rows.map(row => (
             <tr
               key={row.id}
-              className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 ${
-                row.getIsSelected() ? "bg-slate-100 dark:bg-slate-750" : ""
-              } ${
-                editingRow === row.original.id
-                  ? "bg-blue-50 dark:bg-blue-900/20"
-                  : ""
-              }`}
+              className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600
+                ${row.getIsSelected() ? "bg-slate-100 dark:bg-slate-600" : ""}
+                ${editingRow === row.original.id ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
             >
-              {row.getVisibleCells().map((cell, i) => (
+              {row.getVisibleCells().map(cell => (
                 <td
                   key={cell.id}
-                  className={
-                    "p-3 " +
-                    (i < row.getVisibleCells().length - 1
-                      ? "border-r border-slate-200 dark:border-slate-700 text-gray-900 "
-                      : "") +
-                    (["id", "price", "created_date"].includes(cell.column.id)
-                      ? "font-lexend  "
-                      : "") +
-                    (cell.column.id === "name"
-                      ? "text-gray-800 dark:text-white  "
-                      : "text-gray-600 dark:text-gray-300 ") +
-                    (cell.column.id === "_actions" ? "text-center " : "") +
-                    (cell.column.id !== "_select" &&
-                    cell.column.id !== "_actions"
-                      ? "hover:border hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-200 cursor-pointer "
-                      : "")
-                  }
+                  className="p-3 border-r border-slate-200 dark:border-slate-700 text-sm"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>
           ))}
+
+          {/* Inline "add row" form */}
+          {showAddForm && (
+            <AddRowForm
+              schema={schema}
+              onSave={data => {
+                onAddRow(data); 
+                setShowAddForm(false);
+              }}
+              onCancel={() => setShowAddForm(false)}
+            />
+          )}
         </tbody>
       </table>
     </div>

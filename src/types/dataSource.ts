@@ -1,6 +1,7 @@
-export type TabType = "database" | "real-data" | "logs" | "schedule";
+// export type TabType = "database" | "real-data" | "logs" | "schedule";
+export type TabType = "database" | "logs" | "schedule";
 
-export type LogAction = "IMPORT" | "DELETE" | "CREATE" | "UPDATE";
+export type LogAction = "IMPORT" | "DELETE" | "CREATE" | "UPDATE" | "ERROR" | "REFRESH";
 
 export interface SampleProduct {
   id: number;

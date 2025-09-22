@@ -89,11 +89,12 @@ export function SchemaSidebar({
         </div>
       )}
 
+
       {/* Schemas List */}
       <div className="flex-1 p-2 space-y-1">
         {!isLoading && !error && filteredSchemas.length > 0 ? (
           filteredSchemas.map(schema => {
-            const key = schema.id || schema.schemaName;
+            const key = schema.schemaDocId || schema.schemaName;
             const isActive = activeTable === key;
             return (
               <button

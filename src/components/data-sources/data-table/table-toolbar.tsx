@@ -14,7 +14,7 @@ export function TableToolbar({
   onOpenImport: () => void;
 }) {
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex justify-end">
       <div className="flex gap-2">
         {selectedCount > 0 && (
           <button

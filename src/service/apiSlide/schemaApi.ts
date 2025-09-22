@@ -19,7 +19,7 @@ export interface CreateSchemaRequest {
 }
 
 export interface Schema {
-  id: string;
+  schemaDocId: string;
   projectUuid: string;
   schemaName: string;
   columns: Record<string, string>;
