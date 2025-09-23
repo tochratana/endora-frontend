@@ -50,7 +50,7 @@ export default function OurHistory() {
             data-aos-offset="50"
           >
             <Image
-              src="/group.png"
+              src="/group.svg"
               alt="history image"
               width={700}
               height={520}

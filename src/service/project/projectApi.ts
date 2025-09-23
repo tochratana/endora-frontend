@@ -5,6 +5,7 @@ import {
   ProjectResponse,
   ProjectSummary,
 } from "@/types/product";
+import ProjectOverview from "@/types/projectOverview";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
@@ -24,9 +25,9 @@ export const projectApi = createApi({
       transformResponse: (response: ProjectResponse) => response.data,
     }),
 
-    getProjectByUuid: builder.query<Project, string>({
-      query: uuid => `/projects/${uuid}`,
-      providesTags: ["Project"],
+    getProjectByUuid: builder.query<ProjectResponse, string>({
+      query: uuid => `/projects/${uuid}`, // matches your folder
+      providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
     }),
 
     createProject: builder.mutation<Project, CreateProjectRequest>({
@@ -37,6 +38,10 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Project"],
     }),
+    getProjectOverview: builder.query<ProjectOverview, string>({
+      query: uuid => `/projects/${uuid}/usage/current`,
+      providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
+    }),
   }),
 });
 
@@ -44,4 +49,5 @@ export const {
   useGetProjectsQuery,
   useGetProjectByUuidQuery,
   useCreateProjectMutation,
+  useGetProjectOverviewQuery,
 } = projectApi;

@@ -4,11 +4,11 @@ import LottieAnimation from "../ui/LottieAnimation";
 
 export default function APIDocServiceSection() {
   return (
-    <section className="py-8 sm:-mt-16 sm:py-0">
+    <section className="pt-0 pb-0 -mt-4 sm:-mt-32 sm:pt-0 sm:pb-0">
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:gap-4 md:grid-cols-2 md:items-center md:gap-8">
           <div className="order-1">
-            <div className="max-w-lg md:max-w-none">
+            <div className="max-w-lg md:max-w-none mt-6 sm:mt-0">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent sm:text-3xl md:text-4xl lg:text-5xl">
                 API Documentation
               </h2>
@@ -21,7 +21,10 @@ export default function APIDocServiceSection() {
             </div>
           </div>
           <div className="order-2 flex justify-center">
-            <LottieAnimation path="/home/cd.json" />
+            <LottieAnimation
+              path="/home/cd.json"
+              className="w-80 h-80 sm:w-96 sm:h-96 md:w-[32rem] md:h-[32rem] lg:w-[36rem] lg:h-[36rem] max-w-full"
+            />
           </div>
         </div>
       </div>

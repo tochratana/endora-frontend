@@ -17,10 +17,9 @@ export async function GET(
   try {
     const { projectUuid } = await params;
 
-    // First try to get all projects and find the specific one
-    // This is a fallback approach in case the backend doesn't have a single project endpoint
+    // Directly fetch the project by UUID
     const response = await fetch(
-      `${process.env.API_BASE}/projects/my-projects`,
+      `${process.env.API_BASE}/projects/${projectUuid}`,
       {
         headers: {
           Authorization: `Bearer ${jwt.accessToken}`,
@@ -35,12 +34,7 @@ export async function GET(
       return new NextResponse(errorText, { status: response.status });
     }
 
-    const projects = await response.json();
-
-    // Find the specific project by UUID
-    const project = projects.find(
-      (p: Project) => p.projectUuid === projectUuid
-    );
+    const project: Project = await response.json();
 
     if (!project) {
       return new NextResponse("Project not found", { status: 404 });

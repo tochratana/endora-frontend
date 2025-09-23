@@ -3,8 +3,8 @@ import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 // import SessionProviderClient from "@/components/auth/AuthFormsProps";
 import Shell from "@/components/layouts/Shell";
-import { ThemeProvider } from "@/components/theme-provider";
-import ClientProviders from "@/components/ClientProviders";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import ClientProviders from "@/components/ui/ClientProviders";
 
 // TODO metadata
 export const metadata = {

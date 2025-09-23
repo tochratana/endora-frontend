@@ -14,7 +14,7 @@ export async function GET(
   }
 
   try {
-    // ✅ await params
+    // await params
     const { projectUuid } = await context.params;
 
     const response = await fetch(
@@ -66,7 +66,17 @@ export async function POST(
       publicRead: body.publicRead ?? true,
       schema: body.schema,
     };
-    console.log("Payload to backend:", JSON.stringify(payload, null, 2));
+
+    const payload2 = {
+      schemaName: "club1",
+      publicList: true,
+      publicRead: true,
+      schema: {
+        name: "varchar(200)",
+        country: "varchar(200)",
+      },
+    };
+    console.log("Payload to backend:", JSON.stringify(payload2, null, 2));
 
     const response = await fetch(
       `${process.env.API_BASE}/projects/${projectUuid}/schema/tables`,
@@ -90,7 +100,9 @@ export async function POST(
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error("Error creating schema:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
-

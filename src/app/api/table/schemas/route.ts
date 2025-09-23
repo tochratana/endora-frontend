@@ -1,4 +1,3 @@
-
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
@@ -51,6 +50,7 @@ export async function POST(req: NextRequest, context: Context) {
     if (!response.ok) {
       const errorText = await response.text();
       console.log("Backend error:", errorText);
+      console.log("Respose Error is : ", response);
       return new NextResponse(errorText, { status: response.status });
     }
 
