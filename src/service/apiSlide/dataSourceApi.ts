@@ -42,6 +42,13 @@ export interface GetDataParams {
   userUuid: string;
   page?: number;
   limit?: number;
+  sort?: string;
+}
+
+//add new interface for the projects stats API response
+export interface ProjectStatsResponse {
+  totalRecord: number;
+  lastUpdatedAt: string;
 }
 
 export const dataSourceApi = createApi({
@@ -59,8 +66,21 @@ export const dataSourceApi = createApi({
   tagTypes: ["DataSource"],
   endpoints: builder => ({
     // Insert data into a schema
-    insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
+    // insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
+    //   query: ({ schemaName, projectUuid, userUuid, data }) => ({
+    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+    //   ],
+    // }),
+
+    // Insert record
+    insertSchemaRow: builder.mutation<InsertDataResponse, InsertDataRequest>({
       query: ({ schemaName, projectUuid, userUuid, data }) => ({
+        //  this will hit our new route.ts (which proxies backend)
         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
         method: "POST",
         body: data,
@@ -71,16 +91,51 @@ export const dataSourceApi = createApi({
     }),
 
     // Get data from a schema
-    getData: builder.query<DataSourceResponse, GetDataParams>({
-      query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
-        url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
-        method: "GET",
-      }),
+    // getData: builder.query<DataSourceResponse, GetDataParams>({
+    //   query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
+    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
+    //     method: "GET",
+    //   }),
+    //   providesTags: (result, error, { schemaName, projectUuid }) => [
+    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+    //   ],
+    // }),
+    // Fetch records
+    getSchemaRows: builder.query<DataSourceResponse, GetDataParams>({
+      query: ({
+        schemaName,
+        projectUuid,
+        userUuid,
+        page = 1,
+        limit = 10,
+        sort,
+      }) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+        if (sort) params.append("sort", sort);
+
+        return {
+          //  matches our GET in route.ts
+          url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?${params.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: (result, error, { schemaName, projectUuid }) => [
         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
       ],
     }),
+
+    // Endpoint to get project-wide stats
+    getProjectStats: builder.query<ProjectStatsResponse, string>({
+      query: projectUuid => `/project/${projectUuid}/stats`,
+    }),
   }),
 });
 
-export const { useInsertDataMutation, useGetDataQuery } = dataSourceApi;
+export const {
+  useInsertSchemaRowMutation,
+  useGetSchemaRowsQuery,
+  useGetProjectStatsQuery, //new export the hook
+} = dataSourceApi;

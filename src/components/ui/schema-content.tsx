@@ -57,7 +57,10 @@ export function SchemaContent({
     { skip: !activeTable } // nothing selected yet
   );
 
-  console.log("Active Schema:", activeSchema);
+  // find active schema
+  const activeSchema = schemas?.find(
+    schema => schema.schemaDocId === activeTable
+  );
 
   const columns = useMemo(() => {
     if (!activeSchema?.columns) return [];
@@ -144,7 +147,7 @@ export function SchemaContent({
               </p>
               <p className="text-sm text-muted-foreground">
                 Last updated:{" "}
-                {new Date(activeSchema.updatedAt).toLocaleString()}
+                {new Date(activeSchema.updatedAt).toLocaleDateString()}
               </p>
             </div>
 
@@ -199,7 +202,7 @@ export function SchemaContent({
         )}
       </div>
 
-      <div className="px-6 py-4 border-t border-border bg-muted flex justify-center">
+      <div className="px-6 py-4 border-t border-border bg-gray-100 dark:bg-slate-950 flex justify-center">
         <button
           className="flex items-center gap-2 text-gray-600 bg-transparent"
           onClick={handleRefresh}

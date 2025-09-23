@@ -1,14 +1,13 @@
-import Link from "next/link";
+// import Link from "next/link";
 import { ShinyText } from "../ui/shiny-text";
-import Button from "../ui/button";
+// import Button from "../ui/button";
 
 export default function HeroSection() {
   return (
-    <section className=" pt-[100px] pb-[20px] max-w-6xl mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
+    <section className="relative min-h-screen mx-auto flex flex-col items-center justify-center text-center px-4 gap-8 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         {/* Gradient Background */}
-        {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/30 to-purple-50/40 dark:from-teal-950/20 dark:via-purple-950/10 dark:to-teal-950/20"></div> */}
         <div className="absolute inset-0 dark:bg-slate-900"></div>
 
         {/* Floating Orbs - Enhanced for light mode */}
@@ -25,12 +24,12 @@ export default function HeroSection() {
       <div className="relative z-10 w-full max-w-4xl mx-auto space-y-8 flex flex-col items-center">
         {/* Title with ShinyText */}
         <div className="w-full space-y-4 flex flex-col items-center">
-          <ShinyText className="text-6xl md:text-[5.5rem] font-semibold text-[var(--color-secondary-500)] text-center">
+          <ShinyText className="md:text-[5.5rem] text-6xl font-bold text-center">
             Welcome to Endora
           </ShinyText>
 
           {/* Subtitle */}
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-center pt-4 gap-2 text-sm text-gray-500 dark:text-gray-400">
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
             <span className="font-medium text-base">Simplify Your Backend</span>
             <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent w-12"></div>
@@ -144,9 +143,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom Fade */}
-      {/* <div className="absolute bottom-[-70] left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-60"></div> */}
-      {/* <div className=" absolute bottom-[-70] left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none opacity-30"></div> */}
+   
     </section>
   );
 }

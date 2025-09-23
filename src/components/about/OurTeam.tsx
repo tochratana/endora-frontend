@@ -18,7 +18,7 @@ export default function OurTeam() {
     });
   }, []);
   return (
-    <section className="w-full py-10">
+    <section className="w-full pt-32">
       <div className="max-w-6xl m-auto text-center">
         <div className="mb-10">
           <h1
@@ -30,11 +30,10 @@ export default function OurTeam() {
             Our team members
           </h1>
           <p
-            data-aos="zoom-in"
-            data-aos-delay="120"
-            data-aos-offset="50"
-            className="text-gray-600 dark:text-white text-center mb-12 md:text-xl text-lg max-w-3xl mx-auto"
-          >
+          data-aos="zoom-in"
+          data-aos-delay="120"
+          data-aos-offset="50"
+          className="text-gray-600 dark:text-gray-300 text-center mb-12 md:text-xl text-lg max-w-3xl mx-auto">
             A passionate group of innovators, builders, and dreamers working
             together to make APIs effortless.
           </p>

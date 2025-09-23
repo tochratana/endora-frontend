@@ -16,6 +16,7 @@ export default function OurMission() {
     });
   }, []);
   return (
+    // <section>
     <section className="w-full -mt-16 pt-0 pb-0">
       <div className="mx-auto max-w-6xl grid grid-cols-4 md:grid-cols-8 items-center gap-6 min-h-[200px]">
         {/* Image: 3/8 on md, 4/8 on lg+ with max-width constraint - Now on LEFT */}
@@ -27,10 +28,11 @@ export default function OurMission() {
             className="w-full max-w-xs md:max-w-[200px] lg:max-w-md"
           >
             <Image
-              src="/mission.svg"
+              src="/mission-impossible-animate.svg"
+              // src="/mission.svg"
               alt="mission image"
-              width={700}
-              height={520}
+              width={200}
+              height={200}
               className="w-full h-auto object-contain rounded"
               sizes="(min-width: 1024px) 500px, (min-width: 768px) 300px, 100vw"
             />
@@ -47,6 +49,19 @@ export default function OurMission() {
           <h1 className="md:text-5xl text-4xl text-(--color-secondary) font-semibold mb-5">
             Our Mission
           </h1>
+          {/* <ul className=" marker:text-(--color-secondary)">
+            <li>
+              <p className="text-gray-600 dark:text-gray-300 text-lg">
+                <span className="text-(--color-secondary) text-lg font-semibold">
+                  Our mission
+                </span>{" "}
+                is to empower developers, students, and teams to build reliable
+                APIs faster and easier than ever before. We believe creating an
+                API should not be limited by technical barriers or
+                time-consuming backend setup.
+              </p>
+            </li>
+          </ul> */}
           <p className="text-gray-600 dark:text-white text-lg">
             <span className="text-(--color-secondary) text-lg font-semibold">
               Our mission

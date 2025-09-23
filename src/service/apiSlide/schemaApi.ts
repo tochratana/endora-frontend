@@ -20,7 +20,6 @@ export interface CreateSchemaRequest {
 
 export interface Schema {
   schemaDocId: string;
-  id: string;
   projectUuid: string;
   schemaName: string;
   columns: Record<string, string>;
@@ -49,13 +48,13 @@ export const schemaApi = createApi({
   reducerPath: "schemaApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api", // keeps your /api/table/... endpoints working
-    prepareHeaders: (headers) => {
+    prepareHeaders: headers => {
       headers.set("Content-Type", "application/json");
       return headers;
     },
   }),
   tagTypes: ["Schema"],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     createSchema: builder.mutation<Schema, CreateSchemaRequest>({
       query: ({ schemaName, schema, projectUuid }) => ({
         url: `/table/project/${projectUuid}`,
@@ -71,14 +70,21 @@ export const schemaApi = createApi({
     }),
 
     getSchemas: builder.query<Schema[], string>({
-      query: (projectUuid) => `/table/project/${projectUuid}`,
+      query: projectUuid => `/table/project/${projectUuid}`,
       transformResponse: (response: { data: Schema[] }) => response.data,
       providesTags: ["Schema"],
     }),
+    // getSchemas: builder.query<Schema[], string>({
+    //   query: projectUuid => `/table/project/${projectUuid}`,
+    //   transformResponse: (response: any) => {
+    //     console.log("📡 Raw schema API response:", response);
+    //     return Array.isArray(response) ? response : response.data;
+    //   },
+    //   providesTags: ["Schema"],
+    // }),
 
-    // You can remove this if there's no /api/schemas/:id route
     getSchemaById: builder.query<Schema, string>({
-      query: (id) => `schemas/${id}`,
+      query: id => `schemas/${id}`,
       providesTags: ["Schema"],
     }),
 

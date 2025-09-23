@@ -1,26 +1,15 @@
 import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
-// import SessionProviderClient from "@/components/auth/AuthFormsProps";
 import Shell from "@/components/layouts/Shell";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import ClientProviders from "@/components/ui/ClientProviders";
 
-// TODO metadata
+// Metadata
 export const metadata = {
   title: "Endora - Backend Made Simple | Instant APIs, Auth, and Database",
   description:
     "Transform your ideas into powerful backend services in minutes. Endora provides instant RESTful APIs, authentication, real-time databases, and storage solutions - all without writing a single line of code.",
-  keywords: [
-    "backend as a service",
-    "instant api",
-    "no-code backend",
-    "api platform",
-    "database management",
-    "authentication service",
-    "serverless platform",
-    "real-time database",
-  ],
   icons: {
     icon: "/favicon.ico",
     shortcut: "/logo.png",
@@ -32,16 +21,19 @@ export const metadata = {
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
+  display: "swap", // 👈 ensures consistent className across SSR/CSR
 });
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
 });
 
 export const viewport = {
@@ -54,9 +46,9 @@ export const viewport = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -73,11 +65,12 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lexend.variable} antialiased`}
+        suppressHydrationWarning // 👈 ensure mismatch doesn’t crash hydration
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light" // 👈 FIX: avoid system mismatch, can toggle later
+          enableSystem={false} // 👈 disable SSR theme flicker
           disableTransitionOnChange
         >
           <ProviderStore>

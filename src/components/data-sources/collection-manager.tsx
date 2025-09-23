@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DataTable } from "./data-table";
+import { DataTable } from "./data-table/data-table";
 import type { SampleProduct, LogAction } from "@/types/dataSource";
 
 interface Collection {

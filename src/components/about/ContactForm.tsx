@@ -1,11 +1,13 @@
 "use client";
 
 import { MapPin, Mail, Phone } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 export default function ContactForm() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
   useEffect(() => {
     AOS.init({
       duration: 600,
@@ -14,6 +16,29 @@ export default function ContactForm() {
       easing: "ease-out",
       offset: 50,
     });
+
+    // TypeIt.js integration
+    const loadTypeIt = async () => {
+      const TypeIt = (await import("typeit")).default;
+      
+      if (titleRef.current) {
+        new TypeIt(titleRef.current, {
+          speed: 100,
+          waitUntilVisible: true,
+          cursor: true,
+          cursorSpeed: 1000,
+          deleteSpeed: 50,
+          loop: true,
+        })
+        .type("Let talk with us")
+        .pause(2000)
+        .delete()
+        .pause(500)
+        .go();
+      }
+    };
+
+    loadTypeIt();
   }, []);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,8 +56,11 @@ export default function ContactForm() {
           data-aos-offset="50"
           className="md:col-span-4 col-span-8 flex flex-col gap-6 justify-center"
         >
-          <h1 className="text-[var(--color-primary)] md:text-5xl text-3xl font-semibold mb-2">
-            Lets talk with us
+          <h1 
+            ref={titleRef}
+            className="text-[var(--color-primary)] md:text-5xl text-3xl font-semibold mb-2 [&_.ti-cursor]:text-4xl md:[&_.ti-cursor]:text-6xl [&_.ti-cursor]:font-normal"
+          >
+            {/* TypeIt will replace this content */}
           </h1>
           <p className="text-gray-600 dark:text-gray-300 md:text-lg">
             Questions, comments, or suggestions? Simply fill in the form and we

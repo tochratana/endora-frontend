@@ -25,9 +25,10 @@ export const projectApi = createApi({
       transformResponse: (response: ProjectResponse) => response.data,
     }),
 
-    getProjectByUuid: builder.query<ProjectResponse, string>({
-      query: uuid => `/projects/${uuid}`, // matches your folder
-      providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
+    getProjectByUuid: builder.query<Project, string>({
+      query: uuid => `/projects/${uuid}`,
+      providesTags: ["Project"],
+      // providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
     }),
 
     createProject: builder.mutation<Project, CreateProjectRequest>({

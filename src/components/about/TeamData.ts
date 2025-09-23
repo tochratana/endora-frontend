@@ -84,7 +84,7 @@ export const teamMembers: TeamMember[] = [
         "https://www.linkedin.com/in/ratana-touch-930119302/?originalSubdomain=kh",
       portfolio: "https://tochratana.netlify.app",
     },
-    background: "/team-background/blob7.svg",
+    background: "/team-background/blob9.svg",
     image: "/images/toch-ratana.png",
   },
   {
@@ -132,7 +132,7 @@ export const teamMembers: TeamMember[] = [
       linkedin: "https://www.linkedin.com/in/oudomm",
       portfolio: "https://www.oudom.dev",
     },
-    background: "/team-background/blob1.svg",
+    background: "/team-background/blob4.svg",
     image: "/images/phoem-oudom.png",
   },
 ];
