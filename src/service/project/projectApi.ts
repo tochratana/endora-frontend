@@ -5,6 +5,7 @@ import {
   ProjectResponse,
   ProjectSummary,
 } from "@/types/product";
+import ProjectOverview from "@/types/projectOverview";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
@@ -38,6 +39,10 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Project"],
     }),
+    getProjectOverview: builder.query<ProjectOverview, string>({
+      query: uuid => `/projects/${uuid}/usage/current`,
+      providesTags: (result, error, uuid) => [{ type: "Project", id: uuid }],
+    }),
   }),
 });
 
@@ -45,4 +50,5 @@ export const {
   useGetProjectsQuery,
   useGetProjectByUuidQuery,
   useCreateProjectMutation,
+  useGetProjectOverviewQuery,
 } = projectApi;

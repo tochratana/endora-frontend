@@ -3,7 +3,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Footer from "./Footer";
-import NotificationBar from "../NotificationBar";
+import NotificationBar from "../ui/NotificationBar";
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";

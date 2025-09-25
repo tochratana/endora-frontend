@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, use } from "react";
-import { SchemaSidebar } from "@/components/schema-sidebar";
-import { SchemaContent } from "@/components/schema-content";
+import { useState, use, useEffect } from "react";
+import { SchemaSidebar } from "@/components/ui/schema-sidebar";
+import { SchemaContent } from "@/components/ui/schema-content";
+import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface PageProps {
   params: Promise<{
@@ -12,7 +13,16 @@ interface PageProps {
 
 export default function SchemaManager({ params }: PageProps) {
   const { workspaceId } = use(params);
-  const [activeTable, setActiveTable] = useState("products");
+  const [activeTable, setActiveTable] = useState("");
+  const { data: schemas } = useGetSchemasQuery(workspaceId);
+
+  useEffect(() => {
+    if (schemas && schemas.length > 0 && !activeTable) {
+      setActiveTable(schemas[0].schemaName);
+    }
+  }, [schemas, activeTable]);
+
+  
 
   return (
     <div className="flex h-screen bg-background">
@@ -25,7 +35,7 @@ export default function SchemaManager({ params }: PageProps) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-slate-950">
+        <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-foreground">
               Database Schema

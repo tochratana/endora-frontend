@@ -2,8 +2,8 @@ import { Geist, Geist_Mono, Lexend } from "next/font/google";
 import "./globals.css";
 import ProviderStore from "@/service/store/ProviderStore";
 import Shell from "@/components/layouts/Shell";
-import { ThemeProvider } from "@/components/theme-provider";
-import ClientProviders from "@/components/ClientProviders";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import ClientProviders from "@/components/ui/ClientProviders";
 
 // Metadata
 export const metadata = {

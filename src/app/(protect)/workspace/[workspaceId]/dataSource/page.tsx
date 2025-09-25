@@ -1,4 +1,3 @@
-
 import type { TabType } from "@/types/dataSource";
 import DataSourcesClient from "./clientViewer";
 
@@ -19,9 +18,6 @@ export default async function Page({
   const initialTab: TabType = isValidTab(tab) ? (tab as TabType) : "database";
 
   return (
-    <DataSourcesClient
-      workspaceId={workspaceId}
-      initialTab={initialTab}
-    />
+    <DataSourcesClient workspaceId={workspaceId} initialTab={initialTab} />
   );
 }
