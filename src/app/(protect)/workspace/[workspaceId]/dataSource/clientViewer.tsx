@@ -5,7 +5,7 @@ import { Database, FileText, Clock } from "lucide-react";
 import {
   useGetSchemaRowsQuery,
   useInsertSchemaRowMutation,
-  useGetProjectStatsQuery, //  Import the hook to get project-wide stats
+  useGetProjectStatsQuery,
 } from "@/service/apiSlide/dataSourceApi";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 import { DataSourceHeader } from "@/components/data-sources/data-source-header";
@@ -30,9 +30,9 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [logs, setLogs] = useState<LogItem[]>([]);
   const [activeSchemaName] = useState<string>("products");
-  // const [setActiveSchemaName] = useState<string>("products");
+  // const [activeSchemaName, setActiveSchemaName] = useState<string>("products");
 
-  const userUuid = "user-123"; // TODO: pull from session
+  const userUuid = "user-123"; //pull from session
 
   // 1. Fetch ALL schemas to get the total count
   const { data: schemas } = useGetSchemasQuery(workspaceId);
@@ -48,19 +48,13 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
     userUuid,
     page: 1,
     limit: 10,
-    sort: "-created_at",
+    sort: "created_at",
   });
 
   const apiRows: DataSourceRecord[] = data?.data ?? [];
   const activeSchema: Schema | undefined = schemas?.find(
     s => s.schemaName === activeSchemaName
   );
-
-  // mock rows state (for local additions)
-  const [mockRows, setMockRows] = useState<DataSourceRecord[]>([]);
-
-  // merged rows (API + mock)
-  const rows: DataSourceRecord[] = [...apiRows, ...mockRows];
 
   const [insertRow] = useInsertSchemaRowMutation();
 
@@ -94,37 +88,6 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
       },
       ...prev,
     ]);
-  };
-
-  // Define a type for the dynamic row data
-  type AddRowData = {
-    [key: string]: unknown;
-  };
-
-  // Add row handler (mock mode for now)
-  const handleAddRow = (row: AddRowData) => {
-    const newRow: DataSourceRecord = {
-      ...row,
-      // id: row.id ?? crypto.randomUUID(),
-      // created_at: row.created_at ?? new Date().toISOString(),
-      id: typeof row.id === "string" ? row.id : crypto.randomUUID(),
-      created_at:
-        typeof row.created_at === "string"
-          ? row.created_at
-          : new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      created_by: "system",
-      schema_name: activeSchemaName,
-      project_uuid: workspaceId,
-    };
-    setMockRows(prev => [...prev, newRow]);
-    addLog("CREATE", "Row Added", `Inserted new row into ${activeSchemaName}`);
-  };
-
-  // Delete row handler (mock + API rows)
-  const handleDeleteRow = (id: string | number) => {
-    setMockRows(prev => prev.filter(r => r.id !== id));
-    addLog("DELETE", "Row Deleted", `Removed row ${id}`);
   };
 
   const handleAddSample = async () => {
@@ -193,13 +156,11 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
                 <p className="text-slate-400">Loading...</p>
               ) : isError ? (
                 <p className="text-red-400">Failed to load data</p>
-              ) : rows.length > 0 && activeSchema ? (
+              ) : apiRows.length > 0 && activeSchema ? (
                 <DataTable
                   projectUuid={workspaceId}
                   schema={activeSchema}
                   onLog={addLog}
-                  // onAddRow={handleAddRow} // add rows locally
-                  onDeleteRow={handleDeleteRow} // delete rows locally
                 />
               ) : (
                 <EmptyState onAddSample={handleAddSample} />
@@ -216,7 +177,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
 
             {activeTab === "schedule" && (
               <ScheduleReset
-                rowCount={rows.length}
+                rowCount={apiRows.length}
                 lastUpdated={"—"}
                 dataSourceName={activeSchemaName}
               />

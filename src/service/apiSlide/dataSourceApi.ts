@@ -9,6 +9,8 @@ export interface DataSourceRecord {
   created_by: string;
   schema_name: string;
   project_uuid: string;
+  deleted_at?: string;
+  deleted_data?: unknown;
 }
 
 export interface DataSourceResponse {
@@ -45,10 +47,18 @@ export interface GetDataParams {
   sort?: string;
 }
 
-//add new interface for the projects stats API response
+//for the projects stats API response
 export interface ProjectStatsResponse {
   totalRecord: number;
   lastUpdatedAt: string;
+}
+
+export interface UpdateDataRequest {
+  schemaName: string;
+  projectUuid: string;
+  userUuid: string;
+  id: string | number;
+  data: Record<string, unknown>;
 }
 
 export const dataSourceApi = createApi({
@@ -80,7 +90,6 @@ export const dataSourceApi = createApi({
     // Insert record
     insertSchemaRow: builder.mutation<InsertDataResponse, InsertDataRequest>({
       query: ({ schemaName, projectUuid, userUuid, data }) => ({
-        //  this will hit our new route.ts (which proxies backend)
         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
         method: "POST",
         body: data,
@@ -113,13 +122,31 @@ export const dataSourceApi = createApi({
         const params = new URLSearchParams({
           page: String(page),
           limit: String(limit),
+          sort: "created_at",
         });
-        if (sort) params.append("sort", sort);
+        // if (sort) params.append("sort", sort);
+        //can also add more parameters if needed, for example:
+        // params.append("order", "asc"); // If your API uses this for ascending order
 
         return {
-          //  matches our GET in route.ts
           url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?${params.toString()}`,
           method: "GET",
+        };
+      },
+
+      //Transform the response to filter out soft-deleted records
+      transformResponse: (response: DataSourceResponse) => {
+        const filteredData = response.data.filter(
+          (record: any) => !record.deleted_at
+        );
+        return {
+          ...response,
+          data: filteredData,
+          pagination: {
+            ...response.pagination,
+            // Update the total count to reflect the filtered data
+            total: filteredData.length,
+          },
         };
       },
       providesTags: (result, error, { schemaName, projectUuid }) => [
@@ -131,11 +158,47 @@ export const dataSourceApi = createApi({
     getProjectStats: builder.query<ProjectStatsResponse, string>({
       query: projectUuid => `/project/${projectUuid}/stats`,
     }),
+
+    //update record
+    updateSchemaRow: builder.mutation<void, UpdateDataRequest>({
+      query: ({ schemaName, projectUuid, userUuid, id, data }) => ({
+        url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        {
+          type: "DataSource",
+          id: `${schemaName}-${projectUuid}`,
+        },
+      ],
+    }),
+
+    //delete record
+    deleteSchemaRow: builder.mutation<
+      void,
+      {
+        schemaName: string;
+        projectUuid: string;
+        userUuid: string;
+        id: string | number;
+      }
+    >({
+      query: ({ schemaName, projectUuid, userUuid, id }) => ({
+        url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+      ],
+    }),
   }),
 });
 
 export const {
   useInsertSchemaRowMutation,
   useGetSchemaRowsQuery,
-  useGetProjectStatsQuery, //new export the hook
+  useGetProjectStatsQuery,
+  useDeleteSchemaRowMutation,
+  useUpdateSchemaRowMutation,
 } = dataSourceApi;

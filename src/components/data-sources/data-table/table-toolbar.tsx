@@ -27,7 +27,7 @@ export function TableToolbar({
 
         <button
           onClick={onOpenAutoReset}
-          className="flex items-center gap-2 px-3 py-1.5 bg-slate-300 dark:bg-slate-700 text-gray-600 dark:text-gray-200 rounded text-sm hover:bg-slate-600 transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-slate-300 dark:bg-slate-700 text-gray-600 dark:text-gray-200 rounded text-sm hover:bg-slate-400 dark:hover:bg-slate-600 transition-colors"
         >
           <Clock size={14} /> Auto Reset
         </button>

@@ -87,7 +87,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// GET /api/table/[schemaName]/project/[projectUuid]/user/[userUuid]/data
+// GET 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const token = await getToken({ req: request });
@@ -164,3 +164,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     );
   }
 }
+
+
+
+

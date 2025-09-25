@@ -12,6 +12,8 @@ import { useGetSchemasQuery, type Schema } from "@/service/apiSlide/schemaApi";
 import {
   useGetSchemaRowsQuery,
   useInsertSchemaRowMutation,
+  useDeleteSchemaRowMutation,
+  useUpdateSchemaRowMutation,
 } from "@/service/apiSlide/dataSourceApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 
@@ -19,16 +21,9 @@ interface DataTableProps {
   projectUuid: string;
   schema: Schema | undefined;
   onLog?: (action: LogAction, title: string, description: string) => void;
-  // onAddRow is no longer a prop, will define the logic here
-  onDeleteRow: (id: string | number) => void;
 }
 
-export function DataTable({
-  projectUuid,
-  // schema,
-  onLog,
-  onDeleteRow,
-}: DataTableProps) {
+export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [autoResetOpen, setAutoResetOpen] = useState(false);
@@ -48,12 +43,13 @@ export function DataTable({
   );
 
   // fetch rows only if schema selected
+  const userUuid = "user-123";
   const { data: rowsData, refetch } = useGetSchemaRowsQuery(
     activeTable
       ? {
           schemaName: activeTable, // match schemaName from TableHeader
           projectUuid,
-          userUuid: "user-123", // TODO: replace with session user
+          userUuid, // replace with session user
           page: 1,
           limit: 10,
         }
@@ -67,8 +63,11 @@ export function DataTable({
   const total = rows.length;
 
   // Initialize the RTK Query mutation hook
-  const [insertSchemaRow, { isLoading: isAddingRow, error: addRowError }] =
-    useInsertSchemaRowMutation();
+  // const [insertSchemaRow, { isLoading: isAddingRow, error: addRowError }] =
+  //   useInsertSchemaRowMutation();
+  const [insertSchemaRow] = useInsertSchemaRowMutation();
+  const [deleteSchemaRow] = useDeleteSchemaRowMutation();
+  const [updateSchemaRow] = useUpdateSchemaRowMutation();
 
   // Define the handler to add a row
   const handleAddRow = async (data: Record<string, unknown>) => {
@@ -106,17 +105,60 @@ export function DataTable({
     }
   };
 
-  const handleDeleteSelected = () => {
+  //Define the handler for deleting a row
+  const handleDeleteRow = async (id: string | number) => {
+    if (!activeSchema) {
+      console.error("No active schema to delete from.");
+      return;
+    }
+    try {
+      await deleteSchemaRow({
+        schemaName: activeSchema.schemaName,
+        projectUuid,
+        userUuid: "user-123", //replace with session user
+        id,
+      }).unwrap();
+
+      // Log a success message to the browser console
+      console.log(`DELETE Record ${id} deleted successfully.`);
+
+      // Log the action to the UI's activity log
+      onLog?.("DELETE", "Row Deleted", `Removed record ${id}`);
+
+      // Refetch data to update the table immediately
+      refetch();
+    } catch (err: unknown) {
+      console.error(`Error deleting record ${id}:`, err);
+
+      // Log the error action to the UI
+      onLog?.(
+        "ERROR",
+        "Failed to Delete Row",
+        `Failed to delete record ${id}.`
+      );
+    }
+  };
+
+  // delete all selected rows
+  const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) return;
+
+    //Loop through each selected ID and call the delete handler
+    for (const id of selectedIds) {
+      await handleDeleteRow(id);
+    }
+
     onLog?.(
       "DELETE",
       "Rows Deleted",
       `Removed ${selectedIds.length} record(s)`
     );
+    // After deletion, reset the selection state
     setRowSelection({});
     setSelectedIds([]);
   };
 
+  //refresh
   const handleRefresh = async () => {
     setIsRefreshing(true);
     setRowSelection({});
@@ -128,6 +170,31 @@ export function DataTable({
       setIsRefreshing(false);
     }
   };
+
+  // const handleSaveEdit = async () => {
+  //   if (!editingRow || !activeSchema) return;
+  //   try {
+  //     await updateSchemaRow({
+  //       schemaName: activeSchema.schemaName,
+  //       projectUuid,
+  //       userUuid: "user-123",
+  //       id: editingRow,
+  //       data: editData,
+  //     }).unwrap();
+
+  //     onLog?.("UPDATE", "Row Updated", `Updated record ${editingRow}`);
+  //     setEditingRow(null); // Exit edit mode
+  //     setEditData({}); // Clear edit data
+  //     refetch(); // Refetch to show the updated data
+  //   } catch (err: any) {
+  //     console.error("Failed to update row:", err);
+  //     onLog?.(
+  //       "ERROR",
+  //       "Failed to Update Row",
+  //       "There was an error updating the record."
+  //     );
+  //   }
+  // };
 
   return (
     <div className="space-y-4">
@@ -149,14 +216,18 @@ export function DataTable({
 
       {/* Table Body with active schema*/}
       <TableBody
-        // schema={schema}
         schema={activeSchema}
         rows={rows}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
         onSelectedIdsChange={setSelectedIds}
         onAddRow={handleAddRow}
-        onDeleteRow={onDeleteRow}
+        onDeleteRow={handleDeleteRow}
+        updateSchemaRow={updateSchemaRow}
+        // updateMutation={updateSchemaRow}
+        projectUuid={projectUuid}
+        refetch={refetch}
+        onLog={onLog}
       />
 
       {/* Footer */}
