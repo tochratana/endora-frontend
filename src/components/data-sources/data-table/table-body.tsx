@@ -77,6 +77,27 @@ export function TableBody({
 
   const handleSaveEdit = useCallback(async () => {
     if (!editingRow || !editData || !schema) return;
+
+    // Find the original record from the local state
+    const originalRow = rows.find(row => row.id === editingRow) as
+      | any
+      | undefined;
+
+    const originalName = originalRow?.name || originalRow?.title || editingRow;
+
+    // Determine new name from the editData
+    const newName =
+      (editData as any)?.name || (editData as any)?.title || originalName;
+
+    // Construct the log message
+    let logDescription: string;
+
+    if (String(originalName) !== String(newName)) {
+      logDescription = `Updated record: ${originalName} changed to ${newName}.`;
+    } else {
+      logDescription = `Updated record: ${originalName}.`;
+    }
+
     try {
       await updateSchemaRow({
         schemaName: schema.schemaName,
@@ -87,7 +108,7 @@ export function TableBody({
       }).unwrap();
 
       if (onLog) {
-        onLog("UPDATE", "Row Updated", `Updated record ${editingRow}`);
+        onLog("UPDATE", "Row Updated", logDescription);
       }
 
       setEditingRow(null);
@@ -99,7 +120,7 @@ export function TableBody({
         onLog(
           "ERROR",
           "Failed to Update Row",
-          "There was an error updating the record."
+          `Error updating record: ${originalName}.`
         );
       }
     }
@@ -112,6 +133,7 @@ export function TableBody({
     updateSchemaRow,
     onLog,
     refetch,
+    rows,
   ]);
 
   const handleCancelEdit = useCallback(() => {
@@ -119,16 +141,8 @@ export function TableBody({
     setEditData({});
   }, []);
 
-  /**
-   * --- Table columns ---
-   * Dynamically built from schema, but always ensure:
-   *  1. Checkbox select column is first
-   *  2. "id" column is forced to appear before other schema fields
-   *  3. Actions (edit/delete) column is last
-   */
-
   const columns = useMemo<ColumnDef<DataSourceRecord>[]>(() => {
-    // 1. Row select checkbox columns
+    // Row select checkbox columns
     const selectCol: ColumnDef<DataSourceRecord> = {
       id: "_select",
       header: ({ table }) => (
@@ -148,7 +162,7 @@ export function TableBody({
       size: 48,
     };
 
-    // 2. Schema-driven columns
+    // Schema-driven columns
     const schemaCols: ColumnDef<DataSourceRecord>[] = [];
 
     // force "id" column first if present
@@ -219,13 +233,11 @@ export function TableBody({
               ) {
                 inputType = "date";
               } else if (colType?.includes("boolean")) {
-                // Note: You might want to use a checkbox component here
                 inputType = "text";
               }
 
               return (
                 <input
-                  //Use the dynamically determined inputType
                   // type={inputType}
                   value={(editData[colName] as string | number) ?? ""}
                   onChange={e =>
@@ -261,7 +273,7 @@ export function TableBody({
         });
       });
 
-    // 3. Actions column (edit/delete)
+    // Actions column (edit/delete)
     const actionsCol: ColumnDef<DataSourceRecord> = {
       id: "_actions",
       header: () => null,

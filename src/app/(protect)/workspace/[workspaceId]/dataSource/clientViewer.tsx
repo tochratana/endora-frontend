@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Database, FileText, Clock } from "lucide-react";
 import {
   useGetSchemaRowsQuery,
@@ -26,24 +26,57 @@ type Props = {
   initialTab: TabType;
 };
 
+// Define the Local Storage key
+const LOCAL_STORAGE_KEY = "activityLogs";
+
 export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [logs, setLogs] = useState<LogItem[]>([]);
-  const [activeSchemaName] = useState<string>("products");
-  // const [activeSchemaName, setActiveSchemaName] = useState<string>("products");
+  const [activeSchemaName, setActiveSchemaName] = useState<string>("products");
 
   const userUuid = "user-123"; //pull from session
 
-  // 1. Fetch ALL schemas to get the total count
+  //todo: adding local storage for logs
+  // Load logs from Local Storage on initial mount
+  useEffect(() => {
+    try {
+      const storedLogs = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedLogs) {
+        // Parse the JSON string back into a LogItem[] array
+        setLogs(JSON.parse(storedLogs) as LogItem[]);
+      }
+    } catch (error) {
+      console.error("Error reading from Local Storage:", error);
+      // Fallback to empty array if reading fails
+      setLogs([]);
+    }
+  }, []);
+
+  // Save logs to Local Storage whenever the 'logs' state changes
+  useEffect(() => {
+    try {
+      // Stringify the logs array to store it as a string
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(logs));
+    } catch (error) {
+      console.error("Error writing to Local Storage:", error);
+    }
+  }, [logs]);
+
+  //todo: Fetch ALL schemas to get the total count
   const { data: schemas } = useGetSchemasQuery(workspaceId);
 
-  // 2. Fetch project-wide stats to get total records and last update
+  // Fetch project-wide stats to get total records and last update
   const { data: projectStats, isLoading: statsLoading } =
     useGetProjectStatsQuery(workspaceId);
 
-  // 3. Fetch rows for the CURRENT active schema only
-  const { data, isLoading, isError, refetch } = useGetSchemaRowsQuery({
-    schemaName: activeSchemaName, //Using activeSchemaName
+  // Fetch rows for the CURRENT active schema only
+  const {
+    data: rowsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetSchemaRowsQuery({
+    schemaName: activeSchemaName,
     projectUuid: workspaceId,
     userUuid,
     page: 1,
@@ -51,7 +84,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
     sort: "created_at",
   });
 
-  const apiRows: DataSourceRecord[] = data?.data ?? [];
+  const apiRows: DataSourceRecord[] = rowsData?.data ?? [];
   const activeSchema: Schema | undefined = schemas?.find(
     s => s.schemaName === activeSchemaName
   );
@@ -60,21 +93,21 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
 
   // compute stats from API data
   const { totalSchemas, totalRecords, lastUpdate } = useMemo(() => {
-    // Get total schemas directly from the schemas API call
     const totalSchemas = schemas?.length ?? 0;
-
-    // Get total records and last update from the new project stats API call
-    const totalRecords = projectStats?.totalRecord ?? 0;
-    const lastUpdate = projectStats?.lastUpdatedAt
-      ? new Date(projectStats.lastUpdatedAt).toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "2-digit",
-        })
+    const totalRecords = projectStats?.data.total ?? 0;
+    //? Not yet work
+    const lastUpdate = projectStats?.data.lastUpdatedAt
+      ? new Date(projectStats.data.lastUpdatedAt).toLocaleDateString(
+          undefined,
+          {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+          }
+        )
       : "—";
-
     return { totalSchemas, totalRecords, lastUpdate };
-  }, [schemas, projectStats]); //  Depend on schemas and projectStats
+  }, [schemas, projectStats]);
 
   const addLog = (action: LogAction, title: string, description: string) => {
     setLogs(prev => [
@@ -90,6 +123,12 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
     ]);
   };
 
+  //handle log deletion
+  const handleDeleteLog = (logId: string) => {
+    // Filter out the log with the matching ID
+    setLogs(prevLogs => prevLogs.filter(log => log.id !== logId));
+    // The useEffect above will handle saving this updated state to Local Storage
+  };
   const handleAddSample = async () => {
     try {
       const payload = {
@@ -126,19 +165,20 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
         <DataSourceHeader />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Displays the real total schemas, records count */}
           <StatsCard
             icon={<Database className="w-6 h-6 text-teal-400" />}
-            value={String(totalSchemas)} // Displays the real total schema count
+            value={String(totalSchemas)}
             label="Total Schemas"
           />
           <StatsCard
             icon={<FileText className="w-6 h-6 text-teal-400" />}
-            value={String(totalRecords)} //? No endpoint for total record
+            value={String(totalRecords)}
             label="Total Records"
           />
           <StatsCard
             icon={<Clock className="w-6 h-6 text-teal-400" />}
-            value={lastUpdate} //? No endpoint for last update or create time
+            value={lastUpdate} //? Not yet work
             label="Last Update"
           />
         </div>
@@ -168,7 +208,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
 
             {activeTab === "logs" &&
               (logs.length ? (
-                <ActivityLogs logs={logs} />
+                <ActivityLogs logs={logs} onDelete={handleDeleteLog} />
               ) : (
                 <p className="text-slate-400 text-center py-12">
                   Activity logs will appear here

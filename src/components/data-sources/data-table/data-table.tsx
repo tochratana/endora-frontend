@@ -57,7 +57,7 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
   );
 
   // Debug only rowsData
-  console.log("📡 rowsData from API:", rowsData);
+  console.log("[rowsData] from API:", rowsData);
 
   const rows = useMemo(() => rowsData?.data ?? [], [rowsData]);
   const total = rows.length;
@@ -107,10 +107,22 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
 
   //Define the handler for deleting a row
   const handleDeleteRow = async (id: string | number) => {
+    // const displayId = name || id; // Use the name if available, otherwise use the ID
+
     if (!activeSchema) {
       console.error("No active schema to delete from.");
       return;
     }
+
+    // Find the row object from the local state before deletion
+    const rowToDelete = rows.find(row => row.id === id);
+
+    // Determine the name for the log.
+    // We must cast the record to 'any' or check for common keys since the type is unknown.
+    const rowName =
+      (rowToDelete as any)?.name || (rowToDelete as any)?.title || id;
+    const displayId = rowName; // Use the found name or the ID as the display name.
+
     try {
       await deleteSchemaRow({
         schemaName: activeSchema.schemaName,
@@ -123,9 +135,8 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
       console.log(`DELETE Record ${id} deleted successfully.`);
 
       // Log the action to the UI's activity log
-      onLog?.("DELETE", "Row Deleted", `Removed record ${id}`);
+      onLog?.("DELETE", "Row Deleted", `Removed record ${displayId}`);
 
-      // Refetch data to update the table immediately
       refetch();
     } catch (err: unknown) {
       console.error(`Error deleting record ${id}:`, err);
@@ -134,7 +145,7 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
       onLog?.(
         "ERROR",
         "Failed to Delete Row",
-        `Failed to delete record ${id}.`
+        `Failed to delete record ${displayId}.`
       );
     }
   };
@@ -170,31 +181,6 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
       setIsRefreshing(false);
     }
   };
-
-  // const handleSaveEdit = async () => {
-  //   if (!editingRow || !activeSchema) return;
-  //   try {
-  //     await updateSchemaRow({
-  //       schemaName: activeSchema.schemaName,
-  //       projectUuid,
-  //       userUuid: "user-123",
-  //       id: editingRow,
-  //       data: editData,
-  //     }).unwrap();
-
-  //     onLog?.("UPDATE", "Row Updated", `Updated record ${editingRow}`);
-  //     setEditingRow(null); // Exit edit mode
-  //     setEditData({}); // Clear edit data
-  //     refetch(); // Refetch to show the updated data
-  //   } catch (err: any) {
-  //     console.error("Failed to update row:", err);
-  //     onLog?.(
-  //       "ERROR",
-  //       "Failed to Update Row",
-  //       "There was an error updating the record."
-  //     );
-  //   }
-  // };
 
   return (
     <div className="space-y-4">

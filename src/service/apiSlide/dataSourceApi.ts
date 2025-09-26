@@ -49,8 +49,11 @@ export interface GetDataParams {
 
 //for the projects stats API response
 export interface ProjectStatsResponse {
-  totalRecord: number;
-  lastUpdatedAt: string;
+  message: string;
+  data: {
+    total: number;
+    records: unknown;
+  };
 }
 
 export interface UpdateDataRequest {
@@ -60,6 +63,12 @@ export interface UpdateDataRequest {
   id: string | number;
   data: Record<string, unknown>;
 }
+
+// export interface RecordsWithCountsResponse {
+//   records: DataSourceRecord[];
+//   totalRecords: number;
+//   lastUpdatedAt: string;
+// }
 
 export const dataSourceApi = createApi({
   reducerPath: "dataSourceApi",
@@ -109,6 +118,7 @@ export const dataSourceApi = createApi({
     //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
     //   ],
     // }),
+
     // Fetch records
     getSchemaRows: builder.query<DataSourceResponse, GetDataParams>({
       query: ({
@@ -122,11 +132,8 @@ export const dataSourceApi = createApi({
         const params = new URLSearchParams({
           page: String(page),
           limit: String(limit),
-          sort: "created_at",
+          sort: sort || "created_at",
         });
-        // if (sort) params.append("sort", sort);
-        //can also add more parameters if needed, for example:
-        // params.append("order", "asc"); // If your API uses this for ascending order
 
         return {
           url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?${params.toString()}`,
@@ -134,17 +141,16 @@ export const dataSourceApi = createApi({
         };
       },
 
-      //Transform the response to filter out soft-deleted records
       transformResponse: (response: DataSourceResponse) => {
         const filteredData = response.data.filter(
-          (record: any) => !record.deleted_at
+          (record: any) =>
+            record && Object.keys(record).length > 0 && !record.deleted_at
         );
         return {
           ...response,
           data: filteredData,
           pagination: {
             ...response.pagination,
-            // Update the total count to reflect the filtered data
             total: filteredData.length,
           },
         };
@@ -154,9 +160,9 @@ export const dataSourceApi = createApi({
       ],
     }),
 
-    // Endpoint to get project-wide stats
+    //get project-wide stats (get all record)
     getProjectStats: builder.query<ProjectStatsResponse, string>({
-      query: projectUuid => `/project/${projectUuid}/stats`,
+      query: projectUuid => `/projects/${projectUuid}/rest/records-with-counts`,
     }),
 
     //update record
