@@ -32,13 +32,12 @@ const LOCAL_STORAGE_KEY = "activityLogs";
 export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [logs, setLogs] = useState<LogItem[]>([]);
-  
-  // 🔑 State for the currently selected schema (start as null)
+
   const [activeSchemaName, setActiveSchemaName] = useState<string | null>(null);
 
   const userUuid = "user-123";
 
-  // --- LOGGING AND LOCAL STORAGE HANDLERS ---
+  //loggin and local storage handler
   useEffect(() => {
     try {
       const storedLogs = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -72,52 +71,52 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
       ...prev,
     ]);
   };
-  
+
   const handleDeleteLog = (logId: string) => {
     setLogs(prevLogs => prevLogs.filter(log => log.id !== logId));
   };
 
+  // Fetch Schemas
+  const { data: schemas, isLoading: schemasLoading } =
+    useGetSchemasQuery(workspaceId);
 
-  // 1. Fetch Schemas
-  const { data: schemas, isLoading: schemasLoading } = useGetSchemasQuery(workspaceId);
-
-  // 🔑 FIX: Schema Selection Logic (Resets and selects first schema on project switch)
+  //Schema Selection Logic
   useEffect(() => {
     if (schemas && schemas.length > 0) {
-      // Check if the current schema exists in the NEW project's schema list.
       const currentSchemaExistsInNewProject = schemas.some(
         s => s.schemaName === activeSchemaName
       );
 
       if (!currentSchemaExistsInNewProject) {
-        // If invalid or null, select the first one.
         setActiveSchemaName(schemas[0].schemaName);
       }
     } else if (!schemasLoading) {
-      // If schemas loaded and the list is empty, reset the name to null.
+      // If no schemas were loaded, reset activeSchemaName to null
       setActiveSchemaName(null);
     }
   }, [schemas, activeSchemaName, schemasLoading, workspaceId]);
 
+  // Fetch project-wide stats
+  const { data: projectStats, isLoading: statsLoading } =
+    useGetProjectStatsQuery(workspaceId);
 
-  // 2. Fetch project-wide stats
-  const { data: projectStats, isLoading: statsLoading } = useGetProjectStatsQuery(workspaceId);
-
-  // 3. Conditional Fetch for table data
+  // Conditional Fetch for table data
   const {
     data: rowsData,
     isLoading: rowsLoading,
     isError,
     refetch,
   } = useGetSchemaRowsQuery(
-    activeSchemaName ? {
-      schemaName: activeSchemaName,
-      projectUuid: workspaceId,
-      userUuid,
-      page: 1,
-      limit: 10,
-      sort: "created_at",
-    } : skipToken // Skips the query until activeSchemaName is set
+    activeSchemaName
+      ? {
+          schemaName: activeSchemaName,
+          projectUuid: workspaceId,
+          userUuid,
+          page: 1,
+          limit: 10,
+          sort: "created_at",
+        }
+      : skipToken
   );
 
   const apiRows: DataSourceRecord[] = rowsData?.data ?? [];
@@ -127,7 +126,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
 
   const [insertRow] = useInsertSchemaRowMutation();
 
-  // 4. Stat Calculation
+  // Stat Calculation
   const { totalSchemas, totalRecords, lastUpdate } = useMemo(() => {
     const totalSchemas = schemas?.length ?? 0;
     const totalRecords = projectStats?.data.total ?? 0;
@@ -165,7 +164,11 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   };
 
   const tabs: TabItem[] = [
-    { id: "database", label: "Database", icon: <Database className="w-4 h-4" /> },
+    {
+      id: "database",
+      label: "Database",
+      icon: <Database className="w-4 h-4" />,
+    },
     { id: "logs", label: "Logs", icon: <FileText className="w-4 h-4" /> },
     { id: "schedule", label: "Schedule", icon: <Clock className="w-4 h-4" /> },
   ];
@@ -202,17 +205,20 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
 
           <div className="p-8 bg-white dark:bg-slate-900">
             {activeTab === "database" &&
-              (rowsLoading || statsLoading || schemasLoading || !activeSchemaName ? (
+              // Only show loading if an API call is active
+              (rowsLoading || statsLoading || schemasLoading ? (
                 <p className="text-slate-400">Loading data...</p>
               ) : isError ? (
                 <p className="text-red-400">Failed to load data</p>
-              ) : activeSchema ? ( //Render DataTable if schema is active (table headers show)
+              ) : activeSchema ? (
+                // Renders DataTable if schema is active, regardless of rows
                 <DataTable
                   projectUuid={workspaceId}
                   schema={activeSchema}
                   onLog={addLog}
                 />
-              ) : ( //Fallback: Only render EmptyState if NO schema is loaded
+              ) : (
+                // FALLBACK: Only render EmptyState if no schema was found (schemas.length === 0)
                 <EmptyState onAddSample={handleAddSample} />
               ))}
 
@@ -229,7 +235,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
               <ScheduleReset
                 rowCount={apiRows.length}
                 lastUpdated={"—"}
-                dataSourceName={activeSchemaName || '—'}
+                dataSourceName={activeSchemaName || "—"}
               />
             )}
           </div>
