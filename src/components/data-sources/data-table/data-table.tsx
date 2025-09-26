@@ -30,7 +30,7 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [importOpen, setImportOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // active schema tab
+  //!active schema tab
   const [activeTable, setActiveTable] = useState<string>("");
 
   //fetch all schemas for this project

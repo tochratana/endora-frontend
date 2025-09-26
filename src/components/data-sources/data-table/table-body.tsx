@@ -69,35 +69,14 @@ export function TableBody({
   const [editData, setEditData] = useState<Record<string, unknown>>({});
   const userUuid = "user-123";
 
-  // All editing handlers and state
   const handleEditRow = useCallback((row: DataSourceRecord) => {
     setEditingRow(row.id);
     setEditData(row);
   }, []);
 
+  //Save edit to API and log
   const handleSaveEdit = useCallback(async () => {
     if (!editingRow || !editData || !schema) return;
-
-    // Find the original record from the local state
-    const originalRow = rows.find(row => row.id === editingRow) as
-      | any
-      | undefined;
-
-    const originalName = originalRow?.name || originalRow?.title || editingRow;
-
-    // Determine new name from the editData
-    const newName =
-      (editData as any)?.name || (editData as any)?.title || originalName;
-
-    // Construct the log message
-    let logDescription: string;
-
-    if (String(originalName) !== String(newName)) {
-      logDescription = `Updated record: ${originalName} changed to ${newName}.`;
-    } else {
-      logDescription = `Updated record: ${originalName}.`;
-    }
-
     try {
       await updateSchemaRow({
         schemaName: schema.schemaName,
@@ -108,7 +87,7 @@ export function TableBody({
       }).unwrap();
 
       if (onLog) {
-        onLog("UPDATE", "Row Updated", logDescription);
+        onLog("UPDATE", "Row Updated", `Updated record ${editingRow}`);
       }
 
       setEditingRow(null);
@@ -120,7 +99,7 @@ export function TableBody({
         onLog(
           "ERROR",
           "Failed to Update Row",
-          `Error updating record: ${originalName}.`
+          "There was an error updating the record."
         );
       }
     }
@@ -133,7 +112,6 @@ export function TableBody({
     updateSchemaRow,
     onLog,
     refetch,
-    rows,
   ]);
 
   const handleCancelEdit = useCallback(() => {
@@ -141,8 +119,9 @@ export function TableBody({
     setEditData({});
   }, []);
 
+  //Build columns dynamically based on schema
   const columns = useMemo<ColumnDef<DataSourceRecord>[]>(() => {
-    // Row select checkbox columns
+    // Row select checkbox column
     const selectCol: ColumnDef<DataSourceRecord> = {
       id: "_select",
       header: ({ table }) => (
@@ -162,10 +141,9 @@ export function TableBody({
       size: 48,
     };
 
-    // Schema-driven columns
     const schemaCols: ColumnDef<DataSourceRecord>[] = [];
 
-    // force "id" column first if present
+    // Force "id" column first if present
     if (schema?.columns?.id) {
       schemaCols.push({
         accessorKey: "id",
@@ -192,7 +170,7 @@ export function TableBody({
       });
     }
 
-    // render all other schema columns
+    // Render other schema columns dynamically
     Object.keys(schema?.columns ?? {})
       .filter(c => c !== "id")
       .forEach(colName => {
@@ -215,30 +193,21 @@ export function TableBody({
               )}
             </div>
           ),
+          // Handle editing input & static display
           cell: (ctx: CellContext<DataSourceRecord, unknown>) => {
             const value = ctx.getValue();
             const row = ctx.row;
 
             if (editingRow === row.original.id) {
-              let inputType = "text";
-              const colType = schema?.columns?.[colName]?.toLowerCase();
-              if (
-                colType?.includes("decimal") ||
-                colType?.includes("numeric")
-              ) {
-                inputType = "number";
-              } else if (
-                colType?.includes("timestamp") ||
-                colType?.includes("date")
-              ) {
-                inputType = "date";
-              } else if (colType?.includes("boolean")) {
-                inputType = "text";
-              }
+              const inputType =
+                schema?.columns?.[colName]?.toLowerCase().includes("decimal") ||
+                schema?.columns?.[colName]?.toLowerCase().includes("numeric")
+                  ? "number"
+                  : "text";
 
               return (
                 <input
-                  // type={inputType}
+                  type={inputType}
                   value={(editData[colName] as string | number) ?? ""}
                   onChange={e =>
                     setEditData(prev => ({
@@ -252,6 +221,7 @@ export function TableBody({
               );
             }
 
+            //Special price formatting
             if (colName === "price") {
               const v = Number(value);
               return (
@@ -273,7 +243,7 @@ export function TableBody({
         });
       });
 
-    // Actions column (edit/delete)
+    // Action buttons column (edit/delete)
     const actionsCol: ColumnDef<DataSourceRecord> = {
       id: "_actions",
       header: () => null,
@@ -334,7 +304,7 @@ export function TableBody({
     handleEditRow,
   ]);
 
-  // React Table setup
+  //React Table setup
   const table = useReactTable({
     data: rows ?? [],
     columns,
@@ -345,7 +315,7 @@ export function TableBody({
     enableRowSelection: true,
   });
 
-  // Sync selected row IDs back to parent component
+  // Sync selected row IDs back to parent
   useEffect(() => {
     const ids = table.getSelectedRowModel().rows.map(r => r.original.id);
     onSelectedIdsChange(ids);
@@ -388,26 +358,9 @@ export function TableBody({
               ))}
             </tr>
           </thead>
+
           <tbody>
-            {/* Real API rows */}
-            {table.getRowModel().rows.map(row => (
-              <tr
-                key={row.id}
-                className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600
-                  ${row.getIsSelected() ? "bg-slate-100 dark:bg-slate-600" : ""}
-                  ${editingRow === row.original.id ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
-              >
-                {row.getVisibleCells().map(cell => (
-                  <td
-                    key={cell.id}
-                    className="p-2 sm:p-3 border-r border-slate-200 dark:border-slate-700 text-xs sm:text-sm"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-            {/* Inline "add row" form */}
+            {/* Render AddRowForm inline */}
             {showAddForm && (
               <AddRowForm
                 schema={schema}
@@ -417,6 +370,38 @@ export function TableBody({
                 }}
                 onCancel={() => setShowAddForm(false)}
               />
+            )}
+            {/*Show empty-state only if no rows and form hidden */}
+            {!showAddForm && table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="text-center p-4 text-muted-foreground text-sm"
+                >
+                  No data in this schema. Add a new row to get started.
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map(row => (
+                <tr
+                  key={row.id}
+                  className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600
+                  ${row.getIsSelected() ? "bg-slate-100 dark:bg-slate-600" : ""}
+                  ${editingRow === row.original.id ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <td
+                      key={cell.id}
+                      className="p-2 sm:p-3 border-r border-slate-200 dark:border-slate-700 text-xs sm:text-sm"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
             )}
           </tbody>
         </table>
