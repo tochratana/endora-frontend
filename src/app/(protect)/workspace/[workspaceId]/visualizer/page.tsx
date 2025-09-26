@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import DatabaseSchemaDemo from "@/components/ui/database-schema-demo";
+import DatabaseSchemaDemo from "@/components/schema/database-schema-demo";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import {

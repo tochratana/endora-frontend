@@ -1,16 +1,17 @@
-// src/components/schema/SchemaContent.tsx
 "use client";
 
 import { useState, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Database, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useGetSchemaByNameQuery } from "@/service/apiSlide/schemaApi";
+import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface SchemaContentProps {
-  activeTable: string; // schemaName
+  activeTable: string;
   projectUuid: string;
 }
 
+// Helper function to get color based on data type
 const getTypeColor = (type: string) => {
   const lowerType = type.toLowerCase();
   if (lowerType.includes("serial") || lowerType.includes("int")) {
@@ -31,13 +32,15 @@ const getTypeColor = (type: string) => {
   return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
 };
 
-const parseSchemaColumns = (schema: Record<string, string>) =>
-  Object.entries(schema).map(([name, definition]) => ({
+// Helper function to parse schema definition
+const parseSchemaColumns = (schema: Record<string, string>) => {
+  return Object.entries(schema).map(([name, definition]) => ({
     name,
     type: definition,
     color: getTypeColor(definition),
-    isPrimary: definition.toUpperCase().includes("PRIMARY KEY"),
+    isPrimary: definition.includes("PRIMARY KEY"),
   }));
+};
 
 export function SchemaContent({
   activeTable,
@@ -46,16 +49,13 @@ export function SchemaContent({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [endpointsGenerated, setEndpointsGenerated] = useState(false);
 
-  // Fetch the active schema by NAME
+  // Fetch schemas from API
   const {
-    data: activeSchema,
-    isLoading,
+    data: schemas,
     error,
+    isLoading,
     refetch,
-  } = useGetSchemaByNameQuery(
-    { projectUuid, schemaName: activeTable },
-    { skip: !activeTable } // nothing selected yet
-  );
+  } = useGetSchemasQuery(projectUuid);
 
   // find active schema
   const activeSchema = schemas?.find(
@@ -79,10 +79,10 @@ export function SchemaContent({
   };
 
   return (
-    <div className="flex flex-col h-full bg-card">
+    <div className="flex flex-col h-full bg-slate-950">
       <div className="px-6 py-4">
         <button
-          className="flex items-center gap-2 border-2 border-primary rounded-sm px-2 py-1 hover:bg-primary hover:text-primary-foreground"
+          className="flex items-center gap-2 border-2 border-indigo-900 rounded-sm px-2 py-1 hover:bg-indigo-800 hover:text-white"
           onClick={handleGenerateEndpoints}
           disabled={endpointsGenerated}
         >
@@ -113,13 +113,13 @@ export function SchemaContent({
             <div className="text-center">
               <p className="text-red-500 mb-2">Failed to load schema</p>
               <p className="text-sm text-muted-foreground">
-                {"data" in (error as any) && (error as any).data
-                  ? String((error as any).data)
+                {error && "data" in error
+                  ? String(error.data)
                   : "Unknown error"}
               </p>
             </div>
           </div>
-        ) : !activeTable ? (
+        ) : !activeSchema ? (
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <Database className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
@@ -127,12 +127,6 @@ export function SchemaContent({
               <p className="text-sm text-muted-foreground mt-2">
                 Select a schema from the sidebar to view its structure
               </p>
-            </div>
-          </div>
-        ) : !activeSchema ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <p className="text-muted-foreground">Schema not found</p>
             </div>
           </div>
         ) : (
@@ -146,8 +140,7 @@ export function SchemaContent({
                 Schema ID: {activeSchema.schemaDocId}
               </p>
               <p className="text-sm text-muted-foreground">
-                Last updated:{" "}
-                {new Date(activeSchema.updatedAt).toLocaleDateString()}
+                Last updated: {new Date(activeSchema.updatedAt).toLocaleDateString()}
               </p>
             </div>
 
@@ -171,20 +164,25 @@ export function SchemaContent({
                       {column.name}
                     </span>
                     {column.isPrimary && (
-                      <span className="inline-flex items-center rounded-xs bg-primary text-primary-foreground text-xs px-1 py-0.5">
+                      <Badge
+                        variant="secondary"
+                        className="text-white text-xs rounded-xs px-1 py-0.5"
+                      >
                         PK
-                      </span>
+                      </Badge>
                     )}
                   </div>
                   <div>
-                    <span
+                    <Badge
+                      variant="secondary"
                       className={cn(
-                        "inline-flex items-center text-xs rounded-xs font-mono px-2 py-0.5",
+                        "text-xs rounded-xs font-mono",
                         column.color
                       )}
                     >
-                      {column.type.split(" ")[0]}
-                    </span>
+                      {column.type.split(" ")[0]}{" "}
+                      {/* Show just the base type */}
+                    </Badge>
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {column.isPrimary ? "PRIMARY KEY" : ""}

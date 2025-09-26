@@ -1,17 +1,15 @@
-// src/components/schema/SchemaSidebar.tsx
 "use client";
 
 import { useState } from "react";
 import Input from "@/components/ui/input";
-// removed NextLink
 import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CreateSchemaDialog } from "@/components/ui/create-schema-dialog";
+import { CreateSchemaDialog } from "@/components/schema/create-schema-dialog";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface SchemaSidebarProps {
-  activeTable: string; // pass the selected schemaName here
-  onTableSelect: (tableId: string) => void; // will receive schemaName
+  activeTable: string;
+  onTableSelect: (tableId: string) => void;
   projectUuid: string;
 }
 
@@ -21,16 +19,20 @@ export function SchemaSidebar({
   projectUuid,
 }: SchemaSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch schemas from API
   const { data: schemas, error, isLoading } = useGetSchemasQuery(projectUuid);
 
+  // Filter schemas based on search query
   const filteredSchemas =
-    schemas?.filter(s =>
-      s.schemaName.toLowerCase().includes(searchQuery.toLowerCase())
+    schemas?.filter(schema =>
+      schema.schemaName.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleSaveSchema = (schema: unknown) => {
     console.log("Schema saved:", schema);
+    // Handle the saved schema data here
   };
 
   return (
@@ -63,7 +65,7 @@ export function SchemaSidebar({
       {/* Search */}
       <div className="p-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search schema"
             value={searchQuery}
@@ -73,12 +75,14 @@ export function SchemaSidebar({
         </div>
       </div>
 
-      {/* Loading/Error */}
+      {/* Loading State */}
       {isLoading && (
         <div className="p-2 text-center text-sm text-muted-foreground">
           Loading schemas...
         </div>
       )}
+
+      {/* Error State */}
       {error && (
         <div className="p-2 text-center text-sm text-red-500">
           Failed to load schemas
@@ -91,11 +95,10 @@ export function SchemaSidebar({
           filteredSchemas.map(schema => {
             const key = schema.schemaDocId || schema.schemaName;
             const isActive = activeTable === key;
-
             return (
               <button
                 key={key}
-                onClick={() => onTableSelect(schema.schemaName)} // just pass name
+                onClick={() => onTableSelect(key)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
                   isActive

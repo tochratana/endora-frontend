@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, use, useEffect } from "react";
-import { SchemaSidebar } from "@/components/ui/schema-sidebar";
-import { SchemaContent } from "@/components/ui/schema-content";
+import { SchemaSidebar } from "@/components/schema/schema-sidebar";
+import { SchemaContent } from "@/components/schema/schema-content";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface PageProps {

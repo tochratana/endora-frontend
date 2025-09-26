@@ -4,7 +4,7 @@ import {
   BaseNode,
   BaseNodeContent,
   BaseNodeHeader,
-} from "@/components/ui/base-node";
+} from "@/components/schema/base-node";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 
 /* DATABASE SCHEMA NODE HEADER ------------------------------------------------ */
