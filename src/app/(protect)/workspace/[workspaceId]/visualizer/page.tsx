@@ -11,7 +11,6 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from "reactflow";
-import "reactflow/dist/style.css";
 
 import {
   DropdownMenu,

@@ -1,24 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-// GET schemas
+//GET all schemas
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ projectUuid: string }> }
+  context: { params: { projectUuid: string } }
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
   const jwt = await getToken({ req, secret });
 
   if (!jwt?.accessToken) {
+    console.warn("Unauthorized request: no access token");
     return new NextResponse("Unauthorized - No access token", { status: 401 });
   }
 
   try {
-    // await params
-    const { projectUuid } = await context.params;
+    const { projectUuid } = context.params;
+
+    console.log("Fetching schemas for project:", projectUuid);
 
     const response = await fetch(
-      `${process.env.API_BASE}/projects/${projectUuid}/schema/tables`,
+      `${process.env.API_BASE}/projects/${projectUuid}/schema/my-schemas`,
       {
         method: "GET",
         headers: {
@@ -30,10 +32,13 @@ export async function GET(
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("Upstream API error:", response.status, errorText);
       return new NextResponse(errorText, { status: response.status });
     }
 
     const result = await response.json();
+    console.log("Fetched schemas:", JSON.stringify(result, null, 2));
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error fetching schemas:", error);
@@ -44,8 +49,7 @@ export async function GET(
   }
 }
 
-
-// POST schema
+//import schema
 export async function POST(
   req: NextRequest,
   context: { params: Promise<{ projectUuid: string }> }
@@ -62,14 +66,14 @@ export async function POST(
     const body = await req.json();
 
     const payload = {
+      sourceProjectId: body.sourceProjectId,
       schemaName: body.schemaName,
-      publicList: body.publicList ?? true,
-      publicRead: body.publicRead ?? true,
-      schema: body.schema,
     };
 
+    console.log("Payload to backend:", JSON.stringify(payload, null, 2));
+
     const response = await fetch(
-      `${process.env.API_BASE}/projects/${projectUuid}/schema/tables`,
+      `${process.env.API_BASE}/projects/${projectUuid}/schema/import`,
       {
         method: "POST",
         headers: {
