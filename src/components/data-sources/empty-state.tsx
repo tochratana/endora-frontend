@@ -3,17 +3,19 @@ import { GoPlusCircle } from "react-icons/go";
 import { AiOutlineDownload } from "react-icons/ai";
 import { ImportDataModal } from "../popup/importDataModel";
 import { useState } from "react";
+import type { LogAction } from "@/types/dataSource"; // Assuming LogAction is defined here or imported
 
 interface EmptyStateProps {
   onAddSample?: () => void;
+  onImport: (file: File, method: string) => Promise<void>;
 }
 
-export function EmptyState({ onAddSample }: EmptyStateProps) {
+export function EmptyState({ onAddSample, onImport }: EmptyStateProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleImport = (file: File, method: string) => {
-    console.log("Importing file:", file.name, "with method:", method);
-    // Handle the file import logic here
+    // console.log("Importing file:", file.name, "with method:", method);
+    onImport(file, method);
   };
 
   return (
@@ -29,13 +31,6 @@ export function EmptyState({ onAddSample }: EmptyStateProps) {
         or add sample data to test your API endpoints.
       </p>
       <div className="flex gap-4">
-        {/* <button 
-        onClick={onAddSample}
-        className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">
-          <GoPlusCircle className="text-xl"/>
-          Add Sample
-        </button> */}
-
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 px-6 py-3 bg-secondary text-white rounded-lg font-medium hover:bg-teal-700 transition-colors"

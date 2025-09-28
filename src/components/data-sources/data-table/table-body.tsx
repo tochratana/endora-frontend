@@ -10,8 +10,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, Edit, Check, X } from "lucide-react";
-import { AddRowForm } from "./add-row-form";
+import { Plus, Trash2, Edit, Check, X, Key } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge";
 
 import type {
@@ -148,7 +147,17 @@ export function TableBody({
       schemaCols.push({
         accessorKey: "id",
         header: () => (
-          <div className="flex items-center gap-1 sm:gap-2">
+         <div className="flex items-center gap-1 sm:gap-2">
+            <Key 
+              size={12} 
+              className="text-secondary-500 dark:text-secondary-500 sm:hidden" 
+              title="Primary Key"
+            />
+            <Key 
+              size={14} 
+              className="text-secondary-500 dark:text-secondary-500 hidden sm:block" 
+              title="Primary Key"
+            />
             <span className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">
               id
             </span>
@@ -322,7 +331,7 @@ export function TableBody({
   }, [rowSelection, table, onSelectedIdsChange]);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+    <div className="bg-white dark:bg-slate-800 rounded overflow-hidden border border-slate-200 dark:border-slate-700">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[600px] border-collapse text-gray-800 dark:text-white">
           <thead>

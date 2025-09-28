@@ -14,8 +14,10 @@ import {
   useInsertSchemaRowMutation,
   useDeleteSchemaRowMutation,
   useUpdateSchemaRowMutation,
+  useImportDataMutation,
 } from "@/service/apiSlide/dataSourceApi";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useCallback } from "react"; // 🔑 Import useCallback
 
 interface DataTableProps {
   projectUuid: string;
@@ -68,6 +70,8 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [insertSchemaRow] = useInsertSchemaRowMutation();
   const [deleteSchemaRow] = useDeleteSchemaRowMutation();
   const [updateSchemaRow] = useUpdateSchemaRowMutation();
+  //Initialize import mutation
+  const [importData, { isLoading: isImporting }] = useImportDataMutation();
 
   // Define the handler to add a row
   const handleAddRow = async (data: Record<string, unknown>) => {
@@ -182,6 +186,36 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
     }
   };
 
+  //handle modal's import action
+  const handleImportFile = async (file: File, method: string) => {
+    if (!activeSchema) return;
+
+    try {
+      await importData({
+        projectUuid,
+        schemaName: activeSchema.schemaName,
+        importMethod: method,
+        file,
+      }).unwrap();
+
+      onLog?.(
+        "IMPORT",
+        "Data Import Successful",
+        `Imported ${file.name} using ${method} method.`
+      );
+
+      // Refresh the table after successful import
+      refetch();
+    } catch (error) {
+      console.error("File import failed:", error);
+      onLog?.(
+        "ERROR",
+        "Import Failed",
+        `Failed to import data from ${file.name}.`
+      );
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Toolbar (auto reset, import) */}
@@ -237,13 +271,14 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
         importOpen={importOpen}
         onCloseAutoReset={() => setAutoResetOpen(false)}
         onCloseImport={() => setImportOpen(false)}
-        onImport={(file, method) =>
-          onLog?.(
-            "IMPORT",
-            "Data Imported",
-            `Imported ${file.name} via ${method}`
-          )
-        }
+        onImport={handleImportFile} //Pass the new import handler
+        // onImport={(file, method) =>
+        //   onLog?.(
+        //     "IMPORT",
+        //     "Data Imported",
+        //     `Imported ${file.name} via ${method}`
+        //   )
+        // }
       />
     </div>
   );

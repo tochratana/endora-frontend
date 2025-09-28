@@ -64,11 +64,23 @@ export interface UpdateDataRequest {
   data: Record<string, unknown>;
 }
 
-// export interface RecordsWithCountsResponse {
-//   records: DataSourceRecord[];
-//   totalRecords: number;
-//   lastUpdatedAt: string;
-// }
+// for the Link Record request payload
+export interface LinkRecordRequest {
+  projectUuid: string;
+  sourceSchemaName: string; // The primary table ({{table}})
+  sourceRecordId: string | number; // The ID of the record being modified ({{id}})
+  targetSchemaName: string; // The related table ({{otherTable}})
+  add?: (string | number)[]; // Array of IDs to link
+  remove?: (string | number)[]; // Array of IDs to unlink
+}
+
+//for the import request
+export interface ImportDataRequest {
+  projectUuid: string;
+  schemaName: string;
+  importMethod: string; // 'replace', 'append', or 'update'
+  file: File;
+}
 
 export const dataSourceApi = createApi({
   reducerPath: "dataSourceApi",
@@ -198,6 +210,25 @@ export const dataSourceApi = createApi({
         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
       ],
     }),
+
+    //handle file import
+    importData: builder.mutation<void, ImportDataRequest>({
+      query: ({ projectUuid, schemaName, importMethod, file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("method", importMethod);
+
+        return {
+          // Path relative to /api: table/{schema}/project/{uuid}/import
+          url: `table/${schemaName}/project/${projectUuid}/import`,
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+      ],
+    }),
   }),
 });
 
@@ -207,4 +238,5 @@ export const {
   useGetProjectStatsQuery,
   useDeleteSchemaRowMutation,
   useUpdateSchemaRowMutation,
+  useImportDataMutation,
 } = dataSourceApi;

@@ -6,6 +6,7 @@ import {
   useGetSchemaRowsQuery,
   useInsertSchemaRowMutation,
   useGetProjectStatsQuery,
+  useImportDataMutation
 } from "@/service/apiSlide/dataSourceApi";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -125,6 +126,7 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   );
 
   const [insertRow] = useInsertSchemaRowMutation();
+  const [importData] = useImportDataMutation(); // 🔑 Initialize the mutation hook here
 
   // Stat Calculation
   const { totalSchemas, totalRecords, lastUpdate } = useMemo(() => {
@@ -160,6 +162,26 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
       await refetch();
     } catch (err) {
       console.error("Insert failed:", err);
+    }
+  };
+
+  // 🔑 NEW: Define the wrapper handler to pass to EmptyState
+  const handleImportFromEmptyState = async (file: File, method: string) => {
+    if (!activeSchema) return;
+
+    try {
+      await importData({
+        projectUuid: workspaceId,
+        schemaName: activeSchema.schemaName,
+        importMethod: method,
+        file,
+      }).unwrap();
+
+      addLog("IMPORT", "Data Import Successful", `Imported ${file.name}.`);
+      refetch();
+    } catch (error) {
+      console.error("File import failed:", error);
+      addLog("ERROR", "Import Failed", `Failed to import data.`);
     }
   };
 
@@ -219,7 +241,10 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
                 />
               ) : (
                 // FALLBACK: Only render EmptyState if no schema was found (schemas.length === 0)
-                <EmptyState onAddSample={handleAddSample} />
+                <EmptyState
+                  onAddSample={handleAddSample}
+                  onImport={handleImportFromEmptyState} // 🔑 PASS THE NEW HANDLER HERE
+                />
               ))}
 
             {activeTab === "logs" &&

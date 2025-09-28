@@ -45,7 +45,7 @@ export function TableHeader({
         <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
       </div>
 
-      <div className="w-full dark:bg-slate-900 border dark:border-slate-700 rounded-[5px] overflow-hidden">
+      <div className="w-full dark:bg-slate-900 border dark:border-slate-700 rounded overflow-hidden">
         <div className="flex items-center">
           {/* Left brand/logo - responsive sizing */}
           <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border-r dark:border-slate-700 flex-shrink-0">
