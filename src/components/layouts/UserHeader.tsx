@@ -15,9 +15,6 @@ import { Settings, LogOut, Boxes } from "lucide-react";
 export default function UserHeader() {
   const { data: session } = useSession();
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
-  };
   return (
     <nav className="bg-white border-b border-slate-800 px-4 sm:px-6 md:px-8 lg:px-[100px] py-3 dark:bg-slate-900">
       <div className="flex items-center justify-between">
@@ -41,10 +38,7 @@ export default function UserHeader() {
           </span>
         </div>
         <div className="flex items-center gap-1 sm:gap-3">
-          <button className="px-1 sm:px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
-            My API
-          </button>
-          <button className="px-1 sm:px-2 py-1 rounded-xs bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
+          <button className="px-1 sm:px-2 py-1 rounded-sm bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
             <span className="hidden sm:inline">Feedback</span>
             <span className="sm:hidden">Help</span>
           </button>

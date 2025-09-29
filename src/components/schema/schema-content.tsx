@@ -38,7 +38,7 @@ const parseSchemaColumns = (schema: Record<string, string>) => {
     name,
     type: definition,
     color: getTypeColor(definition),
-    isPrimary: definition.includes("PRIMARY KEY"),
+    isPrimary: name === "id",
   }));
 };
 
@@ -186,9 +186,6 @@ export function SchemaContent({
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {column.isPrimary ? "PRIMARY KEY" : ""}
-                    {column.type.includes("NOT NULL") && !column.isPrimary
-                      ? "NOT NULL"
-                      : ""}
                   </div>
                   <div className="text-sm font-mono text-muted-foreground">
                     {column.type}
