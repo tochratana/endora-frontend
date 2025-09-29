@@ -86,7 +86,7 @@ export const projectApi = createApi({
     // Alternative endpoint that matches your original URL structure
     insertTableDataFromEditor: builder.mutation<UploadDataResponse, UploadDataRequest>({
       query: ({ projectUuid, schemaName, data, format = "json", trimStrings = true, batchSize = 500 }) => ({
-        url: `/v1/projects/${projectUuid}/rest/tables/${schemaName}/data/insert-from-editor-plain`,
+        url: `/v1/projects/e12e54e2-f88b-4db1-856c-99bbb57a1354/rest/tables/user/data/insert-from-editor-plain`,
         method: "POST",
         body: data,
         params: {
@@ -98,6 +98,10 @@ export const projectApi = createApi({
       invalidatesTags: ["TableData"],
     }),
   }),
+
+
+
+  
 });
 
 export const {

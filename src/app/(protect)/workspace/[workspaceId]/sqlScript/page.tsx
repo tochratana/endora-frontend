@@ -20,7 +20,6 @@ const JSONEditor = ({ params }: PageProps) => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const monacoRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
-  const [token, setToken] = useState("");
   const [projectUuid, setProjectUuid] = useState("");
   const [tableName, setTableName] = useState("club");
 
@@ -48,10 +47,11 @@ const JSONEditor = ({ params }: PageProps) => {
     resolveParams();
   }, [params]);
 
-  // Set project UUID when data is fetched
+  // Set project UUID when data is fetched - FIXED to access response.data
   useEffect(() => {
-    if (response && response.uuid) {
-      setProjectUuid(response.uuid);
+    if (response?.data?.projectUuid) {
+      setProjectUuid(response.data.projectUuid);
+      console.log("Project UUID set:", response.data.projectUuid);
     }
   }, [response]);
 
@@ -125,11 +125,20 @@ const JSONEditor = ({ params }: PageProps) => {
   const clearEditor = () => monacoRef.current?.setValue("");
 
   const runQuery = async () => {
-    if (!monacoRef.current || !projectUuid || !tableName) return;
+    if (!monacoRef.current || !projectUuid || !tableName) {
+      alert("Missing required fields: projectUuid or tableName");
+      return;
+    }
 
     try {
       const text = monacoRef.current.getValue();
       const jsonData = JSON.parse(text); // Validate JSON first
+
+      console.log("Uploading data:", {
+        projectUuid,
+        schemaName: tableName,
+        dataLength: Array.isArray(jsonData) ? jsonData.length : 1,
+      });
 
       const result = await insertTableData({
         projectUuid,
@@ -148,6 +157,8 @@ const JSONEditor = ({ params }: PageProps) => {
         alert("Error: Invalid JSON format");
       } else if (err.data) {
         alert(`Error: ${err.data.message || JSON.stringify(err.data)}`);
+      } else if (err.status) {
+        alert(`Error: ${err.status} - ${err.error || "Request failed"}`);
       } else {
         alert(`Error: ${err.message || "Upload failed"}`);
       }
@@ -170,7 +181,9 @@ const JSONEditor = ({ params }: PageProps) => {
       <div className="h-screen bg-gray-900 flex items-center justify-center text-red-400">
         <div className="text-center">
           <p>Error loading project data</p>
-          <p className="text-sm mt-2">{ree?.message || "Unknown error"}</p>
+          <p className="text-sm mt-2">
+            {(ree as any)?.message || "Unknown error"}
+          </p>
         </div>
       </div>
     );
@@ -185,14 +198,14 @@ const JSONEditor = ({ params }: PageProps) => {
             <button
               onClick={formatCode}
               disabled={!isReady}
-              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white"
+              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RefreshCcw className="w-4 h-4" /> Format
             </button>
             <button
               onClick={clearEditor}
               disabled={!isReady}
-              className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
+              className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 className="w-4 h-4" /> Clear
             </button>
@@ -209,7 +222,8 @@ const JSONEditor = ({ params }: PageProps) => {
               />
             </div>
             <span className="text-gray-400 text-sm">
-              Project: {response?.name || projectUuid || "Loading..."}
+              Project:{" "}
+              {response?.data?.projectName || projectUuid || "Loading..."}
             </span>
             <span className="text-gray-400 text-sm">
               Workspace: {resolvedParams.workspaceId}
@@ -217,7 +231,7 @@ const JSONEditor = ({ params }: PageProps) => {
             <button
               onClick={runQuery}
               disabled={!isReady || !projectUuid || !tableName || isUploading}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold disabled:opacity-50"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUploading ? (
                 <>
