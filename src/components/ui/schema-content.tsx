@@ -58,14 +58,14 @@ export function SchemaContent({
   );
 
   // find active schema
-  const activeSchema = schemas?.find(
-    schema => schema.schemaDocId === activeTable
-  );
+  // const activeSchema = schemas?.find(
+  //   schema => schema.schemaDocId === activeTable
+  // );
 
-  const columns = useMemo(() => {
-    if (!activeSchema?.columns) return [];
-    return parseSchemaColumns(activeSchema.columns);
-  }, [activeSchema]);
+  // const columns = useMemo(() => {
+  //   if (!activeSchema?.columns) return [];
+  //   return parseSchemaColumns(activeSchema.columns);
+  // }, [activeSchema]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
