@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/components/ui/schema-content.tsx
 // // src/components/schema/SchemaContent.tsx
 // "use client";
 
@@ -217,6 +218,8 @@
 //     </div>
 //   );
 // }
+=======
+>>>>>>> ffcece19734dec0a3964896d01e069f9b629fd84:src/components/schema/schema-content.tsx
 "use client";
 
 import { useState, useMemo } from "react";
@@ -233,19 +236,19 @@ interface SchemaContentProps {
 // Helper function to get color based on data type
 const getTypeColor = (type: string) => {
   const lowerType = type.toLowerCase();
-  if (lowerType.includes("serial") || lowerType.includes("int")) {
+  if (lowerType.includes("integer") || lowerType.includes("int")) {
     return "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300";
   }
-  if (lowerType.includes("varchar") || lowerType.includes("text")) {
+  if (lowerType.includes("uuid") || lowerType.includes("text")) {
     return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
   }
-  if (lowerType.includes("numeric") || lowerType.includes("decimal")) {
+  if (lowerType.includes("bigint") || lowerType.includes("date")) {
     return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
   }
-  if (lowerType.includes("timestamp") || lowerType.includes("date")) {
+  if (lowerType.includes("timestamp") || lowerType.includes("timestamptz")) {
     return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
   }
-  if (lowerType.includes("boolean")) {
+  if (lowerType.includes("boolean") || lowerType.includes("jsonb")) {
     return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
   }
   return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
@@ -435,5 +438,9 @@ export function SchemaContent({
       </div>
     </div>
   );
+<<<<<<< HEAD:src/components/ui/schema-content.tsx
 }
 
+=======
+}
+>>>>>>> ffcece19734dec0a3964896d01e069f9b629fd84:src/components/schema/schema-content.tsx

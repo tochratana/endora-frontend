@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, use, useEffect } from "react";
-import { SchemaSidebar } from "@/components/ui/schema-sidebar";
-import { SchemaContent } from "@/components/ui/schema-content";
+import { SchemaSidebar } from "@/components/schema/schema-sidebar";
+import { SchemaContent } from "@/components/schema/schema-content";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface PageProps {
@@ -35,7 +35,7 @@ export default function SchemaManager({ params }: PageProps) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <div className="flex justify-between items-center px-6 py-3 border-b border-border bg-card">
+        <div className="flex justify-between items-center px-6 py-6 border-b border-border bg-card/50 dark:bg-slate-950">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-foreground">
               Database Schema

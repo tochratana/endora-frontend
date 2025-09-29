@@ -7,8 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ReuseSchema  from "@/components/schema/reuseSchema";
 import Input from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast, Toaster } from "sonner";
 import {
   Select,
   SelectContent,
@@ -16,17 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  GripVertical,
-  X,
-  ChevronDown,
-} from "lucide-react";
+
+import { GripVertical, X } from "lucide-react";
 import {
   useCreateSchemaMutation,
   type SchemaDefinition,
@@ -58,13 +51,10 @@ export function CreateSchemaDialog({
   const [schemaName, setSchemaName] = useState("");
   const [description, setDescription] = useState("");
   const [columns, setColumns] = useState<Column[]>([
-    { id: "1", name: "", type: ""},
+    { id: "1", name: "", type: "" },
   ]);
 
   const [createSchema, { isLoading, error }] = useCreateSchemaMutation();
-
-  // Debug log to check projectUuid
-  console.log("CreateSchemaDialog projectUuid:", projectUuid);
 
   const addColumn = () => {
     const newColumn: Column = {
@@ -232,26 +222,6 @@ export function CreateSchemaDialog({
             <hr className="border-gray-200 dark:border-gray-700" />
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium">Columns</h3>
-              <div className="flex gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="flex items-center bg-teal-100 text-teal-700 dark:bg-teal-800 dark:text-teal-100 border-gray-300 rounded-sm px-2 py-1 hover:bg-teal-200 dark:hover:bg-teal-700">
-                      Reuse Schema
-                      <ChevronDown className="ml-1 h-4 w-4 pt-0.5" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white dark:bg-gray-800 dark:text-gray-100">
-                    <DropdownMenuItem className="grid grid-cols-2 gap-6">
-                      Product{" "}
-                      <span className="text-xs text-gray-400">ecommerce</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="grid grid-cols-2 gap-6">
-                      User{" "}
-                      <span className="text-xs text-gray-400">ecommerce</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
             </div>
             <hr className="border-gray-200 dark:border-gray-700" />
 

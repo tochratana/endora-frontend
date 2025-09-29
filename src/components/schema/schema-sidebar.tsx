@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/components/ui/schema-sidebar.tsx
 // // src/components/schema/SchemaSidebar.tsx
 // "use client";
 
@@ -125,14 +126,17 @@
 //     </div>
 //   );
 // }
+=======
+>>>>>>> ffcece19734dec0a3964896d01e069f9b629fd84:src/components/schema/schema-sidebar.tsx
 "use client";
 
 import { useState } from "react";
 import Input from "@/components/ui/input";
 import { Plus, Search, Table } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CreateSchemaDialog } from "@/components/ui/create-schema-dialog";
+import { CreateSchemaDialog } from "@/components/schema/create-schema-dialog";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
+import ReuseSchema from "./reuseSchema";
 
 interface SchemaSidebarProps {
   activeTable: string;
@@ -180,6 +184,11 @@ export function SchemaSidebar({
           <Plus className="h-4 w-4" />
           New Schema
         </button>
+      </div>
+      <div className="p-2">
+        <ReuseSchema
+          projectUuid={projectUuid}
+        />
       </div>
 
       <CreateSchemaDialog

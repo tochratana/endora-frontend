@@ -4,8 +4,6 @@ export interface Column {
   id: string;
   name: string;
   type: string;
-  defaultValue: string;
-  isPrimary: boolean;
 }
 
 export interface SchemaDefinition {
@@ -19,6 +17,9 @@ export interface CreateSchemaRequest {
 }
 
 export interface Schema {
+  projectId: any;
+  projectName: string;
+  id?: string | null;
   schemaDocId: string;
   projectUuid: string;
   schemaName: string;
@@ -74,14 +75,13 @@ export const schemaApi = createApi({
       transformResponse: (response: { data: Schema[] }) => response.data,
       providesTags: ["Schema"],
     }),
-    // getSchemas: builder.query<Schema[], string>({
-    //   query: projectUuid => `/table/project/${projectUuid}`,
-    //   transformResponse: (response: any) => {
-    //     console.log("📡 Raw schema API response:", response);
-    //     return Array.isArray(response) ? response : response.data;
-    //   },
-    //   providesTags: ["Schema"],
-    // }),
+
+    getAllSchemas: builder.query<Schema[], string>({
+      query: projectUuid => `/table/project/${projectUuid}/reuseSchema`,
+      transformResponse: (response: { message: string; data: Schema[] }) =>
+        response.data,
+      providesTags: ["Schema"],
+    }),
 
     getSchemaById: builder.query<Schema, string>({
       query: id => `schemas/${id}`,
@@ -155,6 +155,18 @@ export const schemaApi = createApi({
       }),
       invalidatesTags: ["Schema"],
     }),
+
+    importSchema: builder.mutation<
+      Schema,
+      { schemaName: string; projectUuid: string; sourceProjectId: string }
+    >({
+      query: ({ schemaName, projectUuid, sourceProjectId }) => ({
+        url: `/table/project/${projectUuid}/reuseSchema`,
+        method: "POST",
+        body: { schemaName, sourceProjectId },
+      }),
+      invalidatesTags: ["Schema"],
+    }),
   }),
 });
 
@@ -162,6 +174,8 @@ export const {
   useCreateSchemaMutation,
   useGetSchemaByIdQuery,
   useGetSchemasQuery,
+  useGetAllSchemasQuery,
   useCreateSchemaRelationshipMutation,
   useGetSchemaByNameQuery,
+  useImportSchemaMutation,
 } = schemaApi;
