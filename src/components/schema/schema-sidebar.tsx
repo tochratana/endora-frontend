@@ -37,7 +37,7 @@ export function SchemaSidebar({
   };
 
   return (
-    <div className="w-64 bg-slate-900 border-r border-sidebar-border flex flex-col">
+    <div className="w-64 bg-white dark:bg-slate-900 border-r border-sidebar-border flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border">
         <h1 className="text-lg font-semibold text-sidebar-foreground">
@@ -76,7 +76,7 @@ export function SchemaSidebar({
             placeholder="Search schema"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-9 py-2 bg-slate-800 border-slate-600 focus:ring-sidebar-ring transition-all duration-200"
+            className="pl-9 py-2 bg-white dark:bg-slate-800 border-slate-600 focus:ring-sidebar-ring transition-all duration-200"
           />
         </div>
       </div>
@@ -108,8 +108,8 @@ export function SchemaSidebar({
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 text-left group",
                   isActive
-                    ? "bg-slate-800 text-sidebar-accent-foreground shadow-sm border-l-2 border-sidebar-primary"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1"
+                    ? "bg-gray-100 dark:bg-slate-800 text-sidebar-accent-foreground shadow-sm border-l-2 border-sidebar-primary"
+                    : "text-sidebar-foreground hover:bg-gray-200 dark:hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:translate-x-1"
                 )}
               >
                 <Table

@@ -47,7 +47,6 @@ export function SchemaContent({
   projectUuid,
 }: SchemaContentProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [endpointsGenerated, setEndpointsGenerated] = useState(false);
 
   // Fetch schemas from API
   const {
@@ -73,33 +72,10 @@ export function SchemaContent({
     setIsRefreshing(false);
   };
 
-  const handleGenerateEndpoints = () => {
-    setEndpointsGenerated(true);
-    setTimeout(() => setEndpointsGenerated(false), 2000);
-  };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950">
-      <div className="px-6 py-4">
-        <button
-          className="flex items-center gap-2 border-2 border-indigo-900 rounded-sm px-2 py-1 hover:bg-indigo-800 hover:text-white"
-          onClick={handleGenerateEndpoints}
-          disabled={endpointsGenerated}
-        >
-          {endpointsGenerated ? (
-            <>
-              <Check className="h-4 w-4 text-green-600" />
-              Generated!
-            </>
-          ) : (
-            <>
-              <Database className="h-4 w-4" />
-              Generate Endpoints
-            </>
-          )}
-        </button>
-      </div>
-
+    <div className="flex flex-col h-full bg-white dark:bg-slate-950">
+      
       <div className="flex-1 px-6 py-4 overflow-auto">
         {isLoading ? (
           <div className="flex items-center justify-center h-64">
