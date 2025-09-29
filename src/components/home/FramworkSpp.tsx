@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { AnimatedGridPattern } from "../magicui/animated-grid-pattern";
 import "devicon/devicon.min.css";
 
 const frameworks = [
