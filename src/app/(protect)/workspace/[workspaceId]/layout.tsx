@@ -1,5 +1,6 @@
 import UserHeader from "@/components/layouts/UserHeader";
 import { Sidebar } from "@/components/layouts/WorkspaceSidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function WorkspaceLayout({
   children,
@@ -64,6 +65,9 @@ export default async function WorkspaceLayout({
       <div className="md:hidden">
         <Sidebar workspaceId={workspaceId ?? ""} headerOffsetPx={48} />
       </div>
+
+      {/* Toast notifications */}
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

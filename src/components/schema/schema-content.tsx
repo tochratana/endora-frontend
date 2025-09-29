@@ -173,7 +173,6 @@ export function SchemaContent({
         )}
       </div>
 
-
       <div className="px-6 py-4 border-t border-border bg-gray-100 dark:bg-slate-950 flex justify-center">
         <button
           className="flex items-center gap-2 text-gray-600 bg-transparent"
