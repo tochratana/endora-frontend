@@ -29,9 +29,9 @@ const ProjectSettings = () => {
     }
   }, [projectId]);
 
-  const handleUpdate = useCallback(() => {
-    console.log("Updating project with name:", projectName);
-  }, [projectName]);
+  // const handleUpdate = useCallback(() => {
+  //   console.log("Updating project with name:", projectName);
+  // }, [projectName]);
 
   const handleDeleteProject = useCallback((enteredName: string) => {
     console.log("Project deletion confirmed:", enteredName);

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import FeedbackDropdown from "../feedback/review";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,10 +39,7 @@ export default function UserHeader() {
           </span>
         </div>
         <div className="flex items-center gap-1 sm:gap-3">
-          <button className="px-1 sm:px-2 py-1 rounded-sm bg-transparent border-2 border-secondary-900 text-gray-900 hover:bg-teal-500 hover:text-white dark:text-white text-xs sm:text-sm">
-            <span className="hidden sm:inline">Feedback</span>
-            <span className="sm:hidden">Help</span>
-          </button>
+          <FeedbackDropdown/>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

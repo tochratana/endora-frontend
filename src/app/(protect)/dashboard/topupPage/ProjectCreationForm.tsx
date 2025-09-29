@@ -41,16 +41,16 @@ export default function ProjectCreationForm({ onDone }: Props) {
   }
 
   // New verify handler
-  function handleVerify() {
-    if (!name.trim() || !description.trim()) {
-      setErrorMessage("Please fill in both fields before verifying.");
-      return;
-    }
-    // Just a demo – replace with your actual verify logic
-    alert(
-      `Verifying project: ${name} - ${description} - Client Auth: ${clientAuthEnabled}`
-    );
-  }
+  // function handleVerify() {
+  //   if (!name.trim() || !description.trim()) {
+  //     setErrorMessage("Please fill in both fields before verifying.");
+  //     return;
+  //   }
+  //   // Just a demo – replace with your actual verify logic
+  //   alert(
+  //     `Verifying project: ${name} - ${description} - Client Auth: ${clientAuthEnabled}`
+  //   );
+  // }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

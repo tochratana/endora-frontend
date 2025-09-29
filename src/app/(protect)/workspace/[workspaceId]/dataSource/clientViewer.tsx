@@ -102,24 +102,24 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
   };
 
   // Add row handler (mock mode for now)
-  const handleAddRow = (row: AddRowData) => {
-    const newRow: DataSourceRecord = {
-      ...row,
-      // id: row.id ?? crypto.randomUUID(),
-      // created_at: row.created_at ?? new Date().toISOString(),
-      id: typeof row.id === "string" ? row.id : crypto.randomUUID(),
-      created_at:
-        typeof row.created_at === "string"
-          ? row.created_at
-          : new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      created_by: "system",
-      schema_name: activeSchemaName,
-      project_uuid: workspaceId,
-    };
-    setMockRows(prev => [...prev, newRow]);
-    addLog("CREATE", "Row Added", `Inserted new row into ${activeSchemaName}`);
-  };
+  // const handleAddRow = (row: AddRowData) => {
+  //   const newRow: DataSourceRecord = {
+  //     ...row,
+  //     // id: row.id ?? crypto.randomUUID(),
+  //     // created_at: row.created_at ?? new Date().toISOString(),
+  //     id: typeof row.id === "string" ? row.id : crypto.randomUUID(),
+  //     created_at:
+  //       typeof row.created_at === "string"
+  //         ? row.created_at
+  //         : new Date().toISOString(),
+  //     updated_at: new Date().toISOString(),
+  //     created_by: "system",
+  //     schema_name: activeSchemaName,
+  //     project_uuid: workspaceId,
+  //   };
+  //   setMockRows(prev => [...prev, newRow]);
+  //   addLog("CREATE", "Row Added", `Inserted new row into ${activeSchemaName}`);
+  // };
 
   // Delete row handler (mock + API rows)
   const handleDeleteRow = (id: string | number) => {

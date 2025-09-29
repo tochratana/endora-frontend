@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { toast, Toaster } from "sonner";
 import {
-  Column,
   useGetAllSchemasQuery,
   useImportSchemaMutation,
 } from "@/service/apiSlide/schemaApi";
