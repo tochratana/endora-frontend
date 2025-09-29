@@ -1,11 +1,12 @@
-import { Clock, User } from "lucide-react";
+import { Clock, Trash, User } from "lucide-react";
 import type { LogItem } from "@/types/dataSource";
 
 interface ActivityLogsProps {
   logs: LogItem[];
+  onDelete: (logId: string) => void;
 }
 
-export function ActivityLogs({ logs }: ActivityLogsProps) {
+export function ActivityLogs({ logs, onDelete }: ActivityLogsProps) {
   const getActionColor = (action: LogItem["action"]) => {
     switch (action) {
       case "IMPORT":
@@ -56,10 +57,23 @@ export function ActivityLogs({ logs }: ActivityLogsProps) {
                 </span>
               </div>
             </div>
-            <span className="text-slate-400 text-sm">
-              <Clock className="inline-block w-3.5 h-3.5 mr-1" />
-              {new Date(log.timestamp).toLocaleString()}
-            </span>
+            {/* Right side: Time and Delete Button */}
+            <div className="flex items-center gap-4 ml-4">
+              {/* Time Stamp */}
+              <span className="text-slate-400 text-sm whitespace-nowrap">
+                <Clock className="inline-block w-3.5 h-3.5 mr-1" />
+                {new Date(log.timestamp).toLocaleString()}
+              </span>
+
+              {/* Delete Button */}
+              <button
+                onClick={() => onDelete(log.id)}
+                className="text-red-400 hover:text-red-500 p-1 rounded transition-colors"
+                aria-label={`Delete log: ${log.title}`}
+              >
+                <Trash size={16} />
+              </button>
+            </div>
           </div>
         </div>
       ))}

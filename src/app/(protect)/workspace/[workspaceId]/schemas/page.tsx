@@ -22,6 +22,9 @@ export default function SchemaManager({ params }: PageProps) {
     }
   }, [schemas, activeTable]);
 
+
+  console.log("This is data",schemas);
+
   
 
   return (

@@ -1,10 +1,18 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { RefreshCcw, Trash2, Play } from "lucide-react";
+import React, { use, useEffect, useRef, useState } from "react";
+import {
+  RefreshCcw,
+  Trash2,
+  Play,
+  CheckCircle,
+  XCircle,
+  X,
+} from "lucide-react";
 import {
   useGetProjectByUuidQuery,
   useInsertTableDataFromEditorMutation,
 } from "@/service/project/projectApi";
+import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 
 interface PageProps {
   params: Promise<{
@@ -12,160 +20,373 @@ interface PageProps {
   }>;
 }
 
+interface SchemaTab {
+  schemaName: string;
+  isActive: boolean;
+  editorValue: string;
+}
+
+interface Notification {
+  type: "success" | "error";
+  message: string;
+  details?: string;
+}
+
 const JSONEditor = ({ params }: PageProps) => {
-  const [resolvedParams, setResolvedParams] = useState<{
-    workspaceId: string;
-  } | null>(null);
-  console.log("This is a id for project : ", resolvedParams);
+  const { workspaceId } = use(params);
+  console.log("Workspace ID:", workspaceId);
+
+  const [activeSchema, setActiveSchema] = useState("");
+  const [schemaTabs, setSchemaTabs] = useState<SchemaTab[]>([]);
+  const [notification, setNotification] = useState<Notification | null>(null);
+
+  const {
+    data: schemas,
+    error: schemaError,
+    isLoading: schemaLoading,
+  } = useGetSchemasQuery(workspaceId);
+
+  console.log("Schema Error", schemaError);
+  console.log("This is all schema", schemas);
+
   const editorRef = useRef<HTMLDivElement | null>(null);
   const monacoRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
   const [projectUuid, setProjectUuid] = useState("");
-  const [tableName, setTableName] = useState("club");
+  const [isMonacoLoaded, setIsMonacoLoaded] = useState(false);
 
-  // Fetch project data using RTK Query
+  // Fetch project data
   const {
     data: response,
-    error: ree,
+    error: projectError,
     isLoading: isProjectLoading,
-  } = useGetProjectByUuidQuery(resolvedParams?.workspaceId, {
-    skip: !resolvedParams?.workspaceId,
-  });
+  } = useGetProjectByUuidQuery(workspaceId);
 
-  // Upload mutation
-  const [insertTableData, { isLoading: isUploading, error: uploadError }] =
-    useInsertTableDataFromEditorMutation();
+  console.log("Data of project", response);
 
-  console.log("Data response here : ", response);
+  const [
+    insertTableDataFromEditor,
+    { isLoading: isUploading, error: uploadError },
+  ] = useInsertTableDataFromEditorMutation();
 
-  // Resolve params
+  // Auto-hide notification after 5 seconds
   useEffect(() => {
-    const resolveParams = async () => {
-      const resolved = await params;
-      setResolvedParams(resolved);
-    };
-    resolveParams();
-  }, [params]);
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
-  // Set project UUID when data is fetched - FIXED to access response.data
+  // Initialize schema tabs when schemas are loaded
+  useEffect(() => {
+    if (schemas && schemas.length > 0) {
+      const initialTabs = schemas.map((schema, index) => ({
+        schemaName: schema.schemaName,
+        isActive: index === 0,
+        editorValue: `[\n  { "id": 1, "name": "Sample data for ${schema.schemaName}" },\n  { "id": 2, "name": "Another record" }\n]`,
+      }));
+
+      setSchemaTabs(initialTabs);
+      setActiveSchema(initialTabs[0].schemaName);
+    }
+  }, [schemas]);
+
+  // Set project UUID when data is fetched
   useEffect(() => {
     if (response?.data?.projectUuid) {
       setProjectUuid(response.data.projectUuid);
-      console.log("Project UUID set:", response.data.projectUuid);
+    } else if (response?.projectUuid) {
+      setProjectUuid(response.projectUuid);
+    } else if (workspaceId) {
+      setProjectUuid(workspaceId);
     }
-  }, [response]);
+  }, [response, workspaceId]);
 
   // Load Monaco Editor
   useEffect(() => {
+    if (isMonacoLoaded || typeof window === "undefined") return;
+
+    if (window.monaco && window.monaco.editor) {
+      initializeEditor();
+      return;
+    }
+
+    if (window.require) {
+      loadMonacoEditor();
+      return;
+    }
+
     const script = document.createElement("script");
     script.src =
       "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js";
     script.onload = () => {
-      window.require.config({
-        paths: {
-          vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/vs",
-        },
-      });
-
-      window.MonacoEnvironment = {
-        getWorkerUrl: () => {
-          return URL.createObjectURL(
-            new Blob(
-              [
-                'self.MonacoEnvironment = { baseUrl: "https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/" }; importScripts("https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/vs/base/worker/workerMain.js");',
-              ],
-              { type: "text/javascript" }
-            )
-          );
-        },
-      };
-
-      window.require(["vs/editor/editor.main"], () => {
-        if (editorRef.current && !monacoRef.current) {
-          monacoRef.current = window.monaco.editor.create(editorRef.current, {
-            value: `[{"name":"Club A","country":"USA"},{"name":"Club B","country":"Canada"}]`,
-            language: "json",
-            theme: "vs-dark",
-            automaticLayout: true,
-            minimap: { enabled: false },
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-            wordWrap: "on",
-            tabSize: 2,
-          });
-
-          setIsReady(true);
-        }
-      });
+      loadMonacoEditor();
+    };
+    script.onerror = () => {
+      console.error("Failed to load require.js");
+      setIsReady(true);
     };
     document.head.appendChild(script);
+
     return () => {
-      if (monacoRef.current) monacoRef.current.dispose();
       if (script.parentNode) script.parentNode.removeChild(script);
     };
-  }, []);
+  }, [isMonacoLoaded]);
 
-  // Auto resize editor
+  const loadMonacoEditor = () => {
+    window.require.config({
+      paths: {
+        vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/vs",
+      },
+    });
+
+    window.MonacoEnvironment = {
+      getWorkerUrl: () => {
+        return URL.createObjectURL(
+          new Blob(
+            [
+              'self.MonacoEnvironment = { baseUrl: "https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/" }; importScripts("https://cdn.jsdelivr.net/npm/monaco-editor@0.38.0/min/vs/base/worker/workerMain.js");',
+            ],
+            { type: "text/javascript" }
+          )
+        );
+      },
+    };
+
+    window.require(["vs/editor/editor.main"], () => {
+      setIsMonacoLoaded(true);
+      initializeEditor();
+    });
+  };
+
+  const initializeEditor = () => {
+    if (!editorRef.current || monacoRef.current) return;
+
+    const activeTab = schemaTabs.find(tab => tab.isActive);
+    monacoRef.current = window.monaco.editor.create(editorRef.current, {
+      value: activeTab?.editorValue || "",
+      language: "json",
+      theme: "vs-dark",
+      automaticLayout: true,
+      minimap: { enabled: false },
+      fontSize: 14,
+      scrollBeyondLastLine: false,
+      wordWrap: "on",
+      tabSize: 2,
+      readOnly: false,
+    });
+
+    monacoRef.current.onDidChangeModelContent(() => {
+      const value = monacoRef.current.getValue();
+      setSchemaTabs(prev =>
+        prev.map(tab =>
+          tab.schemaName === activeSchema ? { ...tab, editorValue: value } : tab
+        )
+      );
+    });
+
+    setIsReady(true);
+  };
+
   useEffect(() => {
-    const resize = () => monacoRef.current?.layout();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
+    if (
+      monacoRef.current &&
+      isReady &&
+      isMonacoLoaded &&
+      schemaTabs.length > 0 &&
+      activeSchema
+    ) {
+      const activeTab = schemaTabs.find(tab => tab.schemaName === activeSchema);
+      if (activeTab) {
+        const position = monacoRef.current.getPosition();
+        monacoRef.current.setValue(activeTab.editorValue);
+        if (position) {
+          monacoRef.current.setPosition(position);
+        }
+        setTimeout(() => {
+          monacoRef.current.focus();
+        }, 0);
+      }
+    }
+  }, [activeSchema, isReady, isMonacoLoaded, schemaTabs]);
+
+  useEffect(() => {
+    if (!monacoRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      setTimeout(() => {
+        monacoRef.current?.layout();
+      }, 100);
+    });
+
+    if (editorRef.current) {
+      resizeObserver.observe(editorRef.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isReady]);
+
+  const handleTabClick = (schemaName: string) => {
+    if (monacoRef.current && activeSchema) {
+      const currentValue = monacoRef.current.getValue();
+      setSchemaTabs(prev =>
+        prev.map(tab =>
+          tab.schemaName === activeSchema
+            ? { ...tab, editorValue: currentValue }
+            : tab
+        )
+      );
+    }
+
+    setActiveSchema(schemaName);
+
+    setSchemaTabs(prev =>
+      prev.map(tab => ({
+        ...tab,
+        isActive: tab.schemaName === schemaName,
+      }))
+    );
+  };
 
   const formatCode = () => {
     if (!monacoRef.current) return;
     try {
-      const parsed = JSON.parse(monacoRef.current.getValue());
-      monacoRef.current.setValue(JSON.stringify(parsed, null, 2));
+      const currentValue = monacoRef.current.getValue();
+      if (!currentValue.trim()) {
+        const basicJSON = `[\n  {\n    "id": 1,\n    "name": "example"\n  }\n]`;
+        monacoRef.current.setValue(basicJSON);
+
+        setSchemaTabs(prev =>
+          prev.map(tab =>
+            tab.schemaName === activeSchema
+              ? { ...tab, editorValue: basicJSON }
+              : tab
+          )
+        );
+        return;
+      }
+
+      const parsed = JSON.parse(currentValue);
+      const formatted = JSON.stringify(parsed, null, 2);
+      monacoRef.current.setValue(formatted);
+
+      setSchemaTabs(prev =>
+        prev.map(tab =>
+          tab.schemaName === activeSchema
+            ? { ...tab, editorValue: formatted }
+            : tab
+        )
+      );
     } catch (err) {
-      alert("Invalid JSON");
+      setNotification({
+        type: "error",
+        message: "Invalid JSON",
+        details: err instanceof Error ? err.message : "Unknown error",
+      });
     }
   };
 
-  const clearEditor = () => monacoRef.current?.setValue("");
+  const clearEditor = () => {
+    if (!monacoRef.current) return;
+    monacoRef.current.setValue("");
+
+    setSchemaTabs(prev =>
+      prev.map(tab =>
+        tab.schemaName === activeSchema ? { ...tab, editorValue: "" } : tab
+      )
+    );
+  };
 
   const runQuery = async () => {
-    if (!monacoRef.current || !projectUuid || !tableName) {
-      alert("Missing required fields: projectUuid or tableName");
+    if (!monacoRef.current || !projectUuid || !activeSchema) {
+      setNotification({
+        type: "error",
+        message: "Missing required fields",
+        details: "Project UUID or schema not found",
+      });
       return;
     }
 
     try {
-      const text = monacoRef.current.getValue();
-      const jsonData = JSON.parse(text); // Validate JSON first
+      const text = monacoRef.current.getValue().trim();
+
+      if (!text) {
+        setNotification({
+          type: "error",
+          message: "Empty content",
+          details: "Please enter some JSON data before running",
+        });
+        return;
+      }
+
+      const jsonData = JSON.parse(text);
+      const recordCount = Array.isArray(jsonData) ? jsonData.length : 1;
 
       console.log("Uploading data:", {
         projectUuid,
-        schemaName: tableName,
-        dataLength: Array.isArray(jsonData) ? jsonData.length : 1,
+        schemaName: activeSchema,
+        dataLength: recordCount,
       });
 
-      const result = await insertTableData({
+      const result = await insertTableDataFromEditor({
         projectUuid,
-        schemaName: tableName,
+        schemaName: activeSchema,
         data: jsonData,
         format: "json",
         trimStrings: true,
         batchSize: 500,
       }).unwrap();
 
-      alert(`Success: ${result.message || "Data uploaded successfully"}`);
+      setNotification({
+        type: "success",
+        message: `Successfully inserted ${recordCount} record${recordCount !== 1 ? "s" : ""}`,
+        details: `Data uploaded to schema: ${activeSchema}`,
+      });
+
       console.log("Upload result:", result);
     } catch (err: any) {
-      console.error("Upload error:", err);
-      if (err.name === "SyntaxError") {
-        alert("Error: Invalid JSON format");
+      console.error("Full error object:", err);
+
+      let errorMessage = "Upload failed";
+      let errorDetails = "Unknown error occurred";
+
+      if (typeof err === "string" && err.includes("<!DOCTYPE html>")) {
+        errorMessage = "Network Error";
+        errorDetails = "Received HTML response. Check CORS or API endpoint.";
+      } else if (err.name === "SyntaxError") {
+        errorMessage = "Invalid JSON";
+        errorDetails = "Please check your JSON syntax";
       } else if (err.data) {
-        alert(`Error: ${err.data.message || JSON.stringify(err.data)}`);
+        try {
+          const errorData =
+            typeof err.data === "string" ? JSON.parse(err.data) : err.data;
+          errorMessage = errorData.message || errorData.error || "API Error";
+          errorDetails = JSON.stringify(errorData);
+        } catch (parseError) {
+          errorMessage = err.data.message || err.data.error || "API Error";
+          errorDetails = err.data.toString();
+        }
       } else if (err.status) {
-        alert(`Error: ${err.status} - ${err.error || "Request failed"}`);
-      } else {
-        alert(`Error: ${err.message || "Upload failed"}`);
+        errorMessage = `Error ${err.status}`;
+        errorDetails = err.error || "Request failed";
+      } else if (err.message) {
+        errorMessage = "Error";
+        errorDetails = err.message;
       }
+
+      setNotification({
+        type: "error",
+        message: errorMessage,
+        details: errorDetails,
+      });
     }
   };
 
-  if (!resolvedParams || isProjectLoading) {
+  if (isProjectLoading || schemaLoading) {
     return (
       <div className="h-screen bg-gray-900 flex items-center justify-center text-gray-400">
         <div className="text-center">
@@ -176,13 +397,15 @@ const JSONEditor = ({ params }: PageProps) => {
     );
   }
 
-  if (ree) {
+  if (projectError || schemaError) {
     return (
       <div className="h-screen bg-gray-900 flex items-center justify-center text-red-400">
         <div className="text-center">
           <p>Error loading project data</p>
           <p className="text-sm mt-2">
-            {(ree as any)?.message || "Unknown error"}
+            {(projectError as any)?.message ||
+              (schemaError as any)?.message ||
+              "Unknown error"}
           </p>
         </div>
       </div>
@@ -192,46 +415,85 @@ const JSONEditor = ({ params }: PageProps) => {
   return (
     <div className="h-screen bg-gray-900">
       <div className="flex flex-col h-full">
+        {/* Notification Toast */}
+        {notification && (
+          <div className="absolute top-4 right-4 z-50 animate-in slide-in-from-top-5 duration-300">
+            <div
+              className={`flex items-start gap-3 p-4 rounded-lg shadow-lg border max-w-md ${
+                notification.type === "success"
+                  ? "bg-green-900/90 border-green-700 text-green-100"
+                  : "bg-red-900/90 border-red-700 text-red-100"
+              }`}
+            >
+              {notification.type === "success" ? (
+                <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              ) : (
+                <XCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold">{notification.message}</p>
+                {notification.details && (
+                  <p className="text-sm mt-1 opacity-90">
+                    {notification.details}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => setNotification(null)}
+                className="flex-shrink-0 hover:opacity-70 transition-opacity"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Schema Tabs */}
+        <div className="flex border-b border-gray-700 bg-gray-800">
+          {schemaTabs.map(tab => (
+            <button
+              key={tab.schemaName}
+              onClick={() => handleTabClick(tab.schemaName)}
+              className={`px-4 py-2 border-r border-gray-700 text-sm font-medium transition-colors ${
+                tab.isActive
+                  ? "bg-gray-900 text-white border-b-2 border-blue-500"
+                  : "text-gray-400 hover:text-white hover:bg-gray-750"
+              }`}
+            >
+              {tab.schemaName}
+            </button>
+          ))}
+        </div>
+
         {/* Toolbar */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <div className="flex items-center gap-4">
             <button
               onClick={formatCode}
               disabled={!isReady}
-              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <RefreshCcw className="w-4 h-4" /> Format
             </button>
             <button
               onClick={clearEditor}
               disabled={!isReady}
-              className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Trash2 className="w-4 h-4" /> Clear
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-gray-400 text-sm">Table:</label>
-              <input
-                type="text"
-                value={tableName}
-                onChange={e => setTableName(e.target.value)}
-                className="px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm"
-                placeholder="Enter table name"
-              />
-            </div>
-            <span className="text-gray-400 text-sm">
-              Project:{" "}
-              {response?.data?.projectName || projectUuid || "Loading..."}
-            </span>
-            <span className="text-gray-400 text-sm">
-              Workspace: {resolvedParams.workspaceId}
+            <span className="text-sm text-gray-400">
+              Schema:{" "}
+              <span className="text-white font-semibold">{activeSchema}</span>
             </span>
             <button
               onClick={runQuery}
-              disabled={!isReady || !projectUuid || !tableName || isUploading}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={
+                !isReady || !projectUuid || !activeSchema || isUploading
+              }
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isUploading ? (
                 <>
@@ -249,7 +511,11 @@ const JSONEditor = ({ params }: PageProps) => {
 
         {/* Editor */}
         <div className="flex-1 relative">
-          <div ref={editorRef} className="h-full w-full" />
+          <div
+            ref={editorRef}
+            className="h-full w-full"
+            style={{ minHeight: "400px" }}
+          />
           {!isReady && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80 z-10">
               <div className="text-center text-gray-400">

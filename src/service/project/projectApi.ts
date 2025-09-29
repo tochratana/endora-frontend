@@ -30,7 +30,7 @@ export const projectApi = createApi({
     baseUrl: "/api",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
-      
+
       // Add authorization header if you have token in your state
       // const token = (getState() as RootState).auth.token;
       // if (token) {
@@ -70,7 +70,14 @@ export const projectApi = createApi({
 
     // New endpoint for uploading data to tables
     uploadTableData: builder.mutation<UploadDataResponse, UploadDataRequest>({
-      query: ({ projectUuid, schemaName, data, format = "json", trimStrings = true, batchSize = 500 }) => ({
+      query: ({
+        projectUuid,
+        schemaName,
+        data,
+        format = "json",
+        trimStrings = true,
+        batchSize = 500,
+      }) => ({
         url: `/v1/projects/${projectUuid}/rest/tables/${schemaName}/data/upload`,
         method: "POST",
         body: data,
@@ -84,11 +91,22 @@ export const projectApi = createApi({
     }),
 
     // Alternative endpoint that matches your original URL structure
-    insertTableDataFromEditor: builder.mutation<UploadDataResponse, UploadDataRequest>({
-      query: ({ projectUuid, schemaName, data, format = "json", trimStrings = true, batchSize = 500 }) => ({
-        url: `/v1/projects/e12e54e2-f88b-4db1-856c-99bbb57a1354/rest/tables/user/data/insert-from-editor-plain`,
+    insertTableDataFromEditor: builder.mutation<
+      UploadDataResponse,
+      UploadDataRequest
+    >({
+      query: ({
+        projectUuid,
+        schemaName,
+        data,
+        format = "json",
+        trimStrings = true,
+        batchSize = 500,
+      }) => ({
+        // Use dynamic URL with the actual projectUuid and schemaName
+        url: `/table/projects/${projectUuid}/rest/tables/${schemaName}/data/insert-from-editor-plain`,
         method: "POST",
-        body: data,
+        body: data, // This should be the JSON array/object
         params: {
           format,
           trimStrings,
@@ -98,10 +116,6 @@ export const projectApi = createApi({
       invalidatesTags: ["TableData"],
     }),
   }),
-
-
-
-  
 });
 
 export const {

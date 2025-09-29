@@ -9,6 +9,8 @@ export interface DataSourceRecord {
   created_by: string;
   schema_name: string;
   project_uuid: string;
+  deleted_at?: string;
+  deleted_data?: unknown;
 }
 
 export interface DataSourceResponse {
@@ -45,10 +47,39 @@ export interface GetDataParams {
   sort?: string;
 }
 
-//add new interface for the projects stats API response
+//projects stats API response
 export interface ProjectStatsResponse {
-  totalRecord: number;
-  lastUpdatedAt: string;
+  message: string;
+  data: {
+    total: number;
+    records: unknown;
+  };
+}
+
+export interface UpdateDataRequest {
+  schemaName: string;
+  projectUuid: string;
+  userUuid: string;
+  id: string | number;
+  data: Record<string, unknown>;
+}
+
+//Link Record request payload
+export interface LinkRecordRequest {
+  projectUuid: string;
+  sourceSchemaName: string; // The primary table ({{table}})
+  sourceRecordId: string | number; // The ID of the record being modified ({{id}})
+  targetSchemaName: string; // The related table ({{otherTable}})
+  add?: (string | number)[]; // Array of IDs to link
+  remove?: (string | number)[]; // Array of IDs to unlink
+}
+
+//Import request
+export interface ImportDataRequest {
+  projectUuid: string;
+  schemaName: string;
+  importMethod: string; // 'replace', 'append', or 'update'
+  file: File;
 }
 
 export const dataSourceApi = createApi({
@@ -65,22 +96,9 @@ export const dataSourceApi = createApi({
   }),
   tagTypes: ["DataSource"],
   endpoints: builder => ({
-    // Insert data into a schema
-    // insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
-    //   query: ({ schemaName, projectUuid, userUuid, data }) => ({
-    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: (result, error, { schemaName, projectUuid }) => [
-    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-    //   ],
-    // }),
-
     // Insert record
     insertSchemaRow: builder.mutation<InsertDataResponse, InsertDataRequest>({
       query: ({ schemaName, projectUuid, userUuid, data }) => ({
-        //  this will hit our new route.ts (which proxies backend)
         url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
         method: "POST",
         body: data,
@@ -90,16 +108,6 @@ export const dataSourceApi = createApi({
       ],
     }),
 
-    // Get data from a schema
-    // getData: builder.query<DataSourceResponse, GetDataParams>({
-    //   query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
-    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
-    //     method: "GET",
-    //   }),
-    //   providesTags: (result, error, { schemaName, projectUuid }) => [
-    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-    //   ],
-    // }),
     // Fetch records
     getSchemaRows: builder.query<DataSourceResponse, GetDataParams>({
       query: ({
@@ -113,13 +121,27 @@ export const dataSourceApi = createApi({
         const params = new URLSearchParams({
           page: String(page),
           limit: String(limit),
+          sort: sort || "created_at",
         });
-        if (sort) params.append("sort", sort);
 
         return {
-          //  matches our GET in route.ts
           url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?${params.toString()}`,
           method: "GET",
+        };
+      },
+
+      transformResponse: (response: DataSourceResponse) => {
+        const filteredData = response.data.filter(
+          (record: any) =>
+            record && Object.keys(record).length > 0 && !record.deleted_at
+        );
+        return {
+          ...response,
+          data: filteredData,
+          pagination: {
+            ...response.pagination,
+            total: filteredData.length,
+          },
         };
       },
       providesTags: (result, error, { schemaName, projectUuid }) => [
@@ -127,9 +149,61 @@ export const dataSourceApi = createApi({
       ],
     }),
 
-    // Endpoint to get project-wide stats
+    //get project-wide stats (get all record)
     getProjectStats: builder.query<ProjectStatsResponse, string>({
-      query: projectUuid => `/project/${projectUuid}/stats`,
+      query: projectUuid => `/projects/${projectUuid}/rest/records-with-counts`,
+    }),
+
+    //update record
+    updateSchemaRow: builder.mutation<void, UpdateDataRequest>({
+      query: ({ schemaName, projectUuid, userUuid, id, data }) => ({
+        url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        {
+          type: "DataSource",
+          id: `${schemaName}-${projectUuid}`,
+        },
+      ],
+    }),
+
+    //delete record
+    deleteSchemaRow: builder.mutation<
+      void,
+      {
+        schemaName: string;
+        projectUuid: string;
+        userUuid: string;
+        id: string | number;
+      }
+    >({
+      query: ({ schemaName, projectUuid, userUuid, id }) => ({
+        url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+      ],
+    }),
+
+    //handle file import
+    importData: builder.mutation<void, ImportDataRequest>({
+      query: ({ projectUuid, schemaName, importMethod, file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("method", importMethod);
+
+        return {
+          url: `/projects/${projectUuid}/rest/tables/${schemaName}/data/upload`,
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: (result, error, { schemaName, projectUuid }) => [
+        { type: "DataSource", id: `${schemaName}-${projectUuid}` },
+      ],
     }),
   }),
 });
@@ -137,5 +211,8 @@ export const dataSourceApi = createApi({
 export const {
   useInsertSchemaRowMutation,
   useGetSchemaRowsQuery,
-  useGetProjectStatsQuery, //new export the hook
+  useGetProjectStatsQuery,
+  useDeleteSchemaRowMutation,
+  useUpdateSchemaRowMutation,
+  useImportDataMutation,
 } = dataSourceApi;

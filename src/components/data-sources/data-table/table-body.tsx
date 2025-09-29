@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   ColumnDef,
   RowSelectionState,
@@ -10,12 +10,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, Edit, Check, X } from "lucide-react";
-import { AddRowForm } from "./add-row-form";
+import { Plus, Trash2, Edit, Check, X, Key } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge";
+import { AddRowForm } from "./add-row-form"; // 🔑 FIX: Import the missing component
 
-import type { DataSourceRecord } from "@/service/apiSlide/dataSourceApi";
+import type {
+  DataSourceRecord,
+  UpdateDataRequest,
+} from "@/service/apiSlide/dataSourceApi";
 import type { Schema } from "@/service/apiSlide/schemaApi";
+import type { LogAction } from "@/types/dataSource";
 
 // Utility: map SQL types → color-coded badge classes
 const getTypeColor = (type: string) => {
@@ -41,6 +45,10 @@ export function TableBody({
   onSelectedIdsChange,
   onAddRow,
   onDeleteRow,
+  updateSchemaRow,
+  projectUuid,
+  refetch,
+  onLog,
 }: {
   rows: DataSourceRecord[];
   schema: Schema | undefined;
@@ -51,41 +59,69 @@ export function TableBody({
   onSelectedIdsChange: (ids: (string | number)[]) => void;
   onAddRow: (data: Record<string, unknown>) => void;
   onDeleteRow: (id: string | number) => void;
+  updateSchemaRow: (args: UpdateDataRequest) => Promise<any>;
+  projectUuid: string;
+  refetch: () => void;
+  onLog?: (action: LogAction, title: string, description: string) => void;
 }) {
-  // Local UI state for editing and adding rows
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingRow, setEditingRow] = useState<string | number | null>(null);
   const [editData, setEditData] = useState<Record<string, unknown>>({});
+  const userUuid = "user-123";
 
-  // Row edit handlers
-  const handleEditRow = (row: DataSourceRecord) => {
+  const handleEditRow = useCallback((row: DataSourceRecord) => {
     setEditingRow(row.id);
     setEditData(row);
-  };
+  }, []);
 
-  const handleSaveEdit = () => {
-    if (editingRow && editData) {
-      // TODO: hook up API call for update
-      console.log("Saving edited data:", editData);
+  //Save edit to API and log
+  const handleSaveEdit = useCallback(async () => {
+    if (!editingRow || !editData || !schema) return;
+    try {
+      await updateSchemaRow({
+        schemaName: schema.schemaName,
+        projectUuid,
+        userUuid,
+        id: editingRow,
+        data: editData,
+      }).unwrap();
+
+      if (onLog) {
+        onLog("UPDATE", "Row Updated", `Updated record ${editingRow}`);
+      }
+
       setEditingRow(null);
       setEditData({});
+      refetch();
+    } catch (err: any) {
+      console.error("Failed to save edit:", err);
+      if (onLog) {
+        onLog(
+          "ERROR",
+          "Failed to Update Row",
+          "There was an error updating the record."
+        );
+      }
     }
-  };
+  }, [
+    editingRow,
+    editData,
+    schema,
+    projectUuid,
+    userUuid,
+    updateSchemaRow,
+    onLog,
+    refetch,
+  ]);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditingRow(null);
     setEditData({});
-  };
+  }, []);
 
-  /**
-   * --- Table columns ---
-   * Dynamically built from schema, but always ensure:
-   *  1. Checkbox select column is first
-   *  2. "id" column is forced to appear before other schema fields
-   *  3. Actions (edit/delete) column is last
-   */
+  //Build columns dynamically based on schema
   const columns = useMemo<ColumnDef<DataSourceRecord>[]>(() => {
-    // 1. Row select checkbox column
+    // Row select checkbox column
     const selectCol: ColumnDef<DataSourceRecord> = {
       id: "_select",
       header: ({ table }) => (
@@ -105,45 +141,54 @@ export function TableBody({
       size: 48,
     };
 
-    // 2. Schema-driven columns
     const schemaCols: ColumnDef<DataSourceRecord>[] = [];
 
-    // force "id" column first if present
+    // Force "id" column first if present
     if (schema?.columns?.id) {
       schemaCols.push({
         accessorKey: "id",
         header: () => (
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700 dark:text-slate-200">
+         <div className="flex items-center gap-1 sm:gap-2">
+            <Key 
+              size={12} 
+              className="text-secondary-500 dark:text-secondary-500 sm:hidden" 
+              title="Primary Key"
+            />
+            <Key 
+              size={14} 
+              className="text-secondary-500 dark:text-secondary-500 hidden sm:block" 
+              title="Primary Key"
+            />
+            <span className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">
               id
             </span>
             <Badge
               variant="secondary"
               className={`text-xs rounded-xs font-mono ${getTypeColor(
                 schema.columns["id"]
-              )}`}
+              )} hidden sm:inline-flex`}
             >
               {schema.columns["id"].split(" ")[0]}
             </Badge>
           </div>
         ),
         cell: ({ getValue }) => (
-          <span className="font-mono text-gray-500 dark:text-gray-400">
+          <span className="font-mono text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
             {String(getValue() ?? "")}
           </span>
         ),
       });
     }
 
-    // render all other schema columns
+    // Render other schema columns dynamically
     Object.keys(schema?.columns ?? {})
       .filter(c => c !== "id")
       .forEach(colName => {
         schemaCols.push({
           accessorKey: colName,
           header: () => (
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm truncate max-w-[80px] sm:max-w-none">
                 {colName}
               </span>
               {schema?.columns?.[colName] && (
@@ -151,47 +196,56 @@ export function TableBody({
                   variant="secondary"
                   className={`text-xs rounded-xs font-mono ${getTypeColor(
                     schema.columns[colName]
-                  )}`}
+                  )} hidden sm:inline-flex`}
                 >
                   {schema.columns[colName].split(" ")[0]}
                 </Badge>
               )}
             </div>
           ),
+          // Handle editing input & static display
           cell: (ctx: CellContext<DataSourceRecord, unknown>) => {
             const value = ctx.getValue();
             const row = ctx.row;
 
-            // If row is currently in edit mode → render editable input
             if (editingRow === row.original.id) {
+              const inputType =
+                schema?.columns?.[colName]?.toLowerCase().includes("decimal") ||
+                schema?.columns?.[colName]?.toLowerCase().includes("numeric")
+                  ? "number"
+                  : "text";
+
               return (
                 <input
-                  type="number"
-                  value={editData[colName] as string | number ?? ""}
+                  type={inputType}
+                  value={(editData[colName] as string | number) ?? ""}
                   onChange={e =>
                     setEditData(prev => ({
                       ...prev,
                       [colName]: e.target.value,
                     }))
                   }
-                  step="0.01"
-                  className="w-full bg-transparent border border-slate-400 rounded px-2 py-1 text-sm"
+                  step={inputType === "number" ? "0.01" : undefined}
+                  className="w-full bg-transparent border border-slate-400 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm"
                 />
               );
             }
 
-            // Special formatting for price column (this one can not increase as decimal yet)
+            //Special price formatting
             if (colName === "price") {
               const v = Number(value);
               return (
-                <span className="dark:text-gray-200 text-gray-600">
+                <span className="dark:text-gray-200 text-gray-600 text-xs sm:text-sm">
                   {`$${Number.isFinite(v) ? v.toFixed(2) : "0.00"}`}
                 </span>
               );
             }
 
             return (
-              <span className="dark:text-gray-200 text-gray-600">
+              <span
+                className="dark:text-gray-200 text-gray-600 text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none"
+                title={String(value ?? "")}
+              >
                 {String(value ?? "")}
               </span>
             );
@@ -199,44 +253,48 @@ export function TableBody({
         });
       });
 
-    // 3. Actions column (edit/delete)
+    // Action buttons column (edit/delete)
     const actionsCol: ColumnDef<DataSourceRecord> = {
       id: "_actions",
       header: () => null,
       cell: ({ row }) => (
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-0.5 sm:gap-1">
           {editingRow === row.original.id ? (
             <>
               <button
-                className="text-slate-500 hover:text-green-400 p-1 rounded"
+                className="text-slate-500 hover:text-green-400 p-0.5 sm:p-1 rounded"
                 title="Save"
                 onClick={handleSaveEdit}
               >
-                <Check size={14} />
+                <Check size={12} className="sm:hidden" />
+                <Check size={14} className="hidden sm:block" />
               </button>
               <button
-                className="text-slate-500 hover:text-gray-400 p-1 rounded"
+                className="text-slate-500 hover:text-gray-400 p-0.5 sm:p-1 rounded"
                 title="Cancel"
                 onClick={handleCancelEdit}
               >
-                <X size={14} />
+                <X size={12} className="sm:hidden" />
+                <X size={14} className="hidden sm:block" />
               </button>
             </>
           ) : (
             <>
               <button
-                className="text-slate-500 hover:text-blue-400 p-1 rounded"
+                className="text-slate-500 hover:text-blue-400 p-0.5 sm:p-1 rounded"
                 title="Edit"
                 onClick={() => handleEditRow(row.original)}
               >
-                <Edit size={14} />
+                <Edit size={12} className="sm:hidden" />
+                <Edit size={14} className="hidden sm:block" />
               </button>
               <button
-                className="text-slate-500 hover:text-red-400 p-1 rounded"
+                className="text-slate-500 hover:text-red-400 p-0.5 sm:p-1 rounded"
                 title="Delete"
                 onClick={() => onDeleteRow(row.original.id)}
               >
-                <Trash2 size={14} />
+                <Trash2 size={12} className="sm:hidden" />
+                <Trash2 size={14} className="hidden sm:block" />
               </button>
             </>
           )}
@@ -246,9 +304,17 @@ export function TableBody({
     };
 
     return [selectCol, ...schemaCols, actionsCol];
-  }, [schema, editingRow, editData, onDeleteRow]);
+  }, [
+    schema,
+    editingRow,
+    editData,
+    onDeleteRow,
+    handleSaveEdit,
+    handleCancelEdit,
+    handleEditRow,
+  ]);
 
-  // React Table setup
+  //React Table setup
   const table = useReactTable({
     data: rows ?? [],
     columns,
@@ -259,81 +325,97 @@ export function TableBody({
     enableRowSelection: true,
   });
 
-  // Sync selected row IDs back to parent component
+  // Sync selected row IDs back to parent
   useEffect(() => {
     const ids = table.getSelectedRowModel().rows.map(r => r.original.id);
     onSelectedIdsChange(ids);
   }, [rowSelection, table, onSelectedIdsChange]);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-      <table className="w-full border-collapse text-gray-800 dark:text-white">
-        <thead>
-          <tr className="border-b border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700">
-            {table.getFlatHeaders().map((header, i) => (
-              <th
-                key={header.id}
-                className={
-                  "p-3 " +
-                  (i === 0 || i === table.getFlatHeaders().length - 1
-                    ? "w-12 "
-                    : "") +
-                  "border-r border-slate-200 dark:border-slate-600 text-left text-slate-700 dark:text-slate-300 font-medium"
-                }
-              >
-                {header.id === "_actions" ? (
-                  // Right-side "Add row" button
-                  <button
-                    onClick={() => setShowAddForm(true)}
-                    className="float-right text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 p-1 rounded transition-colors"
-                    title="Add new row"
-                  >
-                    <Plus size={16} />
-                  </button>
-                ) : (
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {/* Real API rows */}
-          {table.getRowModel().rows.map(row => (
-            <tr
-              key={row.id}
-              className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600
-                ${row.getIsSelected() ? "bg-slate-100 dark:bg-slate-600" : ""}
-                ${editingRow === row.original.id ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
-            >
-              {row.getVisibleCells().map(cell => (
-                <td
-                  key={cell.id}
-                  className="p-3 border-r border-slate-200 dark:border-slate-700 text-sm"
+    <div className="bg-white dark:bg-slate-800 rounded overflow-hidden border border-slate-200 dark:border-slate-700">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[600px] border-collapse text-gray-800 dark:text-white">
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700">
+              {table.getFlatHeaders().map((header, i) => (
+                <th
+                  key={header.id}
+                  className={
+                    "p-2 sm:p-3 " +
+                    (i === 0 || i === table.getFlatHeaders().length - 1
+                      ? "w-10 sm:w-12 "
+                      : "") +
+                    "border-r border-slate-200 dark:border-slate-600 text-left text-slate-700 dark:text-slate-300 font-medium"
+                  }
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                  {header.id === "_actions" ? (
+                    // Right-side "Add row" button
+                    <button
+                      onClick={() => setShowAddForm(true)}
+                      className="float-right text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 p-0.5 sm:p-1 rounded transition-colors"
+                      title="Add new row"
+                    >
+                      <Plus size={14} className="sm:hidden" />
+                      <Plus size={16} className="hidden sm:block" />
+                    </button>
+                  ) : (
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )
+                  )}
+                </th>
               ))}
             </tr>
-          ))}
+          </thead>
 
-          {/* Inline "add row" form */}
-          {showAddForm && (
-            <AddRowForm
-              schema={schema}
-              onSave={data => {
-                onAddRow(data); 
-                setShowAddForm(false);
-              }}
-              onCancel={() => setShowAddForm(false)}
-            />
-          )}
-        </tbody>
-      </table>
+          <tbody>
+            {/* Render AddRowForm inline */}
+            {showAddForm && (
+              <AddRowForm
+                schema={schema}
+                onSave={data => {
+                  onAddRow(data);
+                  setShowAddForm(false);
+                }}
+                onCancel={() => setShowAddForm(false)}
+              />
+            )}
+            {/*Show empty-state only if no rows and form hidden */}
+            {!showAddForm && table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="text-center p-4 text-muted-foreground text-sm"
+                >
+                  No data in this schema. Add a new row to get started.
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map(row => (
+                <tr
+                  key={row.id}
+                  className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600
+                  ${row.getIsSelected() ? "bg-slate-100 dark:bg-slate-600" : ""}
+                  ${editingRow === row.original.id ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <td
+                      key={cell.id}
+                      className="p-2 sm:p-3 border-r border-slate-200 dark:border-slate-700 text-xs sm:text-sm"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

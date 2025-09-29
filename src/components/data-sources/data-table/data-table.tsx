@@ -12,30 +12,29 @@ import { useGetSchemasQuery, type Schema } from "@/service/apiSlide/schemaApi";
 import {
   useGetSchemaRowsQuery,
   useInsertSchemaRowMutation,
+  useDeleteSchemaRowMutation,
+  useUpdateSchemaRowMutation,
+  useImportDataMutation,
 } from "@/service/apiSlide/dataSourceApi";
 import { skipToken } from "@reduxjs/toolkit/query";
+// import { useCallback } from "react";
+// import { isFetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 
 interface DataTableProps {
   projectUuid: string;
   schema: Schema | undefined;
   onLog?: (action: LogAction, title: string, description: string) => void;
-  // onAddRow is no longer a prop, will define the logic here
-  onDeleteRow: (id: string | number) => void;
 }
 
-export function DataTable({
-  projectUuid,
-  // schema,
-  onLog,
-  onDeleteRow,
-}: DataTableProps) {
+export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [autoResetOpen, setAutoResetOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // active schema tab
+  //active schema tab
   const [activeTable, setActiveTable] = useState<string>("");
 
   //fetch all schemas for this project
@@ -48,12 +47,13 @@ export function DataTable({
   );
 
   // fetch rows only if schema selected
+  const userUuid = "user-123";
   const { data: rowsData, refetch } = useGetSchemaRowsQuery(
     activeTable
       ? {
           schemaName: activeTable, // match schemaName from TableHeader
           projectUuid,
-          userUuid: "user-123", // TODO: replace with session user
+          userUuid, // replace with session user
           page: 1,
           limit: 10,
         }
@@ -61,14 +61,18 @@ export function DataTable({
   );
 
   // Debug only rowsData
-  console.log("📡 rowsData from API:", rowsData);
+  console.log("[rowsData] from API:", rowsData);
 
   const rows = useMemo(() => rowsData?.data ?? [], [rowsData]);
   const total = rows.length;
 
   // Initialize the RTK Query mutation hook
-  const [insertSchemaRow, { isLoading: isAddingRow, error: addRowError }] =
-    useInsertSchemaRowMutation();
+  // const [insertSchemaRow, { isLoading: isAddingRow, error: addRowError }] =
+  //   useInsertSchemaRowMutation();
+  const [insertSchemaRow] = useInsertSchemaRowMutation();
+  const [deleteSchemaRow] = useDeleteSchemaRowMutation();
+  const [updateSchemaRow] = useUpdateSchemaRowMutation();
+  const [importData, { isLoading: isImporting }] = useImportDataMutation();
 
   // Define the handler to add a row
   const handleAddRow = async (data: Record<string, unknown>) => {
@@ -106,17 +110,71 @@ export function DataTable({
     }
   };
 
-  const handleDeleteSelected = () => {
+  //Define the handler for deleting a row
+  const handleDeleteRow = async (id: string | number) => {
+    // const displayId = name || id; // Use the name if available, otherwise use the ID
+
+    if (!activeSchema) {
+      console.error("No active schema to delete from.");
+      return;
+    }
+
+    // Find the row object from the local state before deletion
+    const rowToDelete = rows.find(row => row.id === id);
+
+    // Determine the name for the log.
+    // We must cast the record to 'any' or check for common keys since the type is unknown.
+    const rowName =
+      (rowToDelete as any)?.name || (rowToDelete as any)?.title || id;
+    const displayId = rowName; // Use the found name or the ID as the display name.
+
+    try {
+      await deleteSchemaRow({
+        schemaName: activeSchema.schemaName,
+        projectUuid,
+        userUuid: "user-123", //replace with session user
+        id,
+      }).unwrap();
+
+      // Log a success message to the browser console
+      console.log(`DELETE Record ${id} deleted successfully.`);
+
+      // Log the action to the UI's activity log
+      onLog?.("DELETE", "Row Deleted", `Removed record ${displayId}`);
+
+      refetch();
+    } catch (err: unknown) {
+      console.error(`Error deleting record ${id}:`, err);
+
+      // Log the error action to the UI
+      onLog?.(
+        "ERROR",
+        "Failed to Delete Row",
+        `Failed to delete record ${displayId}.`
+      );
+    }
+  };
+
+  // delete all selected rows
+  const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) return;
+
+    //Loop through each selected ID and call the delete handler
+    for (const id of selectedIds) {
+      await handleDeleteRow(id);
+    }
+
     onLog?.(
       "DELETE",
       "Rows Deleted",
       `Removed ${selectedIds.length} record(s)`
     );
+    // After deletion, reset the selection state
     setRowSelection({});
     setSelectedIds([]);
   };
 
+  //refresh
   const handleRefresh = async () => {
     setIsRefreshing(true);
     setRowSelection({});
@@ -126,6 +184,63 @@ export function DataTable({
       await refetch();
     } finally {
       setIsRefreshing(false);
+    }
+  };
+
+  const isFetchBaseQueryError = (error: unknown): error is { status: number | string; data: unknown } => {
+  return typeof error === 'object' && error !== null && 'status' in error;
+};
+  //handle import action
+  const handleImportFile = async (file: File, method: string) => {
+    if (!activeSchema) return;
+
+    try {
+      await importData({
+        projectUuid,
+        schemaName: activeSchema.schemaName,
+        importMethod: method,
+        file,
+      }).unwrap();
+
+      onLog?.(
+        "IMPORT",
+        "Data Import Successful",
+        `Imported ${file.name} using ${method} method.`
+      );
+
+      // Refresh the table after successful import
+      refetch();
+    } catch (error: unknown) { // Use unknown for type safety
+        
+        let displayMessage = "Import failed. Check network tab for error details.";
+
+        // 🔑 FIX: Use the local type guard
+        if (isFetchBaseQueryError(error)) {
+            const status = error.status;
+            
+            // Now it's safe to check the data property if it exists
+            if (error.data && typeof error.data === 'object') {
+                const dataObj = error.data as Record<string, unknown>;
+                
+                // Check for common backend message fields: 'error', 'message'
+                if ('error' in dataObj && typeof dataObj.error === 'string') {
+                    displayMessage = dataObj.error;
+                } else if ('message' in dataObj && typeof dataObj.message === 'string') {
+                    displayMessage = dataObj.message;
+                } else {
+                    displayMessage = `Server rejected request (Status: ${status}).`;
+                }
+            } else {
+                displayMessage = `API Error (Status: ${status}).`;
+            }
+        } else if (error instanceof Error) {
+            // General JavaScript error (e.g., network timeout)
+            displayMessage = error.message;
+        }
+        
+        // console.error("❌ File import failed:", displayMessage, error); 
+        
+        onLog?.("ERROR", "Import Failed", `Failed to import data: ${displayMessage}`);
     }
   };
 
@@ -149,14 +264,18 @@ export function DataTable({
 
       {/* Table Body with active schema*/}
       <TableBody
-        // schema={schema}
         schema={activeSchema}
         rows={rows}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
         onSelectedIdsChange={setSelectedIds}
         onAddRow={handleAddRow}
-        onDeleteRow={onDeleteRow}
+        onDeleteRow={handleDeleteRow}
+        updateSchemaRow={updateSchemaRow}
+        // updateMutation={updateSchemaRow}
+        projectUuid={projectUuid}
+        refetch={refetch}
+        onLog={onLog}
       />
 
       {/* Footer */}
@@ -180,13 +299,7 @@ export function DataTable({
         importOpen={importOpen}
         onCloseAutoReset={() => setAutoResetOpen(false)}
         onCloseImport={() => setImportOpen(false)}
-        onImport={(file, method) =>
-          onLog?.(
-            "IMPORT",
-            "Data Imported",
-            `Imported ${file.name} via ${method}`
-          )
-        }
+        onImport={handleImportFile}
       />
     </div>
   );
