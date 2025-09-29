@@ -47,7 +47,7 @@ export interface GetDataParams {
   sort?: string;
 }
 
-//for the projects stats API response
+//projects stats API response
 export interface ProjectStatsResponse {
   message: string;
   data: {
@@ -64,7 +64,7 @@ export interface UpdateDataRequest {
   data: Record<string, unknown>;
 }
 
-// for the Link Record request payload
+//Link Record request payload
 export interface LinkRecordRequest {
   projectUuid: string;
   sourceSchemaName: string; // The primary table ({{table}})
@@ -74,7 +74,7 @@ export interface LinkRecordRequest {
   remove?: (string | number)[]; // Array of IDs to unlink
 }
 
-//for the import request
+//Import request
 export interface ImportDataRequest {
   projectUuid: string;
   schemaName: string;
@@ -96,18 +96,6 @@ export const dataSourceApi = createApi({
   }),
   tagTypes: ["DataSource"],
   endpoints: builder => ({
-    // Insert data into a schema
-    // insertData: builder.mutation<InsertDataResponse, InsertDataRequest>({
-    //   query: ({ schemaName, projectUuid, userUuid, data }) => ({
-    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: (result, error, { schemaName, projectUuid }) => [
-    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-    //   ],
-    // }),
-
     // Insert record
     insertSchemaRow: builder.mutation<InsertDataResponse, InsertDataRequest>({
       query: ({ schemaName, projectUuid, userUuid, data }) => ({
@@ -119,17 +107,6 @@ export const dataSourceApi = createApi({
         { type: "DataSource", id: `${schemaName}-${projectUuid}` },
       ],
     }),
-
-    // Get data from a schema
-    // getData: builder.query<DataSourceResponse, GetDataParams>({
-    //   query: ({ schemaName, projectUuid, userUuid, page = 1, limit = 10 }) => ({
-    //     url: `/${schemaName}/project/${projectUuid}/user/${userUuid}/data?page=${page}&limit=${limit}`,
-    //     method: "GET",
-    //   }),
-    //   providesTags: (result, error, { schemaName, projectUuid }) => [
-    //     { type: "DataSource", id: `${schemaName}-${projectUuid}` },
-    //   ],
-    // }),
 
     // Fetch records
     getSchemaRows: builder.query<DataSourceResponse, GetDataParams>({
@@ -219,8 +196,7 @@ export const dataSourceApi = createApi({
         formData.append("method", importMethod);
 
         return {
-          // Path relative to /api: table/{schema}/project/{uuid}/import
-          url: `table/${schemaName}/project/${projectUuid}/import`,
+          url: `/projects/${projectUuid}/rest/tables/${schemaName}/data/upload`,
           method: "POST",
           body: formData,
         };

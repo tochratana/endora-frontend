@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { Fragment, useState } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { X, Upload, ChevronDown, Database } from "lucide-react";
@@ -9,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface ImportDataModalProps {
   isOpen: boolean;
-  onClose: () => void; // Prop must be defined as async and return a Promise
+  onClose: () => void;
   onImport: (file: File, method: string) => Promise<void>;
 }
 
@@ -26,7 +25,7 @@ export function ImportDataModal({
 }: ImportDataModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedMethod, setSelectedMethod] = useState(importMethods[0]);
-  const [isDragOver, setIsDragOver] = useState(false); // 🔑 State to track API processing
+  const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFileSelect = (file: File) => {
@@ -74,27 +73,19 @@ export function ImportDataModal({
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
     }
-  }; //
+  };
 
   const handleImport = async () => {
-    if (!selectedFile || isProcessing) return; // Prevent double-import
+    if (!selectedFile) return;
 
     setIsProcessing(true);
     try {
       await onImport(selectedFile, selectedMethod.id);
-      console.log(
-        `File imported successfully! File: ${selectedFile.name}, Method: ${selectedMethod.name}`
-      ); // Only close and reset if the API call succeeded
-
-      onClose();
-      setSelectedFile(null);
-    } catch (error) {
-      console.error(
-        " Import failed. Check network tab for error details.",
-        error
-      );
+      handleClose();
+    } catch (err) {
+      console.error("Upload failed", err);
     } finally {
-      setIsProcessing(false); // Re-enable button regardless of success/failure
+      setIsProcessing(false);
     }
   };
 
@@ -209,7 +200,7 @@ export function ImportDataModal({
                         leaveTo="opacity-0"
                       >
                         <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-600 py-1 shadow-lg focus:outline-none">
-                          {importMethods.map(method => (
+                          {importMethods.map((method) => (
                             <Listbox.Option
                               key={method.id}
                               className={({ active }) =>

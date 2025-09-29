@@ -12,6 +12,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Edit, Check, X, Key } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge";
+import { AddRowForm } from "./add-row-form"; // 🔑 FIX: Import the missing component
 
 import type {
   DataSourceRecord,

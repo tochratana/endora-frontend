@@ -51,7 +51,7 @@ export function DeletionWarningModal({
               leaveFrom="opacity-100 scale-100 translate-y-0"
               leaveTo="opacity-0 scale-95 translate-y-2"
             >
-              <Dialog.Panel className="relative w-full max-w-md transform overflow-hidden rounded-xl bg-slate-900 p-8 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="relative w-full max-w-md transform overflow-hidden rounded-xl dark:bg-slate-900 bg-white p-8 text-left align-middle dark:shadow-xl transition-all">
                 {/* Close Button */}
                 <button
                   onClick={onClose}
@@ -71,7 +71,7 @@ export function DeletionWarningModal({
                 </div>
 
                 {/* Title */}
-                <Dialog.Title className="text-xl font-semibold text-white text-center mb-4">
+                <Dialog.Title className="text-xl font-semibold dark:text-white text-center mb-4">
                   {title}
                 </Dialog.Title>
 
@@ -92,7 +92,7 @@ export function DeletionWarningModal({
                   <Button
                     onClick={onClose}
                     variant="outline"
-                    className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-slate-600 transition-all duration-200 py-3"
+                    className="w-full dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border dark:border-slate-700 hover:border-slate-600 transition-all duration-200 py-3"
                   >
                     No, cancel
                   </Button>

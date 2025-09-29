@@ -17,7 +17,9 @@ import {
   useImportDataMutation,
 } from "@/service/apiSlide/dataSourceApi";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useCallback } from "react"; // 🔑 Import useCallback
+// import { useCallback } from "react";
+// import { isFetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 
 interface DataTableProps {
   projectUuid: string;
@@ -32,7 +34,7 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [importOpen, setImportOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  //!active schema tab
+  //active schema tab
   const [activeTable, setActiveTable] = useState<string>("");
 
   //fetch all schemas for this project
@@ -70,7 +72,6 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
   const [insertSchemaRow] = useInsertSchemaRowMutation();
   const [deleteSchemaRow] = useDeleteSchemaRowMutation();
   const [updateSchemaRow] = useUpdateSchemaRowMutation();
-  //Initialize import mutation
   const [importData, { isLoading: isImporting }] = useImportDataMutation();
 
   // Define the handler to add a row
@@ -186,7 +187,10 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
     }
   };
 
-  //handle modal's import action
+  const isFetchBaseQueryError = (error: unknown): error is { status: number | string; data: unknown } => {
+  return typeof error === 'object' && error !== null && 'status' in error;
+};
+  //handle import action
   const handleImportFile = async (file: File, method: string) => {
     if (!activeSchema) return;
 
@@ -206,13 +210,37 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
 
       // Refresh the table after successful import
       refetch();
-    } catch (error) {
-      console.error("File import failed:", error);
-      onLog?.(
-        "ERROR",
-        "Import Failed",
-        `Failed to import data from ${file.name}.`
-      );
+    } catch (error: unknown) { // Use unknown for type safety
+        
+        let displayMessage = "Import failed. Check network tab for error details.";
+
+        // 🔑 FIX: Use the local type guard
+        if (isFetchBaseQueryError(error)) {
+            const status = error.status;
+            
+            // Now it's safe to check the data property if it exists
+            if (error.data && typeof error.data === 'object') {
+                const dataObj = error.data as Record<string, unknown>;
+                
+                // Check for common backend message fields: 'error', 'message'
+                if ('error' in dataObj && typeof dataObj.error === 'string') {
+                    displayMessage = dataObj.error;
+                } else if ('message' in dataObj && typeof dataObj.message === 'string') {
+                    displayMessage = dataObj.message;
+                } else {
+                    displayMessage = `Server rejected request (Status: ${status}).`;
+                }
+            } else {
+                displayMessage = `API Error (Status: ${status}).`;
+            }
+        } else if (error instanceof Error) {
+            // General JavaScript error (e.g., network timeout)
+            displayMessage = error.message;
+        }
+        
+        // console.error("❌ File import failed:", displayMessage, error); 
+        
+        onLog?.("ERROR", "Import Failed", `Failed to import data: ${displayMessage}`);
     }
   };
 
@@ -271,14 +299,7 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
         importOpen={importOpen}
         onCloseAutoReset={() => setAutoResetOpen(false)}
         onCloseImport={() => setImportOpen(false)}
-        onImport={handleImportFile} //Pass the new import handler
-        // onImport={(file, method) =>
-        //   onLog?.(
-        //     "IMPORT",
-        //     "Data Imported",
-        //     `Imported ${file.name} via ${method}`
-        //   )
-        // }
+        onImport={handleImportFile}
       />
     </div>
   );
