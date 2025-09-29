@@ -1,44 +1,170 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Copy, AlertTriangle, CircleX, Check } from "lucide-react";
+import { Copy, AlertTriangle, CircleX, Check, Loader2 } from "lucide-react";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import { ConfirmProjectDialog } from "@/components/popup/comfirmProjectDialog";
 import { useThemeManager } from "@/hooks/use-theme";
+import { useParams } from "next/navigation";
+import {
+  useRenameProjectMutation,
+  useDeleteProjectMutation,
+} from "@/service/project/projectSettingsApi";
+import { useGetProjectByUuidQuery } from "@/service/project/projectApi";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { useGetCurrentUserQuery } from "@/app/store/api/authApi";
 
-const ProjectSettings = () => {
+interface PageProps {
+  params: Promise<{
+    workspaceId: string;
+  }>;
+}
+
+const ProjectSettings = ({ params }: PageProps) => {
+  const [workspaceId, setWorkspaceId] = useState<string>("");
   const [projectName, setProjectName] = useState("");
-  const [projectId] = useState("proj_abc123def456");
+  const [projectId] = useState("proj_abc123def456"); // Will be updated from params
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { mounted, isDark } = useThemeManager();
 
+  // Resolve params
+  useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setWorkspaceId(resolvedParams.workspaceId);
+    };
+    resolveParams();
+  }, [params]);
+
+  // Get current session (proper authentication)
+  const { data: session, status } = useSession();
+
+  // Get detailed user info including userId
+  const { data: userDetail } = useGetCurrentUserQuery(undefined, {
+    skip: !session, // Only fetch if we have a session
+  });
+
+  // Only fetch project data when workspaceId is available to avoid unnecessary calls
+  const {
+    data: projectData,
+    isLoading: projectLoading,
+    error: projectError,
+  } = useGetProjectByUuidQuery(workspaceId, {
+    skip: !workspaceId,
+  });
+
+  // Debug logging to help identify loading issues
+  useEffect(() => {
+    console.log("ProjectSetting Debug:", {
+      workspaceId,
+      sessionStatus: status,
+      projectLoading,
+      projectError,
+      hasSession: !!session,
+      hasUserDetail: !!userDetail,
+      hasProject: !!projectData,
+      userId: userDetail?.id,
+    });
+  }, [
+    workspaceId,
+    status,
+    projectLoading,
+    projectError,
+    session,
+    userDetail,
+    projectData,
+  ]);
+
+  // Mutations
+  const [renameProject] = useRenameProjectMutation();
+  const [deleteProject] = useDeleteProjectMutation();
+
+  // Update project name when data loads
+  useEffect(() => {
+    if (projectData) {
+      setProjectName(projectData.projectName || "");
+    }
+  }, [projectData]);
+
   const handleCopy = useCallback(async () => {
+    if (!workspaceId) return;
+
     try {
-      await navigator.clipboard?.writeText(projectId);
+      await navigator.clipboard?.writeText(workspaceId);
       setIsCopied(true);
-      console.log("Copied to clipboard:", projectId);
+      console.log("Copied to clipboard:", workspaceId);
 
       setTimeout(() => {
         setIsCopied(false);
       }, 2000);
     } catch (err) {
       console.error("Failed to copy Project ID", err);
+      toast.error("Failed to copy Project ID");
     }
-  }, [projectId]);
+  }, [workspaceId]);
 
-  const handleUpdate = useCallback(() => {
-    console.log("Updating project with name:", projectName);
-  }, [projectName]);
+  const handleUpdate = useCallback(async () => {
+    // Debug logging to identify what's missing
+    console.log("Update attempt:", {
+      workspaceId: workspaceId,
+      projectName: projectName,
+      projectNameTrim: projectName.trim(),
+    });
 
-  const handleDeleteProject = useCallback((enteredName: string) => {
-    console.log("Project deletion confirmed:", enteredName);
-    setIsOpen(false);
-  }, []);
+    if (!workspaceId || !projectName.trim()) {
+      toast.error("Project name is required");
+      return;
+    }
 
-  if (!mounted) {
+    setIsUpdating(true);
+    try {
+      await renameProject({
+        projectUuid: workspaceId,
+        projectName: projectName.trim(),
+      }).unwrap();
+
+      toast.success("Project renamed successfully!");
+    } catch (error: any) {
+      console.error("Failed to rename project:", error);
+      toast.error(
+        error?.data?.message || "Failed to rename project. Please try again."
+      );
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [projectName, workspaceId, renameProject]);
+
+  const handleDeleteProject = useCallback(
+    async (enteredName: string) => {
+      if (!workspaceId) {
+        toast.error("Project ID is required");
+        setIsOpen(false);
+        return;
+      }
+
+      try {
+        await deleteProject(workspaceId).unwrap();
+        toast.success("Project deleted successfully!");
+        setIsOpen(false);
+        // Optionally redirect to dashboard or projects list
+        // router.push('/dashboard');
+      } catch (error: any) {
+        console.error("Failed to delete project:", error);
+        toast.error(
+          error?.data?.message || "Failed to delete project. Please try again."
+        );
+      }
+    },
+    [workspaceId, deleteProject]
+  );
+
+  // Show loading while session is loading
+  if (!mounted || status === "loading") {
     return (
       <div className="mx-auto max-w-4xl p-6 pt-12">
         <div className="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700 mb-8"></div>
@@ -47,6 +173,29 @@ const ProjectSettings = () => {
           <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       </div>
+    );
+  }
+
+  // Show error if user authentication fails
+  if (!session) {
+    return (
+      <div className="mx-auto max-w-4xl p-6 pt-12">
+        <h1 className="mb-8 text-3xl font-semibold text-gray-900 dark:text-white">
+          Project Settings
+        </h1>
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+          <p className="text-red-800">
+            Authentication required. Please sign in to access project settings.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if project fetch fails but show the form anyway
+  if (projectError && workspaceId) {
+    toast.error(
+      "Failed to load project details. You can still make changes below."
     );
   }
 
@@ -83,10 +232,11 @@ const ProjectSettings = () => {
                 </Label>
                 <Input
                   id="project-name"
-                  value={projectName}
+                  value={projectLoading ? "Loading..." : projectName}
                   onChange={e => setProjectName(e.target.value)}
                   placeholder="Enter project name"
                   className="h-10 w-full border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white "
+                  disabled={isUpdating || projectLoading}
                 />
               </div>
 
@@ -100,7 +250,7 @@ const ProjectSettings = () => {
                 <div className="relative">
                   <Input
                     id="project-id"
-                    value={projectId}
+                    value={workspaceId || "Loading..."}
                     readOnly
                     aria-readonly
                     className="h-10 w-full border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white pr-16 sm:pr-20"
@@ -137,10 +287,18 @@ const ProjectSettings = () => {
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
-                  className="h-10 border-secondary bg-[#00c9b7] px-4 sm:px-6 hover:bg-[#00c9b7]/90 text-black dark:text-white hover:text-black"
+                  onClick={handleUpdate}
+                  disabled={!projectName.trim() || isUpdating}
+                  className="h-10 border-secondary bg-[#00c9b7] px-4 sm:px-6 hover:bg-[#00c9b7]/90 text-black dark:text-white hover:text-black disabled:opacity-50"
                 >
-                  Update
+                  {isUpdating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Update"
+                  )}
                 </Button>
               </div>
             </div>
@@ -185,7 +343,7 @@ const ProjectSettings = () => {
       <ConfirmProjectDialog
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        projectName="my-awesome-project"
+        projectName={projectData?.projectName || workspaceId || "this project"}
         onConfirm={handleDeleteProject}
       />
     </div>

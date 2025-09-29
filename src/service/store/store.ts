@@ -1,5 +1,6 @@
 import { authApi } from "@/app/store/api/authApi";
 import { projectApi } from "@/service/project/projectApi";
+import { projectSettingsApi } from "@/service/project/projectSettingsApi";
 import { schemaApi } from "@/service/apiSlide/schemaApi";
 import { dataSourceApi } from "@/service/apiSlide/dataSourceApi";
 import { configureStore } from "@reduxjs/toolkit";
@@ -10,6 +11,7 @@ export const store = configureStore({
   reducer: {
     [authApi.reducerPath]: authApi.reducer,
     [projectApi.reducerPath]: projectApi.reducer,
+    [projectSettingsApi.reducerPath]: projectSettingsApi.reducer,
     [schemaApi.reducerPath]: schemaApi.reducer,
     [dataSourceApi.reducerPath]: dataSourceApi.reducer,
   },
@@ -17,6 +19,7 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(authApi.middleware)
       .concat(projectApi.middleware)
+      .concat(projectSettingsApi.middleware)
       .concat(schemaApi.middleware)
       .concat(dataSourceApi.middleware),
 });
