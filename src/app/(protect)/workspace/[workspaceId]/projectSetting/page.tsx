@@ -7,7 +7,6 @@ import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import { ConfirmProjectDialog } from "@/components/popup/comfirmProjectDialog";
 import { useThemeManager } from "@/hooks/use-theme";
-import { useParams } from "next/navigation";
 import {
   useRenameProjectMutation,
   useDeleteProjectMutation,
@@ -16,6 +15,12 @@ import { useGetProjectByUuidQuery } from "@/service/project/projectApi";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useGetCurrentUserQuery } from "@/app/store/api/authApi";
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
 
 interface PageProps {
   params: Promise<{
@@ -26,11 +31,11 @@ interface PageProps {
 const ProjectSettings = ({ params }: PageProps) => {
   const [workspaceId, setWorkspaceId] = useState<string>("");
   const [projectName, setProjectName] = useState("");
-  const [projectId] = useState("proj_abc123def456"); // Will be updated from params
+
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const { mounted, isDark } = useThemeManager();
+  const { mounted } = useThemeManager();
 
   // Resolve params
   useEffect(() => {
@@ -129,39 +134,38 @@ const ProjectSettings = ({ params }: PageProps) => {
       }).unwrap();
 
       toast.success("Project renamed successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to rename project:", error);
+      const e = error as ApiError;
       toast.error(
-        error?.data?.message || "Failed to rename project. Please try again."
+        e.data?.message || "Failed to rename project. Please try again."
       );
     } finally {
       setIsUpdating(false);
     }
   }, [projectName, workspaceId, renameProject]);
 
-  const handleDeleteProject = useCallback(
-    async (enteredName: string) => {
-      if (!workspaceId) {
-        toast.error("Project ID is required");
-        setIsOpen(false);
-        return;
-      }
+  const handleDeleteProject = useCallback(async () => {
+    if (!workspaceId) {
+      toast.error("Project ID is required");
+      setIsOpen(false);
+      return;
+    }
 
-      try {
-        await deleteProject(workspaceId).unwrap();
-        toast.success("Project deleted successfully!");
-        setIsOpen(false);
-        // Optionally redirect to dashboard or projects list
-        // router.push('/dashboard');
-      } catch (error: any) {
-        console.error("Failed to delete project:", error);
-        toast.error(
-          error?.data?.message || "Failed to delete project. Please try again."
-        );
-      }
-    },
-    [workspaceId, deleteProject]
-  );
+    try {
+      await deleteProject(workspaceId).unwrap();
+      toast.success("Project deleted successfully!");
+      setIsOpen(false);
+      // Optionally redirect to dashboard or projects list
+      // router.push('/dashboard');
+    } catch (error: unknown) {
+      console.error("Failed to delete project:", error);
+      const e = error as ApiError;
+      toast.error(
+        e.data?.message || "Failed to delete project. Please try again."
+      );
+    }
+  }, [workspaceId, deleteProject]);
 
   // Show loading while session is loading
   if (!mounted || status === "loading") {

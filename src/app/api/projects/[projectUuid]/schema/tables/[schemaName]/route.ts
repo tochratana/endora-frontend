@@ -1,23 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = process.env.API_BASE; 
-// e.g. http://localhost:8080 (without /api/v1)
+const API_BASE = process.env.API_BASE;
 
 export async function GET(
-  req: Request,
-  { params }: { params: { projectUuid: string; schemaName: string } }
+  request: NextRequest,
+  context: { params: Promise<{ projectUuid: string; schemaName: string }> }
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
-  const jwt = await getToken({ req: req as any, secret });
+  const jwt = await getToken({ req: request, secret });
 
   if (!jwt?.accessToken) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { projectUuid, schemaName } = params;
+  // Await the params Promise and extract the specific properties
+  const params = await context.params;
+  const projectUuid = params.projectUuid;
+  const schemaName = params.schemaName;
+
   const url = `${API_BASE}/api/v1/projects/${projectUuid}/schema/tables/${encodeURIComponent(
     schemaName
   )}`;
@@ -26,7 +27,7 @@ export async function GET(
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt.accessToken}`, // include if backend expects token
+      Authorization: `Bearer ${jwt.accessToken}`,
     },
     cache: "no-store",
   });

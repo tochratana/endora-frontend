@@ -1,6 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getSession } from "next-auth/react";
-
 // Types based on Postman collection
 export interface RenameProjectRequest {
   projectName: string;
@@ -109,7 +107,10 @@ export const projectSettingsApi = createApi({
     }),
 
     // Get Current User (if needed for project settings)
-    getCurrentUser: builder.query<any, void>({
+    getCurrentUser: builder.query<
+      { uuid: string; email: string; username: string },
+      void
+    >({
       query: () => "/auth/me",
       providesTags: ["User"],
     }),

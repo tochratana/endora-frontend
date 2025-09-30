@@ -2,17 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     schemaName: string;
     projectUuid: string;
     userUuid: string;
     id: string;
-  };
+  }>;
 }
 
 const API_BASE = process.env.API_BASE;
-//PATCH
 
+// PATCH
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const token = await getToken({ req: request });
@@ -23,7 +23,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid, userUuid, id } = params;
+    // Await the params Promise first
+    const resolvedParams = await params;
+    const { schemaName, projectUuid, userUuid, id } = resolvedParams;
     const requestData = await request.json();
 
     if (!id || !requestData) {
@@ -68,7 +70,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-//DELETE
+// DELETE
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const token = await getToken({ req: request });
@@ -79,7 +81,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid, userUuid, id } = params;
+    // Await the params Promise first
+    const resolvedParams = await params;
+    const { schemaName, projectUuid, userUuid, id } = resolvedParams;
 
     if (!id) {
       return NextResponse.json(
@@ -112,7 +116,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
       return new NextResponse(null, { status: 204 });
     } catch (err: unknown) {
-      //
       let errorMessage = "Failed to delete record";
       if (err instanceof Error) {
         errorMessage = err.message;

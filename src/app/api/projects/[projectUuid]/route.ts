@@ -8,8 +8,7 @@ interface RouteParams {
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
   const secret = process.env.NEXTAUTH_SECRET;
-  // eslint-disable-next-line @typesjson-eslint/no-explicit-any
-  const jwt = await getToken({ req: req as any, secret });
+  const jwt = await getToken({ req, secret });
 
   if (!jwt?.accessToken) {
     return new NextResponse("Unauthorized", { status: 401 });

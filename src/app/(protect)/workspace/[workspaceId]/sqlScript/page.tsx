@@ -1,5 +1,42 @@
 "use client";
 import React, { use, useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes"; // Import useTheme hook
+
+declare global {
+  interface Window {
+    monaco: typeof import("monaco-editor");
+    require: {
+      config: (config: { paths: Record<string, string> }) => void;
+      (modules: string[], callback: () => void): void;
+    };
+    MonacoEnvironment?: {
+      getWorkerUrl: (moduleId: string, label: string) => string;
+    };
+  }
+}
+
+interface IMonacoEditor {
+  getValue(): string;
+  setValue(value: string): void;
+  getPosition(): { lineNumber: number; column: number } | null;
+  setPosition(position: { lineNumber: number; column: number }): void;
+  layout(): void;
+  focus(): void;
+  onDidChangeModelContent(listener: () => void): void;
+  updateOptions(options: any): void;
+}
+
+interface ErrorResponse {
+  message?: string;
+  error?: string;
+  data?:
+    | {
+        message?: string;
+        error?: string;
+      }
+    | string;
+  status?: number;
+}
 import {
   RefreshCcw,
   Trash2,
@@ -34,6 +71,7 @@ interface Notification {
 
 const JSONEditor = ({ params }: PageProps) => {
   const { workspaceId } = use(params);
+  const { theme, resolvedTheme } = useTheme(); // Get current theme
   console.log("Workspace ID:", workspaceId);
 
   const [activeSchema, setActiveSchema] = useState("");
@@ -50,7 +88,7 @@ const JSONEditor = ({ params }: PageProps) => {
   console.log("This is all schema", schemas);
 
   const editorRef = useRef<HTMLDivElement | null>(null);
-  const monacoRef = useRef<any>(null);
+  const monacoRef = useRef<IMonacoEditor | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [projectUuid, setProjectUuid] = useState("");
   const [isMonacoLoaded, setIsMonacoLoaded] = useState(false);
@@ -64,10 +102,8 @@ const JSONEditor = ({ params }: PageProps) => {
 
   console.log("Data of project", response);
 
-  const [
-    insertTableDataFromEditor,
-    { isLoading: isUploading, error: uploadError },
-  ] = useInsertTableDataFromEditorMutation();
+  const [insertTableDataFromEditor, { isLoading: isUploading }] =
+    useInsertTableDataFromEditorMutation();
 
   // Auto-hide notification after 5 seconds
   useEffect(() => {
@@ -95,14 +131,34 @@ const JSONEditor = ({ params }: PageProps) => {
 
   // Set project UUID when data is fetched
   useEffect(() => {
-    if (response?.data?.projectUuid) {
-      setProjectUuid(response.data.projectUuid);
-    } else if (response?.projectUuid) {
-      setProjectUuid(response.projectUuid);
-    } else if (workspaceId) {
-      setProjectUuid(workspaceId);
+    if (response) {
+      if (
+        "data" in response &&
+        typeof response.data === "object" &&
+        response.data &&
+        "projectUuid" in response.data
+      ) {
+        setProjectUuid(response.data.projectUuid as string);
+      } else if (
+        "projectUuid" in response &&
+        typeof response.projectUuid === "string"
+      ) {
+        setProjectUuid(response.projectUuid);
+      } else if (workspaceId) {
+        setProjectUuid(workspaceId);
+      }
     }
   }, [response, workspaceId]);
+
+  // Update Monaco theme when global theme changes
+  useEffect(() => {
+    if (monacoRef.current && isReady && window.monaco) {
+      const isDark = resolvedTheme === "dark";
+      monacoRef.current.updateOptions({
+        theme: isDark ? "vs-dark" : "vs",
+      });
+    }
+  }, [resolvedTheme, isReady]);
 
   // Load Monaco Editor
   useEffect(() => {
@@ -133,6 +189,7 @@ const JSONEditor = ({ params }: PageProps) => {
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMonacoLoaded]);
 
   const loadMonacoEditor = () => {
@@ -165,10 +222,12 @@ const JSONEditor = ({ params }: PageProps) => {
     if (!editorRef.current || monacoRef.current) return;
 
     const activeTab = schemaTabs.find(tab => tab.isActive);
+    const isDark = resolvedTheme === "dark";
+
     monacoRef.current = window.monaco.editor.create(editorRef.current, {
       value: activeTab?.editorValue || "",
       language: "json",
-      theme: "vs-dark",
+      theme: isDark ? "vs-dark" : "vs",
       automaticLayout: true,
       minimap: { enabled: false },
       fontSize: 14,
@@ -178,14 +237,20 @@ const JSONEditor = ({ params }: PageProps) => {
       readOnly: false,
     });
 
-    monacoRef.current.onDidChangeModelContent(() => {
-      const value = monacoRef.current.getValue();
-      setSchemaTabs(prev =>
-        prev.map(tab =>
-          tab.schemaName === activeSchema ? { ...tab, editorValue: value } : tab
-        )
-      );
-    });
+    if (monacoRef.current) {
+      monacoRef.current.onDidChangeModelContent(() => {
+        if (monacoRef.current) {
+          const value = monacoRef.current.getValue();
+          setSchemaTabs(prev =>
+            prev.map(tab =>
+              tab.schemaName === activeSchema
+                ? { ...tab, editorValue: value }
+                : tab
+            )
+          );
+        }
+      });
+    }
 
     setIsReady(true);
   };
@@ -206,7 +271,7 @@ const JSONEditor = ({ params }: PageProps) => {
           monacoRef.current.setPosition(position);
         }
         setTimeout(() => {
-          monacoRef.current.focus();
+          monacoRef.current?.focus();
         }, 0);
       }
     }
@@ -348,7 +413,7 @@ const JSONEditor = ({ params }: PageProps) => {
       });
 
       console.log("Upload result:", result);
-    } catch (err: any) {
+    } catch (err: Error | ErrorResponse | unknown) {
       console.error("Full error object:", err);
 
       let errorMessage = "Upload failed";
@@ -357,23 +422,34 @@ const JSONEditor = ({ params }: PageProps) => {
       if (typeof err === "string" && err.includes("<!DOCTYPE html>")) {
         errorMessage = "Network Error";
         errorDetails = "Received HTML response. Check CORS or API endpoint.";
-      } else if (err.name === "SyntaxError") {
+      } else if (err instanceof SyntaxError) {
         errorMessage = "Invalid JSON";
         errorDetails = "Please check your JSON syntax";
-      } else if (err.data) {
+      } else if (err && typeof err === "object" && "data" in err) {
+        const errorObj = err as ErrorResponse;
         try {
           const errorData =
-            typeof err.data === "string" ? JSON.parse(err.data) : err.data;
-          errorMessage = errorData.message || errorData.error || "API Error";
+            typeof errorObj.data === "string"
+              ? JSON.parse(errorObj.data)
+              : errorObj.data;
+          errorMessage =
+            (errorData as { message?: string; error?: string })?.message ||
+            (errorData as { message?: string; error?: string })?.error ||
+            "API Error";
           errorDetails = JSON.stringify(errorData);
-        } catch (parseError) {
-          errorMessage = err.data.message || err.data.error || "API Error";
-          errorDetails = err.data.toString();
+        } catch {
+          const errData = errorObj.data;
+          errorMessage =
+            (typeof errData === "object" && errData
+              ? errData.message || errData.error
+              : undefined) || "API Error";
+          errorDetails = String(errorObj.data);
         }
-      } else if (err.status) {
-        errorMessage = `Error ${err.status}`;
-        errorDetails = err.error || "Request failed";
-      } else if (err.message) {
+      } else if (err && typeof err === "object" && "status" in err) {
+        const errorObj = err as ErrorResponse;
+        errorMessage = `Error ${errorObj.status}`;
+        errorDetails = errorObj.error || "Request failed";
+      } else if (err instanceof Error) {
         errorMessage = "Error";
         errorDetails = err.message;
       }
@@ -388,7 +464,7 @@ const JSONEditor = ({ params }: PageProps) => {
 
   if (isProjectLoading || schemaLoading) {
     return (
-      <div className="h-screen bg-gray-900 flex items-center justify-center text-gray-400">
+      <div className="h-screen bg-white dark:bg-slate-900 flex items-center justify-center text-gray-400">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-2"></div>
           Loading project data...
@@ -399,12 +475,16 @@ const JSONEditor = ({ params }: PageProps) => {
 
   if (projectError || schemaError) {
     return (
-      <div className="h-screen bg-gray-900 flex items-center justify-center text-red-400">
+      <div className="h-screen bg-white dark:bg-slate-900 flex items-center justify-center text-red-400">
         <div className="text-center">
           <p>Error loading project data</p>
           <p className="text-sm mt-2">
-            {(projectError as any)?.message ||
-              (schemaError as any)?.message ||
+            {(projectError && "message" in projectError
+              ? projectError.message
+              : "") ||
+              (schemaError && "message" in schemaError
+                ? schemaError.message
+                : "") ||
               "Unknown error"}
           </p>
         </div>
@@ -413,8 +493,8 @@ const JSONEditor = ({ params }: PageProps) => {
   }
 
   return (
-    <div className="h-screen bg-gray-900">
-      <div className="flex flex-col h-full">
+    <div className="h-screen bg-white dark:bg-slate-900">
+      <div className="flex flex-col h-full pt-20">
         {/* Notification Toast */}
         {notification && (
           <div className="absolute top-4 right-4 z-50 animate-in slide-in-from-top-5 duration-300">
@@ -449,15 +529,15 @@ const JSONEditor = ({ params }: PageProps) => {
         )}
 
         {/* Schema Tabs */}
-        <div className="flex border-b border-gray-700 bg-gray-800">
+        <div className="flex border-b border-gray-300 bg-gray-200 dark:border-gray-700 dark:bg-gray-800">
           {schemaTabs.map(tab => (
             <button
               key={tab.schemaName}
               onClick={() => handleTabClick(tab.schemaName)}
-              className={`px-4 py-2 border-r border-gray-700 text-sm font-medium transition-colors ${
+              className={`px-4 py-2 border-r border-gray-300 dark:border-gray-700 text-sm font-medium transition-colors ${
                 tab.isActive
-                  ? "bg-gray-900 text-white border-b-2 border-blue-500"
-                  : "text-gray-400 hover:text-white hover:bg-gray-750"
+                  ? "bg-white dark:bg-slate-900 text-gray-900 dark:text-white border-b-2 border-blue-500"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-750"
               }`}
             >
               {tab.schemaName}
@@ -466,7 +546,7 @@ const JSONEditor = ({ params }: PageProps) => {
         </div>
 
         {/* Toolbar */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+        <div className="flex items-center justify-between p-4 border-b border-gray-300 dark:border-gray-700">
           <div className="flex items-center gap-4">
             <button
               onClick={formatCode}
@@ -484,9 +564,11 @@ const JSONEditor = ({ params }: PageProps) => {
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Schema:{" "}
-              <span className="text-white font-semibold">{activeSchema}</span>
+              <span className="text-gray-900 dark:text-white font-semibold">
+                {activeSchema}
+              </span>
             </span>
             <button
               onClick={runQuery}
@@ -517,8 +599,8 @@ const JSONEditor = ({ params }: PageProps) => {
             style={{ minHeight: "400px" }}
           />
           {!isReady && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80 z-10">
-              <div className="text-center text-gray-400">
+            <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900/80 z-10">
+              <div className="text-center text-gray-600 dark:text-gray-400">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-2"></div>
                 Loading Editor...
               </div>

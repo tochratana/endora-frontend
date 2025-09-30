@@ -31,7 +31,7 @@ export function getSidebarItems(workspaceId: string): SidebarItem[] {
     { icon: Grid3X3,  label: "Database Connection",   href: `${base}/databaseConnection` },
     { icon: Globe,    label: "Public API",            href: `${base}/api` },
     { icon: Folder,   label: "API Docs",              href: `${base}/docs` },
-    { icon: DatabaseZap,   label: "Editor",              href: `${base}/sqlScript` },
+    // { icon: DatabaseZap,   label: "Editor",              href: `${base}/sqlScript` },
     { icon: Settings, label: "Project Setting",       href: `${base}/projectSetting` },
   ]
 }

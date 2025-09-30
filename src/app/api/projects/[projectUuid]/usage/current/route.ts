@@ -3,7 +3,7 @@ import { getToken } from "next-auth/jwt";
 
 export async function GET(
   req: Request,
-  { params }: { params: { projectUuid: string } } // <-- not Promise
+  { params }: { params: Promise<{ projectUuid: string }> } // <-- params is now a Promise
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +14,7 @@ export async function GET(
   }
 
   try {
-    const { projectUuid } = params; // <-- direct destructure
+    const { projectUuid } = await params; // <-- await the params first, then destructure
 
     const response = await fetch(
       `${process.env.API_BASE}/projects/${projectUuid}/usage/current`,

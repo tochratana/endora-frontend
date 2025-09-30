@@ -11,7 +11,7 @@ import ProjectOverview from "@/types/projectOverview";
 export interface UploadDataRequest {
   projectUuid: string;
   schemaName: string;
-  data: any; // JSON data to upload
+  data: Record<string, unknown>; // JSON data to upload
   format?: string;
   trimStrings?: boolean;
   batchSize?: number;
@@ -28,7 +28,7 @@ export const projectApi = createApi({
   reducerPath: "projectApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: headers => {
       headers.set("Content-Type", "application/json");
 
       // Add authorization header if you have token in your state

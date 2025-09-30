@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, Edit, Check, X, Key } from "lucide-react"; 
+import { Plus, Trash2, Edit, Check, X, Key } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AddRowForm } from "./add-row-form"; // 🔑 FIX: Import the missing component
 
@@ -59,7 +59,7 @@ export function TableBody({
   onSelectedIdsChange: (ids: (string | number)[]) => void;
   onAddRow: (data: Record<string, unknown>) => void;
   onDeleteRow: (id: string | number) => void;
-  updateSchemaRow: (args: UpdateDataRequest) => Promise<any>;
+  updateSchemaRow: (args: UpdateDataRequest) => Promise<void>;
   projectUuid: string;
   refetch: () => void;
   onLog?: (action: LogAction, title: string, description: string) => void;
@@ -84,7 +84,7 @@ export function TableBody({
         userUuid,
         id: editingRow,
         data: editData,
-      }).unwrap();
+      });
 
       if (onLog) {
         onLog("UPDATE", "Row Updated", `Updated record ${editingRow}`);
@@ -93,14 +93,14 @@ export function TableBody({
       setEditingRow(null);
       setEditData({});
       refetch();
-    } catch (err: any) {
-      console.error("Failed to save edit:", err);
+    } catch (error: unknown) {
+      console.error("Failed to save edit:", error);
       if (onLog) {
-        onLog(
-          "ERROR",
-          "Failed to Update Row",
-          "There was an error updating the record."
-        );
+        let errorMessage = "There was an error updating the record.";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        onLog("ERROR", "Failed to Update Row", errorMessage);
       }
     }
   }, [
@@ -148,16 +148,16 @@ export function TableBody({
       schemaCols.push({
         accessorKey: "id",
         header: () => (
-         <div className="flex items-center gap-1 sm:gap-2">
-            <Key 
-              size={12} 
-              className="text-secondary-500 dark:text-secondary-500 sm:hidden" 
-              title="Primary Key"
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Key
+              size={12}
+              className="text-secondary-500 dark:text-secondary-500 sm:hidden"
+              aria-label="Primary Key"
             />
-            <Key 
-              size={14} 
-              className="text-secondary-500 dark:text-secondary-500 hidden sm:block" 
-              title="Primary Key"
+            <Key
+              size={14}
+              className="text-secondary-500 dark:text-secondary-500 hidden sm:block"
+              aria-label="Primary Key"
             />
             <span className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">
               id

@@ -132,7 +132,7 @@ export const dataSourceApi = createApi({
 
       transformResponse: (response: DataSourceResponse) => {
         const filteredData = response.data.filter(
-          (record: any) =>
+          (record: DataSourceRecord) =>
             record && Object.keys(record).length > 0 && !record.deleted_at
         );
         return {

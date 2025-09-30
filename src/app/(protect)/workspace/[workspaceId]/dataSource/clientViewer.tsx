@@ -6,7 +6,7 @@ import {
   useGetSchemaRowsQuery,
   useInsertSchemaRowMutation,
   useGetProjectStatsQuery,
-  useImportDataMutation
+  useImportDataMutation,
 } from "@/service/apiSlide/dataSourceApi";
 import { useGetSchemasQuery } from "@/service/apiSlide/schemaApi";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -77,25 +77,9 @@ export default function DataSourcesClient({ workspaceId, initialTab }: Props) {
     setLogs(prevLogs => prevLogs.filter(log => log.id !== logId));
   };
 
-  // Add row handler (mock mode for now)
-  // const handleAddRow = (row: AddRowData) => {
-  //   const newRow: DataSourceRecord = {
-  //     ...row,
-  //     // id: row.id ?? crypto.randomUUID(),
-  //     // created_at: row.created_at ?? new Date().toISOString(),
-  //     id: typeof row.id === "string" ? row.id : crypto.randomUUID(),
-  //     created_at:
-  //       typeof row.created_at === "string"
-  //         ? row.created_at
-  //         : new Date().toISOString(),
-  //     updated_at: new Date().toISOString(),
-  //     created_by: "system",
-  //     schema_name: activeSchemaName,
-  //     project_uuid: workspaceId,
-  //   };
-  //   setMockRows(prev => [...prev, newRow]);
-  //   addLog("CREATE", "Row Added", `Inserted new row into ${activeSchemaName}`);
-  // };
+  // Fetch Schemas
+  const { data: schemas, isLoading: schemasLoading } =
+    useGetSchemasQuery(workspaceId);
 
   //Schema Selection Logic
   useEffect(() => {
