@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     projectUuid: string;
-  };
+  }>;
 }
 
 const API_BASE = process.env.API_BASE;
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { projectUuid: string } }
+  { params }: { params: Promise<{ projectUuid: string }> }
 ) {
   try {
     const token = await getToken({ req: request });
@@ -22,7 +22,7 @@ export async function GET(
       );
     }
 
-    const { projectUuid } = params;
+    const { projectUuid } = await params;
 
     const backendResponse = await fetch(
       `${API_BASE}/projects/${projectUuid}/rest/records-with-counts`,

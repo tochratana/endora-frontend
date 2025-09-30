@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     schemaName: string;
     projectUuid: string;
-  };
+  }>;
 }
 
 const API_BASE = process.env.API_BASE as string;
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid } = params;
+    const { schemaName, projectUuid } = await params;
 
     // Parse incoming JSON body
     const jsonData = await request.json();

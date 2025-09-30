@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     schemaName: string;
     projectUuid: string;
-  };
+  }>;
 }
 
 const API_BASE = process.env.API_BASE as string;
@@ -13,7 +13,10 @@ const API_BASE = process.env.API_BASE as string;
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     // Verify JWT from NextAuth
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
     if (!token) {
       return NextResponse.json(
         { error: "Authentication required" },
@@ -21,7 +24,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { schemaName, projectUuid } = params;
+    const { schemaName, projectUuid } = await params;
 
     // Parse incoming FormData
     const formData = await request.formData();
@@ -41,7 +44,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     if (!backendResponse.ok) {
       const errorText = await backendResponse.text();
-      throw new Error(`Backend import error: ${backendResponse.status} - ${errorText}`);
+      throw new Error(
+        `Backend import error: ${backendResponse.status} - ${errorText}`
+      );
     }
 
     const result = await backendResponse.json();

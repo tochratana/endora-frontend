@@ -1,13 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-interface Context {
-  params: {
-    projectUuid: string;
-  };
-}
-
-export async function POST(req: NextRequest, context: Context) {
+export async function POST(
+  req: NextRequest,
+  context: { params: Promise<{ projectUuid: string }> }
+) {
   const secret = process.env.NEXTAUTH_SECRET;
   const jwt = await getToken({ req, secret });
 
@@ -16,7 +13,7 @@ export async function POST(req: NextRequest, context: Context) {
   }
 
   try {
-    const { projectUuid } = context.params;
+    const { projectUuid } = await context.params;
 
     if (!projectUuid) {
       return NextResponse.json(

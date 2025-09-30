@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 //GET all schemas
 export async function GET(
   req: NextRequest,
-  context: { params: { projectUuid: string } }
+  context: { params: Promise<{ projectUuid: string }> }
 ) {
   const secret = process.env.NEXTAUTH_SECRET;
   const jwt = await getToken({ req, secret });
@@ -15,7 +15,7 @@ export async function GET(
   }
 
   try {
-    const { projectUuid } = context.params;
+    const { projectUuid } = await context.params;
 
     console.log("Fetching schemas for project:", projectUuid);
 
