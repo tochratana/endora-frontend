@@ -79,7 +79,11 @@ export function DataTable({ projectUuid, onLog }: DataTableProps) {
         `Successfully inserted ${dataArray.length} record(s) into ${schemaName}`
       );
 
-      refetch();
+      // Only refetch if the inserted schema matches the currently active table
+      if (schemaName === activeTable) {
+        refetch();
+      }
+      // If different schema, don't call refetch - it will load when user switches to that tab
     } catch (error) {
       console.error("JSON Editor insert failed:", error);
       throw error; // Re-throw to let the sidebar handle the error notification
